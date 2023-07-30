@@ -4,21 +4,28 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	userRequest "study_savvy_api_go/api/request/user"
+	"study_savvy_api_go/api/response/utils"
+	"study_savvy_api_go/internal/service/user"
 )
 
-func LoginAppHandler(c *gin.Context) {
+type LoginAppHandler struct {
+	Service user.LoginAppService
+}
+
+func (h *LoginAppHandler) Handle(c *gin.Context) {
 	data, ok := c.Get("data")
 	if !ok {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Data not found in context"})
+		e := utils.Error{Error: "Data not found in context"}
+		c.JSON(http.StatusInternalServerError, e)
 		return
 	}
 
 	if jsonData, ok := data.(userRequest.LoginApp); ok {
 		mail := jsonData.Mail
 		password := jsonData.Password
-
-		c.JSON(http.StatusOK, gin.H{"message": "JSON data received", "username": mail, "password": password})
+		c.JSON(http.StatusOK, gin.H{"message": h.Service.DoSomething(), "username": mail, "password": password})
 	} else {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Data type mismatch"})
+		e := utils.Error{Error: "Data type mismatch"}
+		c.JSON(http.StatusInternalServerError, e)
 	}
 }

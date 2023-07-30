@@ -2,7 +2,7 @@ package routes
 
 import (
 	"github.com/gin-gonic/gin"
-	"study_savvy_api_go/api/handler/user"
+	handlerUser "study_savvy_api_go/api/handler/user"
 	requestUser "study_savvy_api_go/api/middleware/request/user"
 )
 
@@ -18,7 +18,7 @@ func InitRoutes() *gin.Engine {
 	//oauthRouter := r.Group("/api/oauth")
 	//informationRouter := r.Group("/api/information")
 
-	userRouter.Use(requestUser.LoginAppContentMiddleWare()).POST("/login/app", user.LoginAppHandler)
+	userRouter.Use(requestUser.LoginAppContentMiddleWare()).POST("/login/app", (&handlerUser.LoginAppHandler{}).Handle)
 	//userRouter.POST("/login/web", AuthHomeHandler)
 	//userRouter.DELETE("/logout", AuthHomeHandler)
 	//userRouter.POST("/signup", AuthHomeHandler)
