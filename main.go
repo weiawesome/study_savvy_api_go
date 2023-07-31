@@ -5,6 +5,7 @@ import (
 	"github.com/golang-jwt/jwt"
 	"net/http"
 	"study_savvy_api_go/api/routes"
+	"study_savvy_api_go/api/utils"
 )
 
 type jwtClaim struct {
@@ -15,6 +16,10 @@ type jwtClaim struct {
 }
 
 func main() {
+	if err := utils.InitDB(); err != nil {
+		fmt.Println("Error to connect SQL")
+		return
+	}
 
 	r := routes.InitRoutes()
 	err := r.Run()
