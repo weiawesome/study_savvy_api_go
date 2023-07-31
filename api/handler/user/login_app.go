@@ -21,11 +21,15 @@ func (h *LoginAppHandler) Handle(c *gin.Context) {
 	}
 
 	if jsonData, ok := data.(userRequest.LoginApp); ok {
-		mail := jsonData.Mail
-		password := jsonData.Password
-		c.JSON(http.StatusOK, gin.H{"message": h.Service.DoSomething(), "username": mail, "password": password})
+		result, err := h.Service.Login(jsonData)
+		if err == nil {
+			c.JSON(http.StatusOK, result)
+		} else {
+			e := utils.Error{Error: "Data type mismatch"}
+			c.JSON(http.StatusInternalServerError, e)
+		}
 	} else {
-		e := utils.Error{Error: "Data type mismatch"}
+		e := utils.Error{Error: "Internal error"}
 		c.JSON(http.StatusInternalServerError, e)
 	}
 }

@@ -2,11 +2,20 @@ package main
 
 import (
 	"fmt"
+	"github.com/golang-jwt/jwt"
 	"net/http"
 	"study_savvy_api_go/api/routes"
 )
 
+type jwtClaim struct {
+	Type  string `json:"type"`
+	Fresh bool   `json:"fresh"`
+	Csrf  string `json:"csrf"`
+	jwt.RegisteredClaims
+}
+
 func main() {
+
 	r := routes.InitRoutes()
 	err := r.Run()
 	if err != nil {
