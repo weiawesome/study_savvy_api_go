@@ -20,9 +20,9 @@ func InitRoutes() *gin.Engine {
 	//oauthRouter := r.Group("/api/oauth")
 	//informationRouter := r.Group("/api/information")
 	Repository := repository.NewRepository()
-	userRouter.POST("/login/app", requestUser.LoginAppContentMiddleWare(), (&handlerUser.LoginAppHandler{Service: user.LoginAppService{Repository: *Repository}}).Handle)
-	//userRouter.POST("/login/web", AuthHomeHandler)
-	//userRouter.DELETE("/logout", AuthHomeHandler)
+	userRouter.POST("/login/app", requestUser.LoginContentMiddleWare(), (&handlerUser.LoginAppHandler{Service: user.LoginAppService{Repository: *Repository}}).Handle)
+	userRouter.POST("/login/web", requestUser.LoginContentMiddleWare(), (&handlerUser.LoginWebHandler{Service: user.LoginWebService{Repository: *Repository}}).Handle)
+	//userRouter.DELETE("/logout", jwtSecure.JwtMiddleware(),)
 	userRouter.POST("/signup", requestUser.SignupContentMiddleWare(), (&handlerUser.SignupHandler{Service: user.SignupService{Repository: *Repository}}).Handle)
 	//
 	//nlpEditRouter.PUT("/ASR/{file_id}", AuthHomeHandler)
