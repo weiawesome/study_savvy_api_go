@@ -1,10 +1,7 @@
 package model
 
-import "gorm.io/gorm"
-
 type User struct {
-	gorm.Model
-	Mail        string `gorm:"primaryKey"`
+	Mail        string `gorm:"primaryKey;size:254;"`
 	Gender      string `gorm:"check:gender IN ('male', 'female', 'other')"`
 	Salt        []byte
 	Password    string

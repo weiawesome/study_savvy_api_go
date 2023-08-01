@@ -2,6 +2,7 @@ package user
 
 import (
 	"errors"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"net/mail"
@@ -10,7 +11,7 @@ import (
 	"study_savvy_api_go/api/response/utils"
 )
 
-func validateLoginApp(data user.LoginApp) error {
+func validateSignup(data user.SignUp) error {
 	if data.Mail == "" {
 		return errors.New("mail can't be empty")
 	} else if data.Password == "" {
@@ -21,11 +22,13 @@ func validateLoginApp(data user.LoginApp) error {
 		return errors.New("password can't contain space")
 	} else if _, err := mail.ParseAddress(data.Mail); err != nil {
 		return errors.New("mail can't parse")
+	} else if !(data.Gender == "male" || data.Gender == "female" || data.Gender == "other") {
+		return errors.New("gender error type")
 	}
 	return nil
 }
 
-func LoginAppContentMiddleWare() gin.HandlerFunc {
+func SignupContentMiddleWare() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		if c.Request.Header.Get("Content-Type") != "application/json" {
 			e := utils.Error{Error: "Content-Type must be application/json"}
@@ -34,15 +37,15 @@ func LoginAppContentMiddleWare() gin.HandlerFunc {
 			return
 		}
 
-		var data user.LoginApp
-
+		var data user.SignUp
 		if err := c.ShouldBindJSON(&data); err != nil {
+			fmt.Println(err)
 			e := utils.Error{Error: "Invalid JSON data"}
 			c.JSON(http.StatusBadRequest, e)
 			c.Abort()
 			return
 		}
-		err := validateLoginApp(data)
+		err := validateSignup(data)
 
 		if err != nil {
 			e := utils.Error{Error: err.Error()}
@@ -50,7 +53,6 @@ func LoginAppContentMiddleWare() gin.HandlerFunc {
 			c.Abort()
 			return
 		}
-
 		c.Set("data", data)
 		c.Next()
 	}

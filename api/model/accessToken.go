@@ -1,10 +1,7 @@
 package model
 
-import "gorm.io/gorm"
-
 type AccessToken struct {
-	gorm.Model
-	Mail   string
-	Token  string
-	AesKey string
+	UserMail string `gorm:"size:254;foreignKey:Mail"`
+	Token    string
+	AesKey   string
 }

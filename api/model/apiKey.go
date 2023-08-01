@@ -1,10 +1,7 @@
 package model
 
-import "gorm.io/gorm"
-
 type ApiKey struct {
-	gorm.Model
-	Mail   string
-	Key    string
-	AesKey string
+	UserMail string `gorm:"size:254;foreignKey:Mail"`
+	Key      string
+	AesKey   string
 }

@@ -1,31 +1,42 @@
 package user
 
 import (
+	"errors"
+	"fmt"
 	"gorm.io/gorm"
 	"study_savvy_api_go/api/model"
 	"study_savvy_api_go/api/request/user"
 	responseUser "study_savvy_api_go/api/response/user"
+	responseUtils "study_savvy_api_go/api/response/utils"
 	"study_savvy_api_go/api/utils"
 )
 
 type SignupService struct{}
 
-func (m *LoginAppService) Signup(data user.SignUp) (responseUser.Signup, error) {
-	mail := data.Mail
-	var User model.User
-	db := utils.GetDB()
-	if result := db.First(&User, mail); result.Error == nil {
+func (m *SignupService) Signup(data user.SignUp) (responseUser.Signup, error) {
+	var response responseUser.Signup
 
-	}
-	if result.Error == nil {
-		// 用户已注册，邮箱已存在于数据库中
-		// 可以根据需要处理逻辑，例如返回错误或做其他操作
-	} else if result.Error == gorm.ErrRecordNotFound {
-		// 用户未注册，邮箱不存在于数据库中
-		// 可以根据需要处理逻辑，例如允许注册新用户或做其他操作
+	mail := data.Mail
+	password := data.Password
+	gender := data.Gender
+	name := data.Name
+
+	User := model.User{Mail: mail}
+	db := utils.GetDB()
+	fmt.Println(mail)
+	if result := db.First(&User); result.Error == nil {
+		return response, responseUtils.RegistrationError{Message: "Have been registered"}
+	} else if errors.As(result.Error, &gorm.ErrRecordNotFound) {
+		salt, err := utils.GenerateSalt()
+		if err != nil {
+			return response, err
+		}
+		password = utils.GenerateHashPassword(password, salt)
+		db.Create(&model.User{Name: name, Mail: mail, Gender: gender, Password: password, Salt: salt})
 	} else {
-		// 处理查询错误
+		fmt.Println(result.Error)
+		return response, result.Error
 	}
-	var result responseUser.Signup
-	return result, err
+
+	return response, nil
 }
