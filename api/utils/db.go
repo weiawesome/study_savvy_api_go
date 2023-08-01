@@ -9,14 +9,6 @@ import (
 
 var db *gorm.DB
 
-func migrateModel(db *gorm.DB, model interface{}) error {
-	err := db.AutoMigrate(model)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
 func InitDB() error {
 	user := os.Getenv("SQL_DB_USER")
 	pwd := os.Getenv("SQL_DB_PASSWORD")
@@ -24,23 +16,12 @@ func InitDB() error {
 	dbName := os.Getenv("SQL_DB_NAME")
 	dsn := user + ":" + pwd + "@tcp(localhost:" + port + ")/" + dbName + "?charset=utf8mb4&parseTime=True&loc=Local"
 	var err error
-	db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
-	if err != nil {
+	if db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{}); err != nil {
 		return err
 	}
-	if err := migrateModel(db, &model.User{}); err != nil {
+	if err := db.AutoMigrate(&model.User{}, &model.File{}, &model.AccessToken{}, &model.ApiKey{}); err != nil {
 		return err
 	}
-	if err := migrateModel(db, &model.File{}); err != nil {
-		return err
-	}
-	if err := migrateModel(db, &model.ApiKey{}); err != nil {
-		return err
-	}
-	if err := migrateModel(db, &model.AccessToken{}); err != nil {
-		return err
-	}
-
 	return nil
 }
 
