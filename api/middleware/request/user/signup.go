@@ -2,7 +2,6 @@ package user
 
 import (
 	"errors"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"net/mail"
@@ -39,7 +38,6 @@ func SignupContentMiddleWare() gin.HandlerFunc {
 
 		var data user.SignUp
 		if err := c.ShouldBindJSON(&data); err != nil {
-			fmt.Println(err)
 			e := utils.Error{Error: "Invalid JSON data"}
 			c.JSON(http.StatusBadRequest, e)
 			c.Abort()

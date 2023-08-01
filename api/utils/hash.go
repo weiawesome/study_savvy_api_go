@@ -22,3 +22,7 @@ func GenerateHashPassword(password string, salt []byte) string {
 	hashedPassword := sha256Hash.Sum(nil)
 	return hex.EncodeToString(hashedPassword)
 }
+
+func ValidatePassword(password string, targetPassword string, salt []byte) bool {
+	return GenerateHashPassword(password, salt) == targetPassword
+}

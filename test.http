@@ -1,10 +1,10 @@
 ### Send POST request with json body
-POST http://localhost:8080/api/signup
+POST http://localhost:8080/api/login/app
 Content-Type: application/json
 
 {
   "gender": "male",
-  "mail": "wei891013@gmail.com",
-  "password": "Wei891013",
+  "mail": "open891013@gmail.com",
+  "password": "Wei89101",
   "name": "Wei"
 }

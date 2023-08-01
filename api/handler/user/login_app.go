@@ -1,6 +1,7 @@
 package user
 
 import (
+	"errors"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	userRequest "study_savvy_api_go/api/request/user"
@@ -24,8 +25,11 @@ func (h *LoginAppHandler) Handle(c *gin.Context) {
 		result, err := h.Service.Login(jsonData)
 		if err == nil {
 			c.JSON(http.StatusOK, result)
+		} else if errors.As(err, &utils.RegistrationError{}) {
+			e := utils.Error{Error: err.Error()}
+			c.JSON(http.StatusUnauthorized, e)
 		} else {
-			e := utils.Error{Error: "Data type mismatch"}
+			e := utils.Error{Error: err.Error()}
 			c.JSON(http.StatusInternalServerError, e)
 		}
 	} else {

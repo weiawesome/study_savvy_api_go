@@ -4,6 +4,8 @@ import (
 	"github.com/gin-gonic/gin"
 	handlerUser "study_savvy_api_go/api/handler/user"
 	requestUser "study_savvy_api_go/api/middleware/request/user"
+	"study_savvy_api_go/internal/repository"
+	"study_savvy_api_go/internal/service/user"
 )
 
 func InitRoutes() *gin.Engine {
@@ -17,11 +19,11 @@ func InitRoutes() *gin.Engine {
 	//aiPredictRouter := r.Group("/api/predict")
 	//oauthRouter := r.Group("/api/oauth")
 	//informationRouter := r.Group("/api/information")
-
-	userRouter.POST("/login/app", requestUser.LoginAppContentMiddleWare(), (&handlerUser.LoginAppHandler{}).Handle)
+	Repository := repository.NewRepository()
+	userRouter.POST("/login/app", requestUser.LoginAppContentMiddleWare(), (&handlerUser.LoginAppHandler{Service: user.LoginAppService{Repository: *Repository}}).Handle)
 	//userRouter.POST("/login/web", AuthHomeHandler)
 	//userRouter.DELETE("/logout", AuthHomeHandler)
-	userRouter.POST("/signup", requestUser.SignupContentMiddleWare(), (&handlerUser.SignupHandler{}).Handle)
+	userRouter.POST("/signup", requestUser.SignupContentMiddleWare(), (&handlerUser.SignupHandler{Service: user.SignupService{Repository: *Repository}}).Handle)
 	//
 	//nlpEditRouter.PUT("/ASR/{file_id}", AuthHomeHandler)
 	//nlpEditRouter.PUT("/OCR/{file_id}", AuthHomeHandler)
