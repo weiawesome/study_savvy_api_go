@@ -31,8 +31,14 @@ func JwtMiddleware() gin.HandlerFunc {
 					c.Abort()
 					return
 				}
+			} else {
+				c.Set("jwt", jwt)
+				c.Next()
 			}
+		} else {
+			c.Set("jwt", jwtToken)
+			c.Next()
 		}
-		c.Next()
+
 	}
 }

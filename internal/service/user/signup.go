@@ -7,12 +7,12 @@ import (
 	responseUser "study_savvy_api_go/api/response/user"
 	responseUtils "study_savvy_api_go/api/response/utils"
 	"study_savvy_api_go/api/utils"
-	"study_savvy_api_go/internal/repository"
+	"study_savvy_api_go/internal/repository/sql"
 	StatusUtils "study_savvy_api_go/internal/repository/utils"
 )
 
 type SignupService struct {
-	Repository repository.Repository
+	Repository sql.Repository
 }
 
 func (m *SignupService) Signup(data user.SignUp) (responseUser.Signup, error) {

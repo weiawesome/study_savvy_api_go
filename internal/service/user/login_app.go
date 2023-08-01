@@ -7,12 +7,12 @@ import (
 	responseUser "study_savvy_api_go/api/response/user"
 	responseUtils "study_savvy_api_go/api/response/utils"
 	"study_savvy_api_go/api/utils"
-	"study_savvy_api_go/internal/repository"
+	"study_savvy_api_go/internal/repository/sql"
 	StatusUtils "study_savvy_api_go/internal/repository/utils"
 )
 
 type LoginAppService struct {
-	Repository repository.Repository
+	Repository sql.Repository
 }
 
 func (m *LoginAppService) Login(data user.LoginApp) (responseUser.LoginApp, error) {

@@ -4,7 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	handlerUser "study_savvy_api_go/api/handler/user"
 	requestUser "study_savvy_api_go/api/middleware/request/user"
-	"study_savvy_api_go/internal/repository"
+	"study_savvy_api_go/internal/repository/sql"
 	"study_savvy_api_go/internal/service/user"
 )
 
@@ -19,7 +19,7 @@ func InitRoutes() *gin.Engine {
 	//aiPredictRouter := r.Group("/api/predict")
 	//oauthRouter := r.Group("/api/oauth")
 	//informationRouter := r.Group("/api/information")
-	Repository := repository.NewRepository()
+	Repository := sql.NewRepository()
 	userRouter.POST("/login/app", requestUser.LoginContentMiddleWare(), (&handlerUser.LoginAppHandler{Service: user.LoginAppService{Repository: *Repository}}).Handle)
 	userRouter.POST("/login/web", requestUser.LoginContentMiddleWare(), (&handlerUser.LoginWebHandler{Service: user.LoginWebService{Repository: *Repository}}).Handle)
 	//userRouter.DELETE("/logout", jwtSecure.JwtMiddleware(),)
