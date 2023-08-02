@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"errors"
 	"github.com/golang-jwt/jwt"
 	"github.com/google/uuid"
 	"os"
@@ -19,7 +20,7 @@ func GetJwt(mail string) (string, string, error) {
 	jwtSecret := []byte(os.Getenv("JWT_SECRET"))
 	csrf := uuid.New().String()
 	expiredDays, _ := strconv.Atoi(os.Getenv("JWT_EXPIRE_DAYS"))
-	issuer:=os.Getenv("JWT_ISSUER")
+	issuer := os.Getenv("JWT_ISSUER")
 
 	if expiredDays == 0 {
 		expiredDays = 1
@@ -43,22 +44,26 @@ func GetJwt(mail string) (string, string, error) {
 	return ss, csrf, err
 }
 
-func ValidateJwt(jwtToken string)(bool,error){
+func ValidateJwt(jwtToken string) error {
 	token, err := jwt.ParseWithClaims(jwtToken, &jwtClaim{}, func(token *jwt.Token) (interface{}, error) {
 		return []byte(os.Getenv("JWT_SECRET")), nil
 	})
-	if claims, ok := token.Claims.(*jwtClaim); ok && token.Valid && claims.Issuer==os.Getenv("JWT_ISSUER"){
-		return true,err
+	if err != nil {
+		return err
 	}
-	return false,err
+	if claims, ok := token.Claims.(*jwtClaim); ok && token.Valid && claims.Issuer == os.Getenv("JWT_ISSUER") {
+		return nil
+	} else {
+		return errors.New("content error")
+	}
 }
 
-func ValidateJwtCsrf(jwtToken string,csrfToken string)(bool,error){
+func ValidateJwtCsrf(jwtToken string, csrfToken string) error {
 	token, err := jwt.ParseWithClaims(jwtToken, &jwtClaim{}, func(token *jwt.Token) (interface{}, error) {
 		return []byte(os.Getenv("JWT_SECRET")), nil
 	})
-	if claims, ok := token.Claims.(*jwtClaim); ok && token.Valid && claims.Issuer==os.Getenv("JWT_ISSUER") && claims.Csrf==csrfToken{
-		return true,err
+	if claims, ok := token.Claims.(*jwtClaim); ok && token.Valid && claims.Issuer == os.Getenv("JWT_ISSUER") && claims.Csrf == csrfToken {
+		return err
 	}
-	return false,err
+	return err
 }

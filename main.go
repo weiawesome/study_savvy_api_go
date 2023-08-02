@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/golang-jwt/jwt"
+	"log"
 	"net/http"
 	"study_savvy_api_go/api/routes"
 	"study_savvy_api_go/api/utils"
@@ -17,10 +18,13 @@ type jwtClaim struct {
 
 func main() {
 	if err := utils.InitDB(); err != nil {
-		fmt.Println("Error to connect SQL")
+		log.Fatalf("Failed to connect to the database: %v", err)
 		return
 	}
-
+	if err := utils.InitRedis(); err != nil {
+		log.Fatalf("Failed to connect to the redis: %v", err)
+		return
+	}
 	r := routes.InitRoutes()
 	err := r.Run()
 	if err != nil {
