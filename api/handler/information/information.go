@@ -4,7 +4,6 @@ import (
 	"errors"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	userRequest "study_savvy_api_go/api/request/user"
 	"study_savvy_api_go/api/response/utils"
 	"study_savvy_api_go/internal/service/information"
 )
@@ -14,15 +13,15 @@ type HandlerInformation struct {
 }
 
 func (h *HandlerInformation) Handle(c *gin.Context) {
-	data, ok := c.Get("data")
+	user, ok := c.Get("user")
 	if !ok {
 		e := utils.Error{Error: "Data not found in context"}
 		c.JSON(http.StatusInternalServerError, e)
 		return
 	}
 
-	if jsonData, ok := data.(userRequest.LoginApp); ok {
-		result, err := h.Service.Login(jsonData)
+	if stringData, ok := user.(string); ok {
+		result, err := h.Service.GetInformation(stringData)
 		if err == nil {
 			c.JSON(http.StatusOK, result)
 		} else if errors.As(err, &utils.RegistrationError{}) {

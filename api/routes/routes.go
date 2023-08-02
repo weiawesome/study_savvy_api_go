@@ -2,11 +2,14 @@ package routes
 
 import (
 	"github.com/gin-gonic/gin"
+	handlerInformation "study_savvy_api_go/api/handler/information"
 	handlerUser "study_savvy_api_go/api/handler/user"
-	"study_savvy_api_go/api/middleware/jwtSecure"
+	"study_savvy_api_go/api/middleware/jwt"
+	requestInformation "study_savvy_api_go/api/middleware/request/information"
 	requestUser "study_savvy_api_go/api/middleware/request/user"
 	"study_savvy_api_go/internal/repository/redis"
 	"study_savvy_api_go/internal/repository/sql"
+	"study_savvy_api_go/internal/service/information"
 	"study_savvy_api_go/internal/service/user"
 )
 
@@ -20,13 +23,14 @@ func InitRoutes() *gin.Engine {
 	//filesRouter := r.Group("/api/files")
 	//aiPredictRouter := r.Group("/api/predict")
 	//oauthRouter := r.Group("/api/oauth")
-	//informationRouter := r.Group("/api/information")
+	informationRouter := r.Group("/api/information")
+
 	sqlRepository := sql.NewRepository()
 	redisRepository := redis.NewRepository()
 
 	userRouter.POST("/login/app", requestUser.MiddleWareLoginContent(), (&handlerUser.HandlerLoginApp{Service: user.ServiceLoginApp{Repository: *sqlRepository}}).Handle)
 	userRouter.POST("/login/web", requestUser.MiddleWareLoginContent(), (&handlerUser.HandlerLoginWeb{Service: user.ServiceLoginWeb{Repository: *sqlRepository}}).Handle)
-	userRouter.DELETE("/logout", jwtSecure.MiddlewareJwt(), (&handlerUser.HandlerLogout{Service: user.ServiceLogout{Repository: *redisRepository}}).Handle)
+	userRouter.DELETE("/logout", jwt.MiddlewareJwtSecure(), (&handlerUser.HandlerLogout{Service: user.ServiceLogout{Repository: *redisRepository}}).Handle)
 	userRouter.POST("/signup", requestUser.MiddleWareSignupContent(), (&handlerUser.HandlerSignup{Service: user.ServiceSignup{Repository: *sqlRepository}}).Handle)
 	//
 	//nlpEditRouter.PUT("/ASR/{file_id}", AuthHomeHandler)
@@ -54,8 +58,8 @@ func InitRoutes() *gin.Engine {
 	//oauthRouter.GET("/web/google", AuthHomeHandler)
 	//oauthRouter.GET("/authorize/google", AuthHomeHandler)
 	//
-	//informationRouter.GET("/", AuthHomeHandler)
-	//informationRouter.PUT("/", AuthHomeHandler)
+	informationRouter.GET("", jwt.MiddlewareJwtSecure(), jwt.MiddlewareJwtInformation(), (&handlerInformation.HandlerInformation{Service: information.ServiceInformation{Repository: *sqlRepository}}).Handle)
+	informationRouter.PUT("", jwt.MiddlewareJwtSecure(), jwt.MiddlewareJwtInformation(), requestInformation.MiddleWareInformationEditContent(), (&handlerInformation.HandlerInformationEdit{Service: information.ServiceInformationEdit{Repository: *sqlRepository}}).Handle)
 	//informationRouter.PUT("/password_edit", AuthHomeHandler)
 
 	return r
