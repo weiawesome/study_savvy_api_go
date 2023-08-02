@@ -25,7 +25,7 @@ func validateLogin(data user.LoginApp) error {
 	return nil
 }
 
-func LoginContentMiddleWare() gin.HandlerFunc {
+func MiddleWareLoginContent() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		if c.Request.Header.Get("Content-Type") != "application/json" {
 			e := utils.Error{Error: "Content-Type must be application/json"}

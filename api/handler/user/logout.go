@@ -8,11 +8,11 @@ import (
 	"time"
 )
 
-type LogoutHandler struct {
-	Service user.LogoutService
+type HandlerLogout struct {
+	Service user.ServiceLogout
 }
 
-func (h *LogoutHandler) Handle(c *gin.Context) {
+func (h *HandlerLogout) Handle(c *gin.Context) {
 	jwt, ok := c.Get("jwt")
 	if !ok {
 		e := utils.Error{Error: "Data not found in context"}

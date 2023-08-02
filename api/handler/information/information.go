@@ -1,4 +1,4 @@
-package user
+package information
 
 import (
 	"errors"
@@ -6,14 +6,14 @@ import (
 	"net/http"
 	userRequest "study_savvy_api_go/api/request/user"
 	"study_savvy_api_go/api/response/utils"
-	"study_savvy_api_go/internal/service/user"
+	"study_savvy_api_go/internal/service/information"
 )
 
-type HandlerLoginApp struct {
-	Service user.ServiceLoginApp
+type HandlerInformation struct {
+	Service information.ServiceInformation
 }
 
-func (h *HandlerLoginApp) Handle(c *gin.Context) {
+func (h *HandlerInformation) Handle(c *gin.Context) {
 	data, ok := c.Get("data")
 	if !ok {
 		e := utils.Error{Error: "Data not found in context"}

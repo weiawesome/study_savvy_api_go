@@ -12,11 +12,11 @@ import (
 	"time"
 )
 
-type LoginWebHandler struct {
-	Service user.LoginWebService
+type HandlerLoginWeb struct {
+	Service user.ServiceLoginWeb
 }
 
-func (h *LoginWebHandler) Handle(c *gin.Context) {
+func (h *HandlerLoginWeb) Handle(c *gin.Context) {
 	data, ok := c.Get("data")
 	if !ok {
 		e := utils.Error{Error: "Data not found in context"}

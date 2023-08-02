@@ -10,11 +10,11 @@ import (
 	"study_savvy_api_go/internal/service/user"
 )
 
-type SignupHandler struct {
-	Service user.SignupService
+type HandlerSignup struct {
+	Service user.ServiceSignup
 }
 
-func (h *SignupHandler) Handle(c *gin.Context) {
+func (h *HandlerSignup) Handle(c *gin.Context) {
 	data, ok := c.Get("data")
 	if !ok {
 		e := utils.Error{Error: "Data not found in context"}

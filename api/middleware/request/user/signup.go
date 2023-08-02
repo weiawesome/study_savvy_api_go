@@ -27,7 +27,7 @@ func validateSignup(data user.SignUp) error {
 	return nil
 }
 
-func SignupContentMiddleWare() gin.HandlerFunc {
+func MiddleWareSignupContent() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		if c.Request.Header.Get("Content-Type") != "application/json" {
 			e := utils.Error{Error: "Content-Type must be application/json"}

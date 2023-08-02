@@ -1,4 +1,4 @@
-package user
+package information
 
 import (
 	"errors"
@@ -11,25 +11,24 @@ import (
 	StatusUtils "study_savvy_api_go/internal/repository/utils"
 )
 
-type ServiceLoginWeb struct {
+type ServiceInformation struct {
 	Repository sql.Repository
 }
 
-func (m *ServiceLoginWeb) Login(data user.LoginWeb) (responseUser.LoginWeb, responseUser.LoginToken, error) {
-	var response responseUser.LoginWeb
-	var responseToken responseUser.LoginToken
+func (m *ServiceInformation) Login(data user.LoginApp) (responseUser.LoginApp, error) {
+	var response responseUser.LoginApp
 	User := model.User{Mail: data.Mail}
 
 	if err := m.Repository.ReadUser(&User); errors.As(err, &StatusUtils.ExistSource{}) {
 		if utils.ValidatePassword(data.Password, User.Password, User.Salt) {
-			jwt, csrf, err := utils.GetJwt(data.Mail)
-			return responseUser.LoginWeb{}, responseUser.LoginToken{JwtToken: jwt, CsrfToken: csrf}, err
+			jwt, _, err := utils.GetJwt(data.Mail)
+			return responseUser.LoginApp{Token: jwt}, err
 		} else {
-			return response, responseToken, responseUtils.RegistrationError{Message: "Password error"}
+			return response, responseUtils.RegistrationError{Message: "Password error"}
 		}
 	} else if errors.As(err, &StatusUtils.NotExistSource{}) {
-		return response, responseToken, responseUtils.RegistrationError{Message: "Have not sign up"}
+		return response, responseUtils.RegistrationError{Message: "Have not sign up"}
 	} else {
-		return response, responseToken, err
+		return response, err
 	}
 }

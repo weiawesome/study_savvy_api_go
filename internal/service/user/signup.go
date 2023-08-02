@@ -11,11 +11,11 @@ import (
 	StatusUtils "study_savvy_api_go/internal/repository/utils"
 )
 
-type SignupService struct {
+type ServiceSignup struct {
 	Repository sql.Repository
 }
 
-func (m *SignupService) Signup(data user.SignUp) (responseUser.Signup, error) {
+func (m *ServiceSignup) Signup(data user.SignUp) (responseUser.Signup, error) {
 	var response responseUser.Signup
 
 	mail := data.Mail

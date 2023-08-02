@@ -19,7 +19,7 @@ func validateContent(jwtToken string) error {
 func validateCookie(jwtToken string, csrfToken string) error {
 	return utils.ValidateJwtCsrf(jwtToken, csrfToken)
 }
-func JwtMiddleware() gin.HandlerFunc {
+func MiddlewareJwt() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		jwtTokenCookie, err := c.Cookie("access_token_cookie")
 		csrfToken := c.GetHeader("X-CSRF-TOKEN")

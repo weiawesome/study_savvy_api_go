@@ -23,10 +23,11 @@ func InitRoutes() *gin.Engine {
 	//informationRouter := r.Group("/api/information")
 	sqlRepository := sql.NewRepository()
 	redisRepository := redis.NewRepository()
-	userRouter.POST("/login/app", requestUser.LoginContentMiddleWare(), (&handlerUser.LoginAppHandler{Service: user.LoginAppService{Repository: *sqlRepository}}).Handle)
-	userRouter.POST("/login/web", requestUser.LoginContentMiddleWare(), (&handlerUser.LoginWebHandler{Service: user.LoginWebService{Repository: *sqlRepository}}).Handle)
-	userRouter.DELETE("/logout", jwtSecure.JwtMiddleware(), (&handlerUser.LogoutHandler{Service: user.LogoutService{Repository: *redisRepository}}).Handle)
-	userRouter.POST("/signup", requestUser.SignupContentMiddleWare(), (&handlerUser.SignupHandler{Service: user.SignupService{Repository: *sqlRepository}}).Handle)
+
+	userRouter.POST("/login/app", requestUser.MiddleWareLoginContent(), (&handlerUser.HandlerLoginApp{Service: user.ServiceLoginApp{Repository: *sqlRepository}}).Handle)
+	userRouter.POST("/login/web", requestUser.MiddleWareLoginContent(), (&handlerUser.HandlerLoginWeb{Service: user.ServiceLoginWeb{Repository: *sqlRepository}}).Handle)
+	userRouter.DELETE("/logout", jwtSecure.MiddlewareJwt(), (&handlerUser.HandlerLogout{Service: user.ServiceLogout{Repository: *redisRepository}}).Handle)
+	userRouter.POST("/signup", requestUser.MiddleWareSignupContent(), (&handlerUser.HandlerSignup{Service: user.ServiceSignup{Repository: *sqlRepository}}).Handle)
 	//
 	//nlpEditRouter.PUT("/ASR/{file_id}", AuthHomeHandler)
 	//nlpEditRouter.PUT("/OCR/{file_id}", AuthHomeHandler)

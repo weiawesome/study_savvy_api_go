@@ -6,11 +6,11 @@ import (
 	"study_savvy_api_go/internal/repository/redis"
 )
 
-type LogoutService struct {
+type ServiceLogout struct {
 	Repository redis.Repository
 }
 
-func (m *LogoutService) Logout(jwt string) (responseUser.Logout, error) {
+func (m *ServiceLogout) Logout(jwt string) (responseUser.Logout, error) {
 	var response responseUser.Logout
 	err := m.Repository.SetToBlacklist(jwt)
 	fmt.Println(err)

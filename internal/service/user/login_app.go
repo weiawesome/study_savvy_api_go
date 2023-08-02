@@ -11,11 +11,11 @@ import (
 	StatusUtils "study_savvy_api_go/internal/repository/utils"
 )
 
-type LoginAppService struct {
+type ServiceLoginApp struct {
 	Repository sql.Repository
 }
 
-func (m *LoginAppService) Login(data user.LoginApp) (responseUser.LoginApp, error) {
+func (m *ServiceLoginApp) Login(data user.LoginApp) (responseUser.LoginApp, error) {
 	var response responseUser.LoginApp
 	User := model.User{Mail: data.Mail}
 
