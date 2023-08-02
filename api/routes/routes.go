@@ -60,7 +60,7 @@ func InitRoutes() *gin.Engine {
 	//
 	informationRouter.GET("", jwt.MiddlewareJwtSecure(), jwt.MiddlewareJwtInformation(), (&handlerInformation.HandlerInformation{Service: information.ServiceInformation{Repository: *sqlRepository}}).Handle)
 	informationRouter.PUT("", jwt.MiddlewareJwtSecure(), jwt.MiddlewareJwtInformation(), requestInformation.MiddleWareInformationEditContent(), (&handlerInformation.HandlerInformationEdit{Service: information.ServiceInformationEdit{Repository: *sqlRepository}}).Handle)
-	//informationRouter.PUT("/password_edit", AuthHomeHandler)
+	informationRouter.PUT("/password_edit", jwt.MiddlewareJwtSecure(), jwt.MiddlewareJwtInformation(), requestInformation.MiddleWarePasswordEditContent(), (&handlerInformation.HandlerPasswordEdit{Service: information.ServicePasswordEdit{Repository: *sqlRepository}}).Handle)
 
 	return r
 }
