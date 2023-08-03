@@ -3,15 +3,18 @@ package routes
 import (
 	"github.com/gin-gonic/gin"
 	handlerAccessMethod "study_savvy_api_go/api/handler/access_method"
+	handelrFiles "study_savvy_api_go/api/handler/files"
 	handlerInformation "study_savvy_api_go/api/handler/information"
 	handlerUser "study_savvy_api_go/api/handler/user"
 	"study_savvy_api_go/api/middleware/jwt"
 	requestAccessMethod "study_savvy_api_go/api/middleware/request/access_method"
+	requestFiles "study_savvy_api_go/api/middleware/request/files"
 	requestInformation "study_savvy_api_go/api/middleware/request/information"
 	requestUser "study_savvy_api_go/api/middleware/request/user"
 	"study_savvy_api_go/internal/repository/redis"
 	"study_savvy_api_go/internal/repository/sql"
 	"study_savvy_api_go/internal/service/access_method"
+	"study_savvy_api_go/internal/service/files"
 	"study_savvy_api_go/internal/service/information"
 	"study_savvy_api_go/internal/service/user"
 )
@@ -23,7 +26,7 @@ func InitRoutes() *gin.Engine {
 	//nlpEditRouter := r.Group("/api/NLP_edit")
 	accessMethodRouter := r.Group("/api/Access_method")
 	//mailRouter := r.Group("/api/verification")
-	//filesRouter := r.Group("/api/files")
+	filesRouter := r.Group("/api/files")
 	//aiPredictRouter := r.Group("/api/predict")
 	//oauthRouter := r.Group("/api/oauth")
 	informationRouter := r.Group("/api/information")
@@ -46,13 +49,13 @@ func InitRoutes() *gin.Engine {
 	//mailRouter.POST("/", AuthHomeHandler)
 	//mailRouter.GET("/{mail}/{code}", AuthHomeHandler)
 	//
-	//filesRouter.GET("/", AuthHomeHandler)
-	//filesRouter.GET("/ASR", AuthHomeHandler)
-	//filesRouter.GET("/OCR", AuthHomeHandler)
-	//filesRouter.GET("/resources/audio/{file_id}", AuthHomeHandler)
-	//filesRouter.GET("/resources/graph/{file_id}", AuthHomeHandler)
-	//filesRouter.GET("/{file_id}", AuthHomeHandler)
-	//filesRouter.DELETE("/{file_id}", AuthHomeHandler)
+	filesRouter.GET("/", jwt.MiddlewareJwtSecure(), jwt.MiddlewareJwtInformation(), requestFiles.MiddleWareFilesContent(), (&handelrFiles.HandlerFiles{Service: files.ServiceFiles{Repository: *sqlRepository}}).Handle)
+	filesRouter.GET("/ASR", jwt.MiddlewareJwtSecure(), jwt.MiddlewareJwtInformation(), requestFiles.MiddleWareFilesAsrContent(), (&handelrFiles.HandlerFilesAsr{Service: files.ServiceFilesAsr{Repository: *sqlRepository}}).Handle)
+	filesRouter.GET("/OCR", jwt.MiddlewareJwtSecure(), jwt.MiddlewareJwtInformation(), requestFiles.MiddleWareFilesOcrContent(), (&handelrFiles.HandlerFilesOcr{Service: files.ServiceFilesOcr{Repository: *sqlRepository}}).Handle)
+	filesRouter.GET("/resources/audio/:file_id", jwt.MiddlewareJwtSecure(), jwt.MiddlewareJwtInformation(), requestFiles.MiddleWareFilesResourceAudioContent(), (&handelrFiles.HandlerFilesResourceAudio{Service: files.ServiceFilesResourceAudio{Repository: *sqlRepository}}).Handle)
+	filesRouter.GET("/resources/graph/:file_id", jwt.MiddlewareJwtSecure(), jwt.MiddlewareJwtInformation(), requestFiles.MiddleWareFilesResourceGraphContent(), (&handelrFiles.HandlerFilesResourceGraph{Service: files.ServiceFilesResourceGraph{Repository: *sqlRepository}}).Handle)
+	//filesRouter.GET("/:file_id", AuthHomeHandler)
+	//filesRouter.DELETE("/:file_id", AuthHomeHandler)
 	//
 	//aiPredictRouter.POST("/ASR", AuthHomeHandler)
 	//aiPredictRouter.POST("/OCR", AuthHomeHandler)

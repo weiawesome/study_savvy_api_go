@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"fmt"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"os"
@@ -16,7 +15,7 @@ func connectDB() (*gorm.DB, error) {
 	port := os.Getenv("SQL_DB_PORT")
 	dbName := os.Getenv("SQL_DB_NAME")
 	dsn := user + ":" + pwd + "@tcp(localhost:" + port + ")/" + dbName + "?charset=utf8mb4&parseTime=True&loc=Local"
-	fmt.Print(dsn)
+
 	return gorm.Open(mysql.Open(dsn), &gorm.Config{})
 }
 
