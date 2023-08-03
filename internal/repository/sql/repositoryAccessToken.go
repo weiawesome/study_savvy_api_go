@@ -19,6 +19,13 @@ func (r *Repository) ReadAccessToken(obj *model.AccessToken) error {
 		return StatusUtils.DbError{Message: "Db error"}
 	}
 }
+func (r *Repository) UpdateAccessToken(obj model.AccessToken) error {
+	return r.db.Model(&obj).Updates(obj).Error
+}
+func (r *Repository) DeleteAccessToken(obj model.AccessToken) error {
+	return r.db.Delete(&obj).Error
+}
+
 func (r *Repository) PreLoadReadAccessToken(obj *model.AccessToken, preLoad string) error {
 	if result := r.db.Preload(preLoad).Find(&obj); result.Error == nil {
 		return StatusUtils.ExistSource{Message: "Source is exist"}
@@ -28,9 +35,6 @@ func (r *Repository) PreLoadReadAccessToken(obj *model.AccessToken, preLoad stri
 		return StatusUtils.DbError{Message: "Db error"}
 	}
 }
-func (r *Repository) UpdateAccessToken(obj model.AccessToken) error {
-	return r.db.Model(&obj).Updates(obj).Error
-}
-func (r *Repository) DeleteAccessToken(obj model.AccessToken) error {
-	return r.db.Delete(&obj).Error
+func (r *Repository) FirstOrCreateAccessToken(obj *model.AccessToken) error {
+	return r.db.FirstOrCreate(&obj, obj).Error
 }

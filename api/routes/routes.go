@@ -2,13 +2,16 @@ package routes
 
 import (
 	"github.com/gin-gonic/gin"
+	handlerAccessMethod "study_savvy_api_go/api/handler/access_method"
 	handlerInformation "study_savvy_api_go/api/handler/information"
 	handlerUser "study_savvy_api_go/api/handler/user"
 	"study_savvy_api_go/api/middleware/jwt"
+	requestAccessMethod "study_savvy_api_go/api/middleware/request/access_method"
 	requestInformation "study_savvy_api_go/api/middleware/request/information"
 	requestUser "study_savvy_api_go/api/middleware/request/user"
 	"study_savvy_api_go/internal/repository/redis"
 	"study_savvy_api_go/internal/repository/sql"
+	"study_savvy_api_go/internal/service/access_method"
 	"study_savvy_api_go/internal/service/information"
 	"study_savvy_api_go/internal/service/user"
 )
@@ -18,7 +21,7 @@ func InitRoutes() *gin.Engine {
 
 	userRouter := r.Group("/api")
 	//nlpEditRouter := r.Group("/api/NLP_edit")
-	//accessMethodRouter := r.Group("/api/Access_method")
+	accessMethodRouter := r.Group("/api/Access_method")
 	//mailRouter := r.Group("/api/verification")
 	//filesRouter := r.Group("/api/files")
 	//aiPredictRouter := r.Group("/api/predict")
@@ -36,8 +39,9 @@ func InitRoutes() *gin.Engine {
 	//nlpEditRouter.PUT("/ASR/{file_id}", AuthHomeHandler)
 	//nlpEditRouter.PUT("/OCR/{file_id}", AuthHomeHandler)
 	//
-	//accessMethodRouter.PUT("/access_token", AuthHomeHandler)
-	//accessMethodRouter.PUT("/api_key", AuthHomeHandler)
+	accessMethodRouter.PUT("/access_token", jwt.MiddlewareJwtSecure(), jwt.MiddlewareJwtInformation(), requestAccessMethod.MiddleWareAccessTokenEditContent(), (&handlerAccessMethod.HandlerAccessMethodAccessToken{Service: access_method.ServiceAccessMethodAccessToken{Repository: *sqlRepository}}).Handle)
+	accessMethodRouter.PUT("/api_key", jwt.MiddlewareJwtSecure(), jwt.MiddlewareJwtInformation(), requestAccessMethod.MiddleWareApiKeyEditContent(), (&handlerAccessMethod.HandlerAccessMethodApiKey{Service: access_method.ServiceAccessMethodApiKey{Repository: *sqlRepository}}).Handle)
+
 	//
 	//mailRouter.POST("/", AuthHomeHandler)
 	//mailRouter.GET("/{mail}/{code}", AuthHomeHandler)

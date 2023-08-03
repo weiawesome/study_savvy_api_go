@@ -1,11 +1,14 @@
 ### Send POST request with json body
-PUT http://localhost:8080/api/information/password_edit
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiYWNjZXNzIiwiZnJlc2giOmZhbHNlLCJjc3JmIjoiZjk4ZGZkOWQtY2QyNS00NTQwLTlkZTYtMTM5OTExNWYzMDFhIiwiaXNzIjoiU3R1ZHktU2F2dnkiLCJzdWIiOiJvcGVuODkxMDEzQGdtYWlsLmNvbSIsImV4cCI6MTY5MjE1OTYwMCwibmJmIjoxNjkwOTUwMDAwLCJpYXQiOjE2OTA5NTAwMDB9.wSBTxdvozAuYe0NBx3PdwqZjiM_uA_AzVpCsmMmUSyQ
+PUT http://localhost:8080/api/Access_method/access_token
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiYWNjZXNzIiwiZnJlc2giOmZhbHNlLCJjc3JmIjoiMDE0N2E2MTItMzliMy00ZWUzLWFkYWQtYmIxZmYxODdjZDNlIiwiaXNzIjoiU3R1ZHktU2F2dnkiLCJzdWIiOiJ3ZWk4OTEwMTNAZ21haWwuY29tIiwiZXhwIjoxNjkyMjU4ODcyLCJuYmYiOjE2OTEwNDkyNzIsImlhdCI6MTY5MTA0OTI3Mn0.astkevaURUQlqaPfNo-2kJWoK4jFYUPAnkrPLWiSBOk
 Content-Type: application/json
 
 {
   "gender": "male",
-  "mail": "open891013@gmail.com",
+  "mail": "wei891013@gmail.com",
   "password": "Wei891013",
-  "name": "Wei"
+  "name": "Wei",
+  "api_key": "AAA",
+  "aes_key": "ACA",
+  "access_token": "ABA"
 }

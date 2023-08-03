@@ -8,11 +8,11 @@ import (
 	"study_savvy_api_go/internal/service/access_method"
 )
 
-type HandlerAccessMethodApiKey struct {
-	Service access_method.ServiceAccessMethodApiKey
+type HandlerAccessMethodAccessToken struct {
+	Service access_method.ServiceAccessMethodAccessToken
 }
 
-func (h *HandlerAccessMethodApiKey) Handle(c *gin.Context) {
+func (h *HandlerAccessMethodAccessToken) Handle(c *gin.Context) {
 	user, okUser := c.Get("user")
 	if !okUser {
 		e := utils.Error{Error: "Data not found in context"}
@@ -26,8 +26,8 @@ func (h *HandlerAccessMethodApiKey) Handle(c *gin.Context) {
 		return
 	}
 	if stringData, ok := user.(string); ok {
-		if jsonData, ok := data.(requsetAccessMethod.ApiKey); ok {
-			result, err := h.Service.EditApiKey(jsonData, stringData)
+		if jsonData, ok := data.(requsetAccessMethod.AccessToken); ok {
+			result, err := h.Service.EditAccessToken(jsonData, stringData)
 			if err == nil {
 				c.JSON(http.StatusOK, result)
 			} else {
