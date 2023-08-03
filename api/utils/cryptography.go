@@ -23,7 +23,7 @@ func LoadPrivateKey(fileName string) (*rsa.PrivateKey, error) {
 	defer func() {
 		if file != nil {
 			if err := file.Close(); err != nil {
-				fmt.Println("Error closing file:", err)
+				fmt.Println("Error closing files:", err)
 			}
 		}
 	}()
@@ -57,7 +57,7 @@ func LoadPublicKeyFromFile(fileName string) (*rsa.PublicKey, error) {
 	defer func() {
 		if file != nil {
 			if err := file.Close(); err != nil {
-				fmt.Println("Error closing file:", err)
+				fmt.Println("Error closing files:", err)
 			}
 		}
 	}()

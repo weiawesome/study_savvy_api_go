@@ -8,13 +8,13 @@ import (
 )
 
 type MultipartRequestOcr struct {
-	File   *multipart.FileHeader `json:"file"`
+	File   *multipart.FileHeader `json:"files"`
 	Prompt string                `json:"prompt"`
 }
 
 func (r *MultipartRequestOcr) Validate() error {
 	if r.File == nil {
-		return fmt.Errorf("file is required")
+		return fmt.Errorf("files is required")
 	}
 	allowedExtensions := map[string]bool{
 		".jpg":  true,
@@ -24,7 +24,7 @@ func (r *MultipartRequestOcr) Validate() error {
 
 	ext := utils.GetFileExtension(r.File.Filename)
 	if !allowedExtensions[ext] {
-		return errors.New("unsupported file format")
+		return errors.New("unsupported files format")
 	}
 
 	return nil
