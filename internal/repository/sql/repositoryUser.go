@@ -12,18 +12,18 @@ func (r *Repository) CreateUser(obj model.User) error {
 }
 func (r *Repository) ReadUser(obj *model.User) error {
 	if result := r.db.First(&obj); result.Error == nil {
-		return StatusUtils.ExistSource{Message: "Source is exist"}
+		return StatusUtils.ExistSource{Message: "Resource is exist"}
 	} else if errors.As(result.Error, &gorm.ErrRecordNotFound) {
-		return StatusUtils.NotExistSource{Message: "Source is not exist"}
+		return StatusUtils.NotExistSource{Message: "Resource is not exist"}
 	} else {
 		return StatusUtils.DbError{Message: "Db error"}
 	}
 }
 func (r *Repository) PreLoadReadUser(obj *model.User, preLoad string) error {
 	if result := r.db.Preload(preLoad).Find(&obj); result.Error == nil {
-		return StatusUtils.ExistSource{Message: "Source is exist"}
+		return StatusUtils.ExistSource{Message: "Resource is exist"}
 	} else if errors.As(result.Error, &gorm.ErrRecordNotFound) {
-		return StatusUtils.NotExistSource{Message: "Source is not exist"}
+		return StatusUtils.NotExistSource{Message: "Resource is not exist"}
 	} else {
 		return StatusUtils.DbError{Message: "Db error"}
 	}

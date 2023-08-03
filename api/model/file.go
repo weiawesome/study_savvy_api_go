@@ -12,7 +12,7 @@ type File struct {
 	Status    string `gorm:"check:status IN ('PENDING','SUCCESS','FAILURE')"`
 	Type      string `gorm:"check:type IN ('ASR','OCR')"`
 	CreatedAt time.Time
-	Source    string
+	Resource  string
 	Result    datatypes.JSONMap
 }
 

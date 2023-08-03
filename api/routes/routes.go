@@ -49,12 +49,12 @@ func InitRoutes() *gin.Engine {
 	//mailRouter.POST("/", AuthHomeHandler)
 	//mailRouter.GET("/{mail}/{code}", AuthHomeHandler)
 	//
-	filesRouter.GET("/", jwt.MiddlewareJwtSecure(), jwt.MiddlewareJwtInformation(), requestFiles.MiddleWareFilesContent(), (&handelrFiles.HandlerFiles{Service: files.ServiceFiles{Repository: *sqlRepository}}).Handle)
+	filesRouter.GET("", jwt.MiddlewareJwtSecure(), jwt.MiddlewareJwtInformation(), requestFiles.MiddleWareFilesContent(), (&handelrFiles.HandlerFiles{Service: files.ServiceFiles{Repository: *sqlRepository}}).Handle)
 	filesRouter.GET("/ASR", jwt.MiddlewareJwtSecure(), jwt.MiddlewareJwtInformation(), requestFiles.MiddleWareFilesAsrContent(), (&handelrFiles.HandlerFilesAsr{Service: files.ServiceFilesAsr{Repository: *sqlRepository}}).Handle)
 	filesRouter.GET("/OCR", jwt.MiddlewareJwtSecure(), jwt.MiddlewareJwtInformation(), requestFiles.MiddleWareFilesOcrContent(), (&handelrFiles.HandlerFilesOcr{Service: files.ServiceFilesOcr{Repository: *sqlRepository}}).Handle)
 	filesRouter.GET("/resources/audio/:file_id", jwt.MiddlewareJwtSecure(), jwt.MiddlewareJwtInformation(), requestFiles.MiddleWareFilesResourceAudioContent(), (&handelrFiles.HandlerFilesResourceAudio{Service: files.ServiceFilesResourceAudio{Repository: *sqlRepository}}).Handle)
 	filesRouter.GET("/resources/graph/:file_id", jwt.MiddlewareJwtSecure(), jwt.MiddlewareJwtInformation(), requestFiles.MiddleWareFilesResourceGraphContent(), (&handelrFiles.HandlerFilesResourceGraph{Service: files.ServiceFilesResourceGraph{Repository: *sqlRepository}}).Handle)
-	//filesRouter.GET("/:file_id", AuthHomeHandler)
+	//filesRouter.GET("/:file_idt ", AuthHomeHandler)
 	//filesRouter.DELETE("/:file_id", AuthHomeHandler)
 	//
 	//aiPredictRouter.POST("/ASR", AuthHomeHandler)

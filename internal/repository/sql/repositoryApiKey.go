@@ -12,9 +12,9 @@ func (r *Repository) CreateApiKey(obj model.ApiKey) error {
 }
 func (r *Repository) ReadApiKey(obj *model.ApiKey) error {
 	if result := r.db.First(&obj); result.Error == nil {
-		return StatusUtils.ExistSource{Message: "Source is exist"}
+		return StatusUtils.ExistSource{Message: "Resource is exist"}
 	} else if errors.As(result.Error, &gorm.ErrRecordNotFound) {
-		return StatusUtils.NotExistSource{Message: "Source is not exist"}
+		return StatusUtils.NotExistSource{Message: "Resource is not exist"}
 	} else {
 		return StatusUtils.DbError{Message: "Db error"}
 	}
@@ -28,9 +28,9 @@ func (r *Repository) DeleteApiKey(obj model.ApiKey) error {
 
 func (r *Repository) PreLoadReadApiKey(obj *model.ApiKey, preLoad string) error {
 	if result := r.db.Preload(preLoad).Find(&obj); result.Error == nil {
-		return StatusUtils.ExistSource{Message: "Source is exist"}
+		return StatusUtils.ExistSource{Message: "Resource is exist"}
 	} else if errors.As(result.Error, &gorm.ErrRecordNotFound) {
-		return StatusUtils.NotExistSource{Message: "Source is not exist"}
+		return StatusUtils.NotExistSource{Message: "Resource is not exist"}
 	} else {
 		return StatusUtils.DbError{Message: "Db error"}
 	}
