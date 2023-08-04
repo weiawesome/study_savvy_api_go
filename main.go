@@ -1,11 +1,7 @@
 package main
 
 import (
-	"fmt"
-	"github.com/gin-gonic/gin"
 	"log"
-	"net/http"
-	"study_savvy_api_go/api/response/files"
 	"study_savvy_api_go/api/routes"
 	"study_savvy_api_go/api/utils"
 )
@@ -19,14 +15,6 @@ func main() {
 		log.Fatalf("Failed to connect to the redis: %v", err)
 		return
 	}
-	fmt.Println("")
-	//sqlRepository := sql.NewRepository()
-	//a, b, c := sqlRepository.ReadFileByPage("wei891013@gmail.com", 1, 10)
-	//if c != nil {
-	//	fmt.Println(c)
-	//}
-	//fmt.Println(a)
-	//fmt.Println(b)
 
 	r := routes.InitRoutes()
 	err := r.Run()
@@ -36,15 +24,4 @@ func main() {
 	//log.Printf("Listening on port %s", port)
 	//log.Printf("Open http://localhost:%s in the browser", port)
 	//log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", port), nil))
-}
-func test(c *gin.Context) {
-	result := files.AudioFile{FilePath: "A.txt"}
-	if err := result.Exist(); err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "File not found"})
-		return
-	}
-	err := result.CanOpenAndSent(c)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, err.Error())
-	}
 }

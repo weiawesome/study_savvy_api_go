@@ -2,6 +2,7 @@ package user
 
 import (
 	"errors"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"os"
@@ -38,7 +39,6 @@ func (h *HandlerLoginWeb) Handle(c *gin.Context) {
 				Secure:   true,
 				HttpOnly: true,
 			}
-
 			cookieCsrf := &http.Cookie{
 				Name:    "csrf_access_token",
 				Value:   resultToken.CsrfToken,
@@ -57,6 +57,7 @@ func (h *HandlerLoginWeb) Handle(c *gin.Context) {
 		}
 	} else {
 		e := utils.Error{Error: "Internal error"}
+		fmt.Println("AAA")
 		c.JSON(http.StatusInternalServerError, e)
 	}
 }

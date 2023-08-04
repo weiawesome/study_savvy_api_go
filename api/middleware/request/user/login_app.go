@@ -10,7 +10,7 @@ import (
 	"study_savvy_api_go/api/response/utils"
 )
 
-func validateLogin(data user.LoginApp) error {
+func validateLoginApp(data user.LoginApp) error {
 	if data.Mail == "" {
 		return errors.New("mail can't be empty")
 	} else if data.Password == "" {
@@ -25,7 +25,7 @@ func validateLogin(data user.LoginApp) error {
 	return nil
 }
 
-func MiddleWareLoginContent() gin.HandlerFunc {
+func MiddleWareLoginAppContent() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		if c.Request.Header.Get("Content-Type") != "application/json" {
 			e := utils.Error{Error: "Content-Type must be application/json"}
@@ -42,7 +42,7 @@ func MiddleWareLoginContent() gin.HandlerFunc {
 			c.Abort()
 			return
 		}
-		err := validateLogin(data)
+		err := validateLoginApp(data)
 
 		if err != nil {
 			e := utils.Error{Error: err.Error()}
