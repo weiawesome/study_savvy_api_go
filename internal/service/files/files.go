@@ -1,9 +1,9 @@
 package files
 
 import (
-	"os"
 	"strconv"
 	"study_savvy_api_go/api/response/files"
+	"study_savvy_api_go/api/utils"
 	"study_savvy_api_go/internal/repository/sql"
 )
 
@@ -13,8 +13,7 @@ type ServiceFiles struct {
 
 func (m *ServiceFiles) GetFiles(data string, page int) (files.Files, error) {
 	var response files.Files
-	var pageSize int
-	pageSize, err := strconv.Atoi(os.Getenv("PAGE_SIZE"))
+	pageSize, err := strconv.Atoi(utils.EnvPageSize())
 	if err != nil {
 		pageSize = 10
 	}

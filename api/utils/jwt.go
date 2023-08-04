@@ -4,7 +4,6 @@ import (
 	"errors"
 	"github.com/golang-jwt/jwt"
 	"github.com/google/uuid"
-	"os"
 	"strconv"
 	"time"
 )
@@ -17,11 +16,11 @@ type JwtClaim struct {
 }
 
 func GetJwt(mail string) (string, string, error) {
-	jwtSecret := []byte(os.Getenv("JWT_SECRET"))
+	jwtSecret := []byte(EnvJwtSecret())
 	csrf := uuid.New().String()
 	id := uuid.New().String()
-	expiredDays, _ := strconv.Atoi(os.Getenv("JWT_EXPIRE_DAYS"))
-	issuer := os.Getenv("JWT_ISSUER")
+	expiredDays, _ := strconv.Atoi(EnvJwtExpireDays())
+	issuer := EnvJwtIssuer()
 
 	if expiredDays == 0 {
 		expiredDays = 1
@@ -48,12 +47,12 @@ func GetJwt(mail string) (string, string, error) {
 
 func ValidateJwt(jwtToken string) error {
 	token, err := jwt.ParseWithClaims(jwtToken, &JwtClaim{}, func(token *jwt.Token) (interface{}, error) {
-		return []byte(os.Getenv("JWT_SECRET")), nil
+		return []byte(EnvJwtSecret()), nil
 	})
 	if err != nil {
 		return err
 	}
-	if claims, ok := token.Claims.(*JwtClaim); ok && token.Valid && claims.Issuer == os.Getenv("JWT_ISSUER") {
+	if claims, ok := token.Claims.(*JwtClaim); ok && token.Valid && claims.Issuer == EnvJwtIssuer() {
 		return nil
 	} else {
 		return errors.New("content error")
@@ -62,9 +61,9 @@ func ValidateJwt(jwtToken string) error {
 
 func ValidateJwtCsrf(jwtToken string, csrfToken string) error {
 	token, err := jwt.ParseWithClaims(jwtToken, &JwtClaim{}, func(token *jwt.Token) (interface{}, error) {
-		return []byte(os.Getenv("JWT_SECRET")), nil
+		return []byte(EnvJwtSecret()), nil
 	})
-	if claims, ok := token.Claims.(*JwtClaim); ok && token.Valid && claims.Issuer == os.Getenv("JWT_ISSUER") && claims.Csrf == csrfToken {
+	if claims, ok := token.Claims.(*JwtClaim); ok && token.Valid && claims.Issuer == EnvJwtIssuer() && claims.Csrf == csrfToken {
 		return err
 	}
 	return err
@@ -72,12 +71,12 @@ func ValidateJwtCsrf(jwtToken string, csrfToken string) error {
 
 func InformationJwt(jwtToken string) *JwtClaim {
 	token, err := jwt.ParseWithClaims(jwtToken, &JwtClaim{}, func(token *jwt.Token) (interface{}, error) {
-		return []byte(os.Getenv("JWT_SECRET")), nil
+		return []byte(EnvJwtSecret()), nil
 	})
 	if err != nil {
 		return nil
 	}
-	if claims, ok := token.Claims.(*JwtClaim); ok && token.Valid && claims.Issuer == os.Getenv("JWT_ISSUER") {
+	if claims, ok := token.Claims.(*JwtClaim); ok && token.Valid && claims.Issuer == EnvJwtIssuer() {
 		return claims
 	} else {
 		return nil

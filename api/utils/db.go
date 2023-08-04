@@ -3,18 +3,18 @@ package utils
 import (
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	"os"
 	"study_savvy_api_go/api/model"
 )
 
 var db *gorm.DB
 
 func connectDB() (*gorm.DB, error) {
-	user := os.Getenv("SQL_DB_USER")
-	pwd := os.Getenv("SQL_DB_PASSWORD")
-	port := os.Getenv("SQL_DB_PORT")
-	dbName := os.Getenv("SQL_DB_NAME")
-	dsn := user + ":" + pwd + "@tcp(localhost:" + port + ")/" + dbName + "?charset=utf8mb4&parseTime=True&loc=Local"
+	user := EnvMySqlUser()
+	password := EnvMySqlPassword()
+	address := EnvMySqlAddress()
+	dbName := EnvMySqlDb()
+
+	dsn := user + ":" + password + "@tcp(" + address + ")/" + dbName + "?charset=utf8mb4&parseTime=True&loc=Local"
 
 	return gorm.Open(mysql.Open(dsn), &gorm.Config{})
 }
