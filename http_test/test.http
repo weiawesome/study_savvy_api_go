@@ -13,7 +13,7 @@ POST http://localhost:8080/api/login/app
 Content-Type: application/json
 
 {
-  "mail": "wei891013@gmail.com",
+  "mail": "open891013@gmail.com",
   "password": "Wei891013"
 }
 ### Login Web

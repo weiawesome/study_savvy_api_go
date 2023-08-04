@@ -16,6 +16,9 @@ func (m *ServiceFilesResourceAudio) GetAudio(data string, id string) (files.Audi
 	var response files.AudioFile
 	File := model.File{UserMail: data, Id: id}
 	if err := m.Repository.ReadFile(&File); errors.As(err, &StatusUtils.ExistSource{}) {
+		if File.UserMail != data {
+			return response, StatusUtils.NotExistSource{}
+		}
 		return files.AudioFile{FilePath: File.Resource}, nil
 	} else if errors.As(err, &StatusUtils.NotExistSource{}) {
 		return response, err

@@ -34,6 +34,9 @@ func (h *HandlerFilesOcr) Handle(c *gin.Context) {
 				e := utils.Error{Error: err.Error()}
 				c.JSON(http.StatusInternalServerError, e)
 			}
+		} else {
+			e := utils.Error{Error: "Internal error"}
+			c.JSON(http.StatusInternalServerError, e)
 		}
 	} else {
 		e := utils.Error{Error: "Internal error"}

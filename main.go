@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
@@ -18,7 +19,7 @@ func main() {
 		log.Fatalf("Failed to connect to the redis: %v", err)
 		return
 	}
-	//fmt.Println("")
+	fmt.Println("")
 	//sqlRepository := sql.NewRepository()
 	//a, b, c := sqlRepository.ReadFileByPage("wei891013@gmail.com", 1, 10)
 	//if c != nil {
@@ -26,9 +27,6 @@ func main() {
 	//}
 	//fmt.Println(a)
 	//fmt.Println(b)
-	//file := model.File{Id: uuid.New().String(), UserMail: "wei891013@gmail.com", Type: "ASR", Status: "SUCCESS", CreatedAt: time.Now()}
-	//e := sqlRepository.CreateFile(file)
-	//fmt.Println(e)
 
 	r := routes.InitRoutes()
 	err := r.Run()

@@ -1,7 +1,6 @@
 package model
 
 import (
-	"gorm.io/datatypes"
 	"study_savvy_api_go/api/response/files"
 	"time"
 )
@@ -13,7 +12,7 @@ type File struct {
 	Type      string `gorm:"check:type IN ('ASR','OCR')"`
 	CreatedAt time.Time
 	Resource  string
-	Result    datatypes.JSONMap
+	Result    files.SpecificFile `gorm:"type:json"`
 }
 
 func FileRelateName() string {

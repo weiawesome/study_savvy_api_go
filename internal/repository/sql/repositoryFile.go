@@ -72,6 +72,7 @@ func (r *Repository) ReadFileByPageOcr(mail string, page int, pageSize int) ([]m
 
 	return files, totalPages, nil
 }
+
 func FileByType(Type string) func(db *gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
 		return db.Where("type = ?", Type)
@@ -82,7 +83,6 @@ func FileByMail(mail string, totalRecords *int64) func(db *gorm.DB) *gorm.DB {
 		return db.Model(model.File{}).Where("user_mail = ?", mail).Count(totalRecords)
 	}
 }
-
 func Paginate(page, pageSize int) func(db *gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
 		if page <= 0 {
