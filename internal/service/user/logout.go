@@ -1,7 +1,6 @@
 package user
 
 import (
-	"fmt"
 	responseUser "study_savvy_api_go/api/response/user"
 	"study_savvy_api_go/internal/repository/redis"
 )
@@ -10,10 +9,10 @@ type ServiceLogout struct {
 	Repository redis.Repository
 }
 
-func (m *ServiceLogout) Logout(jwt string) (responseUser.Logout, error) {
+func (m *ServiceLogout) Logout(jti string) (responseUser.Logout, error) {
 	var response responseUser.Logout
-	err := m.Repository.SetToBlacklist(jwt)
-	fmt.Println(err)
+	err := m.Repository.SetToBlacklist(jti)
+
 	if err != nil {
 		return response, err
 	}

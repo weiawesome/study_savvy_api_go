@@ -9,9 +9,9 @@ import (
 	"study_savvy_api_go/internal/repository/redis"
 )
 
-func validateBlackList(jwtToken string) error {
-	repository := redis.NewRepository()
-	return repository.ValidateInBlacklist(jwtToken)
+func validateBlackList(jwtToken string, repository redis.Repository) error {
+	jti := utils.InformationJwt(jwtToken).ID
+	return repository.ValidateInBlacklist(jti)
 }
 func validateContent(jwtToken string) error {
 	return utils.ValidateJwt(jwtToken)
@@ -19,7 +19,7 @@ func validateContent(jwtToken string) error {
 func validateCookie(jwtToken string, csrfToken string) error {
 	return utils.ValidateJwtCsrf(jwtToken, csrfToken)
 }
-func MiddlewareJwtSecure() gin.HandlerFunc {
+func (m *MiddlewareJwt) JwtSecure() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		jwtTokenCookie, err := c.Cookie("access_token_cookie")
 		csrfToken := c.GetHeader("X-CSRF-TOKEN")
@@ -37,9 +37,9 @@ func MiddlewareJwtSecure() gin.HandlerFunc {
 		if err != nil {
 			statusCookie = false
 		} else {
-			statusCookie = statusCookie && (validateBlackList(jwtTokenCookie) == nil) && (validateCookie(jwtTokenCookie, csrfToken) == nil)
+			statusCookie = statusCookie && (validateBlackList(jwtTokenCookie, m.repository) == nil) && (validateCookie(jwtTokenCookie, csrfToken) == nil)
 		}
-		statusContent = statusContent && (validateBlackList(jwtTokenContent) == nil) && (validateContent(jwtTokenContent) == nil)
+		statusContent = statusContent && (validateBlackList(jwtTokenContent, m.repository) == nil) && (validateContent(jwtTokenContent) == nil)
 
 		if statusCookie {
 			c.Set("jwt", jwtTokenCookie)

@@ -19,6 +19,7 @@ type JwtClaim struct {
 func GetJwt(mail string) (string, string, error) {
 	jwtSecret := []byte(os.Getenv("JWT_SECRET"))
 	csrf := uuid.New().String()
+	id := uuid.New().String()
 	expiredDays, _ := strconv.Atoi(os.Getenv("JWT_EXPIRE_DAYS"))
 	issuer := os.Getenv("JWT_ISSUER")
 
@@ -31,6 +32,7 @@ func GetJwt(mail string) (string, string, error) {
 		false,
 		csrf,
 		jwt.RegisteredClaims{
+			ID:        id,
 			Subject:   mail,
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Duration(expiredDays) * 24 * time.Hour)),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),

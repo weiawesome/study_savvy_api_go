@@ -7,7 +7,7 @@ import (
 	"study_savvy_api_go/api/utils"
 )
 
-func MiddlewareJwtInformation() gin.HandlerFunc {
+func (m *MiddlewareJwt) JwtInformation() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		jwt, ok := c.Get("jwt")
 		if !ok {
@@ -23,6 +23,7 @@ func MiddlewareJwtInformation() gin.HandlerFunc {
 				return
 			} else {
 				c.Set("user", jwtToken.Subject)
+				c.Set("jti", jwtToken.ID)
 				c.Next()
 			}
 		} else {

@@ -13,13 +13,13 @@ type HandlerLogout struct {
 }
 
 func (h *HandlerLogout) Handle(c *gin.Context) {
-	jwt, ok := c.Get("jwt")
+	jti, ok := c.Get("jti")
 	if !ok {
 		e := utils.Error{Error: "Data not found in context"}
 		c.JSON(http.StatusInternalServerError, e)
 		return
 	}
-	if stringData, ok := jwt.(string); ok {
+	if stringData, ok := jti.(string); ok {
 		result, err := h.Service.Logout(stringData)
 		if err == nil {
 			cookieJwt := &http.Cookie{

@@ -33,29 +33,30 @@ func InitRoutes() *gin.Engine {
 
 	sqlRepository := sql.NewRepository()
 	redisRepository := redis.NewRepository()
+	middlewareJwt := jwt.MiddlewareJwt{Repository: redisRepository}
 
 	userRouter.POST("/login/app", requestUser.MiddleWareLoginContent(), (&handlerUser.HandlerLoginApp{Service: user.ServiceLoginApp{Repository: *sqlRepository}}).Handle)
 	userRouter.POST("/login/web", requestUser.MiddleWareLoginContent(), (&handlerUser.HandlerLoginWeb{Service: user.ServiceLoginWeb{Repository: *sqlRepository}}).Handle)
-	userRouter.DELETE("/logout", jwt.MiddlewareJwtSecure(), (&handlerUser.HandlerLogout{Service: user.ServiceLogout{Repository: *redisRepository}}).Handle)
+	userRouter.DELETE("/logout", middlewareJwt.JwtSecure(), (&handlerUser.HandlerLogout{Service: user.ServiceLogout{Repository: *redisRepository}}).Handle)
 	userRouter.POST("/signup", requestUser.MiddleWareSignupContent(), (&handlerUser.HandlerSignup{Service: user.ServiceSignup{Repository: *sqlRepository}}).Handle)
 	//
 	//nlpEditRouter.PUT("/ASR/{file_id}", AuthHomeHandler)
 	//nlpEditRouter.PUT("/OCR/{file_id}", AuthHomeHandler)
 	//
-	accessMethodRouter.PUT("/access_token", jwt.MiddlewareJwtSecure(), jwt.MiddlewareJwtInformation(), requestAccessMethod.MiddleWareAccessTokenEditContent(), (&handlerAccessMethod.HandlerAccessMethodAccessToken{Service: access_method.ServiceAccessMethodAccessToken{Repository: *sqlRepository}}).Handle)
-	accessMethodRouter.PUT("/api_key", jwt.MiddlewareJwtSecure(), jwt.MiddlewareJwtInformation(), requestAccessMethod.MiddleWareApiKeyEditContent(), (&handlerAccessMethod.HandlerAccessMethodApiKey{Service: access_method.ServiceAccessMethodApiKey{Repository: *sqlRepository}}).Handle)
+	accessMethodRouter.PUT("/access_token", middlewareJwt.JwtSecure(), middlewareJwt.JwtInformation(), requestAccessMethod.MiddleWareAccessTokenEditContent(), (&handlerAccessMethod.HandlerAccessMethodAccessToken{Service: access_method.ServiceAccessMethodAccessToken{Repository: *sqlRepository}}).Handle)
+	accessMethodRouter.PUT("/api_key", middlewareJwt.JwtSecure(), middlewareJwt.JwtInformation(), requestAccessMethod.MiddleWareApiKeyEditContent(), (&handlerAccessMethod.HandlerAccessMethodApiKey{Service: access_method.ServiceAccessMethodApiKey{Repository: *sqlRepository}}).Handle)
 
 	//
 	//mailRouter.POST("/", AuthHomeHandler)
 	//mailRouter.GET("/{mail}/{code}", AuthHomeHandler)
 	//
-	filesRouter.GET("", jwt.MiddlewareJwtSecure(), jwt.MiddlewareJwtInformation(), requestFiles.MiddleWareFilesContent(), (&handlerFiles.HandlerFiles{Service: files.ServiceFiles{Repository: *sqlRepository}}).Handle)
-	filesRouter.GET("/ASR", jwt.MiddlewareJwtSecure(), jwt.MiddlewareJwtInformation(), requestFiles.MiddleWareFilesAsrContent(), (&handlerFiles.HandlerFilesAsr{Service: files.ServiceFilesAsr{Repository: *sqlRepository}}).Handle)
-	filesRouter.GET("/OCR", jwt.MiddlewareJwtSecure(), jwt.MiddlewareJwtInformation(), requestFiles.MiddleWareFilesOcrContent(), (&handlerFiles.HandlerFilesOcr{Service: files.ServiceFilesOcr{Repository: *sqlRepository}}).Handle)
-	filesRouter.GET("/resources/audio/:file_id", jwt.MiddlewareJwtSecure(), jwt.MiddlewareJwtInformation(), requestFiles.MiddleWareFilesResourceAudioContent(), (&handlerFiles.HandlerFilesResourceAudio{Service: files.ServiceFilesResourceAudio{Repository: *sqlRepository}}).Handle)
-	filesRouter.GET("/resources/graph/:file_id", jwt.MiddlewareJwtSecure(), jwt.MiddlewareJwtInformation(), requestFiles.MiddleWareFilesResourceGraphContent(), (&handlerFiles.HandlerFilesResourceGraph{Service: files.ServiceFilesResourceGraph{Repository: *sqlRepository}}).Handle)
-	filesRouter.GET("/:file_id", jwt.MiddlewareJwtSecure(), jwt.MiddlewareJwtInformation(), requestFiles.MiddleWareFilesSpecificContent(), (&handlerFiles.HandlerFilesSpecific{Service: files.ServiceFilesSpecific{Repository: *sqlRepository}}).Handle)
-	filesRouter.DELETE("/:file_id", jwt.MiddlewareJwtSecure(), jwt.MiddlewareJwtInformation(), requestFiles.MiddleWareFilesSpecificDeleteContent(), (&handlerFiles.HandlerFilesSpecificDelete{Service: files.ServiceFilesSpecificDelete{Repository: *sqlRepository}}).Handle)
+	filesRouter.GET("", middlewareJwt.JwtSecure(), middlewareJwt.JwtInformation(), requestFiles.MiddleWareFilesContent(), (&handlerFiles.HandlerFiles{Service: files.ServiceFiles{Repository: *sqlRepository}}).Handle)
+	filesRouter.GET("/ASR", middlewareJwt.JwtSecure(), middlewareJwt.JwtInformation(), requestFiles.MiddleWareFilesAsrContent(), (&handlerFiles.HandlerFilesAsr{Service: files.ServiceFilesAsr{Repository: *sqlRepository}}).Handle)
+	filesRouter.GET("/OCR", middlewareJwt.JwtSecure(), middlewareJwt.JwtInformation(), requestFiles.MiddleWareFilesOcrContent(), (&handlerFiles.HandlerFilesOcr{Service: files.ServiceFilesOcr{Repository: *sqlRepository}}).Handle)
+	filesRouter.GET("/resources/audio/:file_id", middlewareJwt.JwtSecure(), middlewareJwt.JwtInformation(), requestFiles.MiddleWareFilesResourceAudioContent(), (&handlerFiles.HandlerFilesResourceAudio{Service: files.ServiceFilesResourceAudio{Repository: *sqlRepository}}).Handle)
+	filesRouter.GET("/resources/graph/:file_id", middlewareJwt.JwtSecure(), middlewareJwt.JwtInformation(), requestFiles.MiddleWareFilesResourceGraphContent(), (&handlerFiles.HandlerFilesResourceGraph{Service: files.ServiceFilesResourceGraph{Repository: *sqlRepository}}).Handle)
+	filesRouter.GET("/:file_id", middlewareJwt.JwtSecure(), middlewareJwt.JwtInformation(), requestFiles.MiddleWareFilesSpecificContent(), (&handlerFiles.HandlerFilesSpecific{Service: files.ServiceFilesSpecific{Repository: *sqlRepository}}).Handle)
+	filesRouter.DELETE("/:file_id", middlewareJwt.JwtSecure(), middlewareJwt.JwtInformation(), requestFiles.MiddleWareFilesSpecificDeleteContent(), (&handlerFiles.HandlerFilesSpecificDelete{Service: files.ServiceFilesSpecificDelete{Repository: *sqlRepository}}).Handle)
 	//
 	//aiPredictRouter.POST("/ASR", AuthHomeHandler)
 	//aiPredictRouter.POST("/OCR", AuthHomeHandler)
@@ -65,9 +66,9 @@ func InitRoutes() *gin.Engine {
 	//oauthRouter.GET("/web/google", AuthHomeHandler)
 	//oauthRouter.GET("/authorize/google", AuthHomeHandler)
 	//
-	informationRouter.GET("", jwt.MiddlewareJwtSecure(), jwt.MiddlewareJwtInformation(), (&handlerInformation.HandlerInformation{Service: information.ServiceInformation{Repository: *sqlRepository}}).Handle)
-	informationRouter.PUT("", jwt.MiddlewareJwtSecure(), jwt.MiddlewareJwtInformation(), requestInformation.MiddleWareInformationEditContent(), (&handlerInformation.HandlerInformationEdit{Service: information.ServiceInformationEdit{Repository: *sqlRepository}}).Handle)
-	informationRouter.PUT("/password_edit", jwt.MiddlewareJwtSecure(), jwt.MiddlewareJwtInformation(), requestInformation.MiddleWarePasswordEditContent(), (&handlerInformation.HandlerPasswordEdit{Service: information.ServicePasswordEdit{Repository: *sqlRepository}}).Handle)
+	informationRouter.GET("", middlewareJwt.JwtSecure(), middlewareJwt.JwtInformation(), (&handlerInformation.HandlerInformation{Service: information.ServiceInformation{Repository: *sqlRepository}}).Handle)
+	informationRouter.PUT("", middlewareJwt.JwtSecure(), middlewareJwt.JwtInformation(), requestInformation.MiddleWareInformationEditContent(), (&handlerInformation.HandlerInformationEdit{Service: information.ServiceInformationEdit{Repository: *sqlRepository}}).Handle)
+	informationRouter.PUT("/password_edit", middlewareJwt.JwtSecure(), middlewareJwt.JwtInformation(), requestInformation.MiddleWarePasswordEditContent(), (&handlerInformation.HandlerPasswordEdit{Service: information.ServicePasswordEdit{Repository: *sqlRepository}}).Handle)
 
 	return r
 }
