@@ -9,7 +9,7 @@ import (
 	"study_savvy_api_go/internal/repository/redis"
 )
 
-func validateBlackList(jwtToken string, repository redis.Repository) error {
+func validateBlackList(jwtToken string, repository *redis.Repository) error {
 	jti := utils.InformationJwt(jwtToken).ID
 	return repository.ValidateInBlacklist(jti)
 }
@@ -37,9 +37,9 @@ func (m *MiddlewareJwt) JwtSecure() gin.HandlerFunc {
 		if err != nil {
 			statusCookie = false
 		} else {
-			statusCookie = statusCookie && (validateBlackList(jwtTokenCookie, m.repository) == nil) && (validateCookie(jwtTokenCookie, csrfToken) == nil)
+			statusCookie = statusCookie && (validateBlackList(jwtTokenCookie, m.Repository) == nil) && (validateCookie(jwtTokenCookie, csrfToken) == nil)
 		}
-		statusContent = statusContent && (validateBlackList(jwtTokenContent, m.repository) == nil) && (validateContent(jwtTokenContent) == nil)
+		statusContent = statusContent && (validateBlackList(jwtTokenContent, m.Repository) == nil) && (validateContent(jwtTokenContent) == nil)
 
 		if statusCookie {
 			c.Set("jwt", jwtTokenCookie)
