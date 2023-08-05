@@ -87,3 +87,11 @@ func EnvPageSize() string {
 	}
 	return pageSize
 }
+
+func EnvCeleryTask() string {
+	var task string
+	if task = os.Getenv("CELERY_TASK"); len(task) == 0 {
+		task = "tasks"
+	}
+	return task
+}
