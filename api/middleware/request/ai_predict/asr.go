@@ -8,21 +8,10 @@ import (
 	"mime/multipart"
 	"net/http"
 	"os"
-	"strings"
 	"study_savvy_api_go/api/request/ai_predict"
 )
 
-func ValidateAiPredictOcr(fileType string) (string, bool) {
-	supportedTypes := []string{".jpg", ".jpeg", ".png"}
-	for _, t := range supportedTypes {
-		if strings.HasSuffix(fileType, t) {
-			return t, true
-		}
-	}
-	return "", false
-}
-
-func MiddlewareAiPredictOcrContent() gin.HandlerFunc {
+func MiddlewareAiPredictAsrContent() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		if c.Request.Method != "POST" || c.ContentType() != "multipart/form-data" {
 			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": "Only multipart/form-data POST requests are allowed"})
@@ -51,7 +40,7 @@ func MiddlewareAiPredictOcrContent() gin.HandlerFunc {
 			}
 		}
 
-		data := ai_predict.Ocr{File: handler, Prompt: prompt}
+		data := ai_predict.Asr{File: handler, Prompt: prompt}
 		fileType, err := data.Validate()
 		if err != nil {
 			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": err.Error()})

@@ -1,6 +1,6 @@
 package nlp_edit
 
-type NlpEditOcr struct {
+type Ocr struct {
 	Content string `json:"content"`
 	Prompt  string `json:"prompt"`
 }

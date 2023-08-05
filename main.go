@@ -1,10 +1,12 @@
 package main
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
 	"study_savvy_api_go/api/middleware/request/ai_predict"
+	ai_predict2 "study_savvy_api_go/api/request/ai_predict"
 	"study_savvy_api_go/api/utils"
 )
 
@@ -18,7 +20,7 @@ func main() {
 		return
 	}
 	router := gin.Default()
-	router.Use(ai_predict.MiddlewareAiPredictOcrContent())
+	router.Use(ai_predict.MiddlewareAiPredictAsrContent())
 	router.POST("/upload", uploadHandler)
 	router.Run(":8080")
 	//r := routes.InitRoutes()
@@ -32,6 +34,11 @@ func main() {
 }
 
 func uploadHandler(c *gin.Context) {
-	// 在這裡處理上傳的文件
+	a, _ := c.Get("data")
+	if asr, ok := a.(ai_predict2.Asr); ok {
+		fmt.Println("SUCCESS")
+		fmt.Println(asr.File.Filename)
+	}
+
 	c.JSON(http.StatusOK, gin.H{"message": "File uploaded successfully!"})
 }

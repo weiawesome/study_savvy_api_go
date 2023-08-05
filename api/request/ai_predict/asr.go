@@ -7,14 +7,14 @@ import (
 	"study_savvy_api_go/api/request/ai_predict/utils"
 )
 
-type MultipartRequestAsr struct {
+type Asr struct {
 	File   *multipart.FileHeader `json:"files"`
 	Prompt string                `json:"prompt"`
 }
 
-func (r *MultipartRequestAsr) Validate() error {
+func (r *Asr) Validate() (string, error) {
 	if r.File == nil {
-		return fmt.Errorf("files is required")
+		return "", fmt.Errorf("files is required")
 	}
 	allowedExtensions := map[string]bool{
 		".mp3": true,
@@ -24,8 +24,8 @@ func (r *MultipartRequestAsr) Validate() error {
 
 	ext := utils.GetFileExtension(r.File.Filename)
 	if !allowedExtensions[ext] {
-		return errors.New("unsupported files format")
+		return "", errors.New("unsupported files format")
 	}
 
-	return nil
+	return ext, nil
 }

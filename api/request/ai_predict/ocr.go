@@ -7,14 +7,14 @@ import (
 	utils "study_savvy_api_go/api/request/ai_predict/utils"
 )
 
-type MultipartRequestOcr struct {
+type Ocr struct {
 	File   *multipart.FileHeader `json:"files"`
 	Prompt string                `json:"prompt"`
 }
 
-func (r *MultipartRequestOcr) Validate() error {
+func (r *Ocr) Validate() (string, error) {
 	if r.File == nil {
-		return fmt.Errorf("files is required")
+		return "", fmt.Errorf("files is required")
 	}
 	allowedExtensions := map[string]bool{
 		".jpg":  true,
@@ -24,8 +24,8 @@ func (r *MultipartRequestOcr) Validate() error {
 
 	ext := utils.GetFileExtension(r.File.Filename)
 	if !allowedExtensions[ext] {
-		return errors.New("unsupported files format")
+		return "", errors.New("unsupported files format")
 	}
 
-	return nil
+	return ext, nil
 }

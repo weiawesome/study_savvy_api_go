@@ -2,7 +2,7 @@ POST http://localhost:8080/upload
 Content-Type: multipart/form-data;boundary=BOUNDARY
 
 --BOUNDARY
-Content-Disposition: form-data; name="file"; filename="example.png"
+Content-Disposition: form-data; name="file"; filename="example.mp3"
 Content-Type: text/plain
 
 Hello, this is an example file!

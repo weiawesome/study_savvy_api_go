@@ -1,6 +1,6 @@
 package nlp_edit
 
-type NlpEditAsr struct {
+type Asr struct {
 	Content string `json:"content"`
 	Prompt  string `json:"prompt"`
 }
