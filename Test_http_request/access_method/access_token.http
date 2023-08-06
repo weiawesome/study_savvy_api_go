@@ -4,6 +4,6 @@ Authorization: Bearer {{EXAMPLE_JWT}}
 Content-Type: application/json
 
 {
-  "aes_key": {{EXAMPLE_AES_KEY}},
-  "access_token": {{EXAMPLE_ACCESS_TOKEN}}
+  "aes_key": "{{EXAMPLE_AES_KEY}}",
+  "access_token": "{{EXAMPLE_ACCESS_TOKEN}}"
 }
