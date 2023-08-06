@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"github.com/redis/go-redis"
+	"github.com/redis/go-redis/v9"
 )
 
 var redisClient *redis.Client

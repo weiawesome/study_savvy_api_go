@@ -1,7 +1,7 @@
 package redis
 
 import (
-	"github.com/redis/go-redis"
+	"github.com/redis/go-redis/v9"
 	"study_savvy_api_go/api/utils"
 )
 
