@@ -3,6 +3,7 @@ package nlp_edit
 import (
 	"errors"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"net/http"
 	"study_savvy_api_go/api/request/nlp_edit"
 	"study_savvy_api_go/api/response/utils"
@@ -39,8 +40,18 @@ func MiddlewareNlpEditOcrContent() gin.HandlerFunc {
 			c.Abort()
 			return
 		}
+		Id := c.Param("file_id")
+		IdUuid, err := uuid.Parse(Id)
+
+		if err != nil {
+			e := utils.Error{Error: "Parameter error not uuid"}
+			c.JSON(http.StatusBadRequest, e)
+			c.Abort()
+			return
+		}
 
 		c.Set("data", data)
+		c.Set("id", IdUuid.String())
 		c.Next()
 	}
 }
