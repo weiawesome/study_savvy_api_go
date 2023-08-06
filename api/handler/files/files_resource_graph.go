@@ -31,6 +31,10 @@ func (h *HandlerFilesResourceGraph) Handle(c *gin.Context) {
 		if stringDataId, ok := id.(string); ok {
 			result, err := h.Service.GetGraph(stringDataUser, stringDataId)
 			if err == nil {
+				if ok := result.IsPureText(); ok {
+					c.JSON(http.StatusNonAuthoritativeInfo, gin.H{"error": "Pure Text"})
+					return
+				}
 				if err := result.Exist(); err != nil {
 					c.JSON(http.StatusNotFound, gin.H{"error": "File not found"})
 					return

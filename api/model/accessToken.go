@@ -8,3 +8,7 @@ type AccessToken struct {
 	Token    string
 	AesKey   string
 }
+
+func AccessTokenRelate() string {
+	return "AccessToken"
+}

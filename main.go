@@ -1,12 +1,8 @@
 package main
 
 import (
-	"fmt"
-	"github.com/gin-gonic/gin"
 	"log"
-	"net/http"
-	"study_savvy_api_go/api/middleware/request/ai_predict"
-	ai_predict2 "study_savvy_api_go/api/request/ai_predict"
+	"study_savvy_api_go/api/routes"
 	"study_savvy_api_go/api/utils"
 )
 
@@ -19,26 +15,13 @@ func main() {
 		log.Fatalf("Failed to connect to the redis: %v", err)
 		return
 	}
-	router := gin.Default()
-	router.Use(ai_predict.MiddlewareAiPredictAsrContent())
-	router.POST("/upload", uploadHandler)
-	router.Run(":8080")
-	//r := routes.InitRoutes()
-	//err := r.Run()
-	//if err != nil {
-	//	return
-	//}
+
+	r := routes.InitRoutes()
+	err := r.Run()
+	if err != nil {
+		return
+	}
 	//log.Printf("Listening on port %s", port)
 	//log.Printf("Open http://localhost:%s in the browser", port)
 	//log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", port), nil))
-}
-
-func uploadHandler(c *gin.Context) {
-	a, _ := c.Get("data")
-	if asr, ok := a.(ai_predict2.Asr); ok {
-		fmt.Println("SUCCESS")
-		fmt.Println(asr.File.Filename)
-	}
-
-	c.JSON(http.StatusOK, gin.H{"message": "File uploaded successfully!"})
 }

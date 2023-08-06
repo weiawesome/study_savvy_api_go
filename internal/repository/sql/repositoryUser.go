@@ -19,8 +19,12 @@ func (r *Repository) ReadUser(obj *model.User) error {
 		return StatusUtils.DbError{Message: "Db error"}
 	}
 }
-func (r *Repository) PreLoadReadUser(obj *model.User, preLoad string) error {
-	if result := r.db.Preload(preLoad).Find(&obj); result.Error == nil {
+func (r *Repository) PreLoadReadUser(obj *model.User, preLoads []string) error {
+	tx := r.db
+	for _, p := range preLoads {
+		tx = tx.Preload(p)
+	}
+	if result := tx.Find(&obj); result.Error == nil {
 		return StatusUtils.ExistSource{Message: "Resource is exist"}
 	} else if errors.As(result.Error, &gorm.ErrRecordNotFound) {
 		return StatusUtils.NotExistSource{Message: "Resource is not exist"}

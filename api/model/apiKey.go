@@ -8,3 +8,7 @@ type ApiKey struct {
 	Key      string
 	AesKey   string
 }
+
+func ApiKeyRelate() string {
+	return "ApiKey"
+}

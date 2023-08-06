@@ -7,6 +7,8 @@ import (
 	"os"
 )
 
+const PureText = "PureText"
+
 type GraphFile struct {
 	FilePath string
 }
@@ -45,4 +47,7 @@ func (f *GraphFile) CanOpenAndSent(c *gin.Context) error {
 	_, err = io.Copy(c.Writer, file)
 
 	return err
+}
+func (f *GraphFile) IsPureText() bool {
+	return f.FilePath == PureText
 }
