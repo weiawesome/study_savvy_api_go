@@ -31,7 +31,7 @@ func (h *HandlerMailVerify) Handle(c *gin.Context) {
 				c.JSON(http.StatusOK, result)
 			} else {
 				e := utils.Error{Error: err.Error()}
-				c.JSON(http.StatusInternalServerError, e)
+				c.JSON(http.StatusBadRequest, e)
 			}
 		} else {
 			e := utils.Error{Error: "Internal error"}
