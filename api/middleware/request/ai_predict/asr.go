@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"study_savvy_api_go/api/request/ai_predict"
+	"study_savvy_api_go/api/utils"
 )
 
 func MiddlewareAiPredictAsrContent() gin.HandlerFunc {
@@ -32,7 +33,7 @@ func MiddlewareAiPredictAsrContent() gin.HandlerFunc {
 		}(file)
 		prompt := c.PostForm("prompt")
 
-		uploadDir := "uploads"
+		uploadDir := utils.EnvAudioDirectory()
 		if _, err := os.Stat(uploadDir); os.IsNotExist(err) {
 			err := os.Mkdir(uploadDir, os.ModePerm)
 			if err != nil {

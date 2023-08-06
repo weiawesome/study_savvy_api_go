@@ -95,3 +95,17 @@ func EnvCeleryTask() string {
 	}
 	return task
 }
+func EnvAudioDirectory() string {
+	var directory string
+	if directory = os.Getenv("AUDIO_DIRECTORY"); len(directory) == 0 {
+		directory = "DefaultAudioDirectory"
+	}
+	return directory
+}
+func EnvGraphDirectory() string {
+	var directory string
+	if directory = os.Getenv("GRAPH_DIRECTORY"); len(directory) == 0 {
+		directory = "DefaultGraphDirectory"
+	}
+	return directory
+}

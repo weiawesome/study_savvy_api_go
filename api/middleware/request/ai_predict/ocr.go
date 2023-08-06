@@ -8,19 +8,9 @@ import (
 	"mime/multipart"
 	"net/http"
 	"os"
-	"strings"
 	"study_savvy_api_go/api/request/ai_predict"
+	"study_savvy_api_go/api/utils"
 )
-
-func ValidateAiPredictOcr(fileType string) (string, bool) {
-	supportedTypes := []string{".jpg", ".jpeg", ".png"}
-	for _, t := range supportedTypes {
-		if strings.HasSuffix(fileType, t) {
-			return t, true
-		}
-	}
-	return "", false
-}
 
 func MiddlewareAiPredictOcrContent() gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -43,7 +33,7 @@ func MiddlewareAiPredictOcrContent() gin.HandlerFunc {
 		}(file)
 		prompt := c.PostForm("prompt")
 
-		uploadDir := "uploads"
+		uploadDir := utils.EnvGraphDirectory()
 		if _, err := os.Stat(uploadDir); os.IsNotExist(err) {
 			err := os.Mkdir(uploadDir, os.ModePerm)
 			if err != nil {
