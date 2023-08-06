@@ -1,0 +1,10 @@
+POST {{BASE_URL}}/api/predict/ASR
+Authorization: Bearer {{EXAMPLE_JWT}}
+Content-Type: multipart/form-data;boundary=BOUNDARY
+
+--BOUNDARY
+Content-Disposition: form-data; name="file"; filename="example.jpg"
+
+Test file of image
+
+--BOUNDARY--

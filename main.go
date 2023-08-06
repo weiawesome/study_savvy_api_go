@@ -24,7 +24,4 @@ func main() {
 	if err != nil {
 		return
 	}
-	//log.Printf("Listening on port %s", port)
-	//log.Printf("Open http://localhost:%s in the browser", port)
-	//log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", port), nil))
 }

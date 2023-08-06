@@ -1,0 +1,9 @@
+### AccessToken Set
+PUT {{BASE_URL}}/api/Access_method/access_token
+Authorization: Bearer {{EXAMPLE_JWT}}
+Content-Type: application/json
+
+{
+  "aes_key": {{EXAMPLE_AES_KEY}},
+  "access_token": {{EXAMPLE_ACCESS_TOKEN}}
+}

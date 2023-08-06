@@ -1,0 +1,8 @@
+### Login Web
+POST {{BASE_URL}}/api/login/web
+Content-Type: application/json
+
+{
+  "mail": {{EXAMPLE_MAIL}},
+  "password": {{EXAMPLE_PASSWORD}}
+}

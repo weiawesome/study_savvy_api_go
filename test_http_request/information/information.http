@@ -1,0 +1,3 @@
+### Information Get
+GET {{BASE_URL}}/api/information
+Authorization: Bearer {{EXAMPLE_JWT}}

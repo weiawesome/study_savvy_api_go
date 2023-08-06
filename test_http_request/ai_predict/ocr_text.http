@@ -1,0 +1,8 @@
+POST {{BASE_URL}}/api/predict/OCR/txet
+Authorization: Bearer {{EXAMPLE_JWT}}
+Content-Type: application/json
+
+{
+  "content": {{EXAMPLE_CONTENT}},
+  "prompt": {{EXAMPLE_PROMPT}}
+}

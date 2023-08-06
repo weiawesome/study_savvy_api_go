@@ -1,0 +1,1 @@
+GET {{BASE_URL}}/api/verification/{{EXAMPLE_MAIL}}/{{EXAMPLE_CODE}}
