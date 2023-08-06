@@ -8,6 +8,11 @@ import (
 
 func InitRoutes() *gin.Engine {
 	r := gin.Default()
+	
+	err := r.SetTrustedProxies(nil)
+	if err != nil {
+		return nil
+	}
 
 	basicRouter := r.Group("/api")
 
