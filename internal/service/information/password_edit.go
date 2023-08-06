@@ -22,8 +22,12 @@ func (m *ServicePasswordEdit) EditPassword(data information.EditPassword, user s
 
 	if err := m.Repository.ReadUser(&User); errors.As(err, &StatusUtils.ExistSource{}) {
 		if utils.ValidatePassword(data.OriginalPwd, User.Password, User.Salt) {
-			password := utils.GenerateHashPassword(data.NewPwd, User.Salt)
-			return response, m.Repository.UpdateUser(model.User{Mail: user, Password: password})
+			salt, err := utils.GenerateSalt()
+			if err != nil {
+				return response, err
+			}
+			password := utils.GenerateHashPassword(data.NewPwd, salt)
+			return response, m.Repository.UpdateUser(model.User{Mail: user, Password: password, Salt: salt})
 		} else {
 			return response, responseUtils.RegistrationError{Message: "Password error"}
 		}
