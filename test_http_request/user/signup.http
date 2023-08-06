@@ -3,8 +3,8 @@ POST {{BASE_URL}}/api/signup
 Content-Type: application/json
 
 {
-  "gender": {{EXAMPLE_GENDER}},
-  "mail": {{EXAMPLE_MAIL}},
-  "password": {{EXAMPLE_PASSWORD}},
-  "name": {{EXAMPLE_NAME}}
+  "gender": "{{EXAMPLE_GENDER}}",
+  "mail": "{{EXAMPLE_MAIL}}",
+  "password": "{{EXAMPLE_PASSWORD}}",
+  "name": "{{EXAMPLE_NAME}}"
 }

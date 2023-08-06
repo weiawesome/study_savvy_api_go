@@ -3,6 +3,6 @@ POST {{BASE_URL}}/api/login/app
 Content-Type: application/json
 
 {
-  "mail": {{EXAMPLE_MAIL}},
-  "password": {{EXAMPLE_PASSWORD}}
+  "mail": "{{EXAMPLE_MAIL}}",
+  "password": "{{EXAMPLE_PASSWORD}}"
 }
