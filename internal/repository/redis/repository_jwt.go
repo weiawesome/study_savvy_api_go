@@ -18,11 +18,7 @@ func (r *Repository) SetToBlacklist(jwt string) error {
 	}
 	expireDuration := time.Duration(expiredDays) * 24 * time.Hour
 	_, err := r.client.SAdd(ctx, jwt, "black_list", expireDuration).Result()
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return err
 }
 
 func (r *Repository) ValidateInBlacklist(jwt string) error {

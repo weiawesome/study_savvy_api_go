@@ -29,8 +29,8 @@ services:
 
   redis:
     image: redis:latest
-    environment:
-      - REDIS_PASSWORD=Wei891013
+    command: redis-server --requirepass Wei891013
+
   mysql:
     image: mysql:latest
     environment:

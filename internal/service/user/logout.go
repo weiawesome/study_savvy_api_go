@@ -13,8 +13,5 @@ func (m *ServiceLogout) Logout(jti string) (responseUser.Logout, error) {
 	var response responseUser.Logout
 	err := m.Repository.SetToBlacklist(jti)
 
-	if err != nil {
-		return response, err
-	}
-	return response, nil
+	return response, err
 }
