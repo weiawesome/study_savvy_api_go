@@ -1,6 +1,6 @@
 version: '1'
 services:
-  my_app:
+  go-server:
     build: .
     ports:
       - "8080:8080"
@@ -35,3 +35,4 @@ services:
     image: mysql:latest
     environment:
       - MYSQL_ROOT_PASSWORD=Wei891013
+      - MYSQL_DATABASE=gorm_test

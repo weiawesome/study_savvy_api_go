@@ -1,0 +1,1046 @@
+openapi: 3.0.3
+info:
+  title: Study-Savvy-Server - OpenAPI 3.0
+  description: The API document for Study Savvy.
+  termsOfService: https://study-savvy.com/api
+  contact:
+    email: open891013@gmail.com
+  version: 1.0.0
+externalDocs:
+  description: UI Design By Figma
+  url: https://www.figma.com/file/u15EBmHQSeixvpN67B71dm/%E7%95%A2%E5%B0%88?type=design&node-id=0%3A1&t=tFdC8pcy6VSyKkBX-1
+
+servers:
+  - url: https://study-savvy.com
+
+tags:
+  - name: User
+    description: Operations about users. Including login, logout, sign up.
+  - name: NLP_edit
+    description: NLP operations. Including edit OCR mission and ASR mission.
+  - name: Access_method
+    description: The method to use chat-gpt. Including AccessToken and ApiKey.
+  - name: Mail
+    description: Operation about mail. Including sent verification mail and verify mail.
+  - name: Files
+    description: Operation about file. Including observe files, filter by type, observe the specific file, delete the specific file and gain resource for file.
+  - name: AI_predict
+    description: Operation about AI-Predict. Including OCR mission, ASR mission, OCR_text mission.
+  - name: Oauth
+    description: Operation about oauth. Including Google login.
+  - name: Information
+    description: Operation about information. Including gain personal information, edit personal information and edit password.
+paths:
+  /api/signup:
+    post:
+      tags:
+        - User
+      summary: Sign up for the service.
+      description: To sign up for the service. Then the backend server will save information of user.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestSignUp'
+      responses:
+        '200':
+          description: Successful operation.
+        '400':
+          description: Invalid status value. RequestBody is not match request.
+        '401':
+          description: Unauthorized with information. User have been signup for the service.
+
+  /api/login/web:
+    post:
+      tags:
+        - User
+      summary: Login with website.
+      description: To login to an account with website. The endpoint will confirm user's information and return JwtToken back as authorization. Furthermore, We will set access_token_cookie and csrf_access_token in http only cookie as authorization. In authorization request X-CSRF-TOKEN mean csrf_access_token.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestLoginWeb'
+      responses:
+        '200':
+          description: Successful operation.
+          headers:
+            Set-Cookie:
+              description: The access token and CSRF token cookies. AccessToken(JwtToken) is http only cookie and CsrfAccessToken is a normal cookie.
+              schema:
+                type: string
+                example: |
+                  access_token_cookie=ExampleJwtTokenCookie; Path=/; HttpOnly; Secure
+                  csrf_access_token=ExampleCsrfAccessTokenCookie; Path=/; Secure
+        '400':
+          description: Invalid status value. RequestBody is not match request.
+        '401':
+          description: Unauthorized with information. User have not registered or with incorrect password.
+
+  /api/login/app:
+    post:
+      tags:
+        - User
+      summary: Login with app.
+      description: To login to an account with app. The endpoint will authorize user's information and return JwtToken back as authorization.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestLoginApp'
+      responses:
+        '200':
+          description: Successful operation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseLoginApp'
+        '400':
+          description: Invalid status value. RequestBody is not match request.
+        '401':
+          description: Unauthorized with information. User have not registered or with incorrect password.
+
+  /api/logout:
+    delete:
+      tags:
+        - User
+      security:
+        - BearerAuth: []
+      summary: To logout for the service.
+      description: Logout account. The backend server will forbid the JwtToken in request in future request.
+      parameters:
+        - in: header
+          name: X-CSRF-TOKEN
+          required: false
+          schema:
+            type: string
+          description: CSRF token
+      responses:
+        '201':
+          description: Successful operation. Successful to logout the service.
+        '400':
+          description: Invalid status value. RequestBody is not match request.
+        '401':
+          description: Unauthorized with information. User have not registered.
+        '422':
+          description: JwtToken is invalid. Jwt is expired or is not issued by the service.
+
+  /api/oauth/web/google:
+    get:
+      tags:
+        - Oauth
+      summary: Login to the website.
+      description: To login to an account in the db and return the JWT in httponly cookie.
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Invalid status value
+
+  /api/oauth/app/google:
+    get:
+      tags:
+        - Oauth
+      summary: Login to the app with google.
+      security:
+        - BearerAuth: [ ]
+      description: To login to an account with google and in app.
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+        '400':
+          description: Invalid status value
+
+  /api/oauth/authorize/google/:
+    get:
+      tags:
+        - Oauth
+      summary: Login to the website.
+      description: To login to an account in the db and return the JWT in httponly cookie.
+      responses:
+        '200':
+          description: Successful operation
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+                example: token=abc123; Path=/; HttpOnly
+              description: The JWT, set as HttpOnly
+        '400':
+          description: Invalid status value
+
+  /api/information:
+    get:
+      tags:
+        - Information
+      security:
+        - BearerAuth: [ ]
+      parameters:
+        - in: header
+          name: X-CSRF-TOKEN
+          required: false
+          schema:
+            type: string
+          description: CSRF token
+      summary: Get personal information.
+      description: Get the personal information. The backend server will return the information of user.
+      responses:
+        '200':
+          description: Successful operation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseInformation'
+        '400':
+          description: Invalid status value. RequestBody is not match request.
+        '401':
+          description: Unauthorized with information. User have not registered.
+        '422':
+          description: JwtToken is invalid. Jwt is expired or is not issued by the service.
+        '404':
+          description: Not found.
+    put:
+      tags:
+        - Information
+      security:
+        - BearerAuth: [ ]
+      summary: Update personal information.
+      description: Update personal information. The backend server will according to request to modify the personal information.
+      parameters:
+        - in: header
+          name: X-CSRF-TOKEN
+          required: false
+          schema:
+            type: string
+          description: CSRF token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestInformationEdit'
+      responses:
+        '200':
+          description: Successful operation.
+        '400':
+          description: Invalid status value. RequestBody is not match request.
+        '401':
+          description: Unauthorized with information. User have not registered.
+        '422':
+          description: JwtToken is invalid. Jwt is expired or is not issued by the service.
+        '404':
+          description: Not found.
+
+  /api/files:
+    get:
+      tags:
+        - Files
+      security:
+        - BearerAuth: []
+      summary: Get the files.
+      description: Get the files with page that user have been sent and order by time.
+      parameters:
+        - in: header
+          name: X-CSRF-TOKEN
+          required: false
+          schema:
+            type: string
+          description: CSRF token
+        - name: page
+          in: query
+          description: The page number to retrieve. The page number default to 1.
+          required: false
+          schema:
+            type: integer
+            default: 1
+            minimum: 1
+      responses:
+        '200':
+          description: Successful operation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseFiles'
+        '400':
+          description: Invalid status value. RequestBody is not match request.
+        '401':
+          description: Unauthorized with information. User have not registered.
+        '422':
+          description: JwtToken is invalid. Jwt is expired or is not issued by the service.
+
+  /api/files/ASR:
+    get:
+      tags:
+        - Files
+      security:
+        - BearerAuth: []
+      summary: Get the files with type equal to ASR.
+      description: Get the files with page that user have been sent and order by time and type equal to ASR.
+      parameters:
+        - in: header
+          name: X-CSRF-TOKEN
+          required: false
+          schema:
+            type: string
+          description: CSRF token
+        - name: page
+          in: query
+          description: The page number to retrieve. The page number default to 1.
+          required: false
+          schema:
+            type: integer
+            default: 1
+            minimum: 1
+      responses:
+        '200':
+          description: Successful operation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseFiles'
+        '400':
+          description: Invalid status value. RequestBody is not match request.
+        '401':
+          description: Unauthorized with information. User have not registered.
+        '422':
+          description: JwtToken is invalid. Jwt is expired or is not issued by the service.
+
+  /api/files/OCR:
+    get:
+      tags:
+        - Files
+      security:
+        - BearerAuth: []
+      summary: Get the files with type equal to OCR.
+      description: Get the files with page that user have been sent and order by time and type equal to OCR.
+      parameters:
+        - in: header
+          name: X-CSRF-TOKEN
+          required: false
+          schema:
+            type: string
+          description: CSRF token
+        - name: page
+          in: query
+          description: The page number to retrieve. The page number default to 1.
+          required: false
+          schema:
+            type: integer
+            default: 1
+            minimum: 1
+      responses:
+        '200':
+          description: Successful operation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseFiles'
+        '400':
+          description: Invalid status value. RequestBody is not match request.
+        '401':
+          description: Unauthorized with information. User have not registered.
+        '422':
+          description: JwtToken is invalid. Jwt is expired or is not issued by the service.
+
+  /api/files/{file_id}:
+    get:
+      tags:
+        - Files
+      security:
+        - BearerAuth: []
+      summary: Get the specific file's information.
+      description: Get the file's information filter by id. Gain all detail for the specific file.
+      parameters:
+        - in: header
+          name: X-CSRF-TOKEN
+          required: false
+          schema:
+            type: string
+          description: CSRF token
+        - name: file_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            description: The file's id.
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseSpecificFile'
+        '400':
+          description: Invalid status value. RequestBody is not match request.
+        '401':
+          description: Unauthorized with information. User have not registered.
+        '403':
+          description: Forbidden. The file is not belong to user.
+        '404':
+          description: Not exist.
+        '422':
+          description: JwtToken is invalid. Jwt is expired or is not issued by the service.
+    delete:
+      tags:
+        - Files
+      security:
+        - BearerAuth: [ ]
+      summary: Delete the specific file.
+      description: Delete the specific file by file's id and remove resource from backend server.
+      parameters:
+        - in: header
+          name: X-CSRF-TOKEN
+          required: false
+          schema:
+            type: string
+          description: CSRF token
+        - name: file_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            description: The file's id.
+      responses:
+        '201':
+          description: Successful operation.
+        '400':
+          description: Invalid status value. RequestBody is not match request.
+        '401':
+          description: Unauthorized with information. User have not registered.
+        '403':
+          description: Forbidden. The file is not belong to user.
+        '404':
+          description: Not exist.
+        '422':
+          description: JwtToken is invalid. Jwt is expired or is not issued by the service.
+
+  /api/files/resources/audio/{file_id}:
+    get:
+      tags:
+        - Files
+      security:
+        - BearerAuth: [ ]
+      summary: Get audio resource.
+      description:  Get audio resource for the specific file by file's id.
+      parameters:
+        - in: header
+          name: X-CSRF-TOKEN
+          required: false
+          schema:
+            type: string
+          description: CSRF token
+        - name: file_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            description: The file's id.
+      responses:
+        '200':
+          description: Successful operation.
+          content:
+            audio/mpeg:
+              schema:
+                type: string
+                format: binary
+        '400':
+          description: Invalid status value
+        '401':
+          description: Not authorize.
+        '403':
+          description: Forbidden.
+        '404':
+          description: Not exist.
+        '422':
+          description: JWT is invalid.
+
+  /api/files/resources/graph/{file_id}:
+    get:
+      tags:
+        - Files
+      security:
+        - BearerAuth: [ ]
+      summary: Get graph resource.
+      description:  Get graph resource for the specific file by file's id.
+      parameters:
+        - in: header
+          name: X-CSRF-TOKEN
+          required: false
+          schema:
+            type: string
+          description: CSRF token
+        - name: file_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            description: The file's id.
+      responses:
+        '200':
+          description: Successful operation.
+          content:
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
+        '203':
+          description: Successful operation. But the resource is pure text.
+        '400':
+          description: Invalid status value. RequestBody is not match request.
+        '401':
+          description: Unauthorized with information. User have not registered.
+        '403':
+          description: Forbidden. The file is not belong to user.
+        '404':
+          description: Not exist.
+        '422':
+          description: JwtToken is invalid. Jwt is expired or is not issued by the service.
+
+  /api/NLP_edit/ASR/{file_id}:
+    put:
+      tags:
+        - NLP_edit
+      security:
+        - BearerAuth: []
+      summary: Use nlp-method to edit ASR file.
+      description: Use nlp-method to edit ASR file with new prompt and content make the file's information be edited.
+      parameters:
+        - name: file_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            description: The file's id.
+        - in: header
+          name: X-CSRF-TOKEN
+          required: false
+          schema:
+            type: string
+          description: CSRF token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestNlpEdit'
+      responses:
+        '200':
+          description: Successful operation.
+        '400':
+          description: Invalid status value. RequestBody is not match request.
+        '401':
+          description: Unauthorized with information. User have not registered.
+        '403':
+          description: Forbidden. The file is not belong to user.
+        '404':
+          description: Not exist.
+        '422':
+          description: JwtToken is invalid. Jwt is expired or is not issued by the service.
+
+  /api/NLP_edit/OCR/{file_id}:
+    put:
+      tags:
+        - NLP_edit
+      security:
+        - BearerAuth: []
+      summary: Use nlp-method to edit OCR file.
+      description: Use nlp-method to edit OCR file with new prompt and content make the file's information be edited.
+      parameters:
+        - name: file_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            description: The file's id.
+        - in: header
+          name: X-CSRF-TOKEN
+          required: false
+          schema:
+            type: string
+          description: CSRF token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestNlpEdit'
+      responses:
+        '200':
+          description: Successful operation.
+        '400':
+          description: Invalid status value. RequestBody is not match request.
+        '401':
+          description: Unauthorized with information. User have not registered.
+        '403':
+          description: Forbidden. The file is not belong to user.
+        '404':
+          description: Not exist.
+        '422':
+          description: JwtToken is invalid. Jwt is expired or is not issued by the service.
+
+  /api/Access_method/access_token:
+    put:
+      tags:
+        - Access_method
+      security:
+        - BearerAuth: []
+      summary: Set access-token in chat-gpt to the service.
+      description: Set user's access-token to the service, then user can use chat-gpt for other service.
+      parameters:
+        - in: header
+          name: X-CSRF-TOKEN
+          required: false
+          schema:
+            type: string
+          description: CSRF token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestAccessToken'
+      responses:
+        '200':
+          description: Successful operation.
+        '400':
+          description: Invalid status value. RequestBody is not match request.
+        '401':
+          description: Unauthorized with information. User have not registered.
+        '422':
+          description: JwtToken is invalid. Jwt is expired or is not issued by the service.
+
+  /api/Access_method/api_key:
+    put:
+      tags:
+        - Access_method
+      security:
+        - BearerAuth: [ ]
+      summary: Set api-key in chat-gpt to the service.
+      description: Set user's api-key to the service, then user can use chat-gpt for other service.
+      parameters:
+        - in: header
+          name: X-CSRF-TOKEN
+          required: false
+          schema:
+            type: string
+          description: CSRF token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestApiKey'
+      responses:
+        '200':
+          description: Successful operation.
+        '400':
+          description: Invalid status value. RequestBody is not match request.
+        '401':
+          description: Unauthorized with information. User have not registered.
+        '422':
+          description: JwtToken is invalid. Jwt is expired or is not issued by the service.
+
+  /api/verification:
+    post:
+      tags:
+        - Mail
+      summary: Get the verification code.
+      description: Get the verification code by mail.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestVerification'
+      responses:
+        '200':
+          description: Successful operation.
+        '400':
+          description: Invalid status value. RequestBody is not match request.
+
+  /api/verification/{mail}/{code}:
+    get:
+      tags:
+        - Mail
+      summary: Verify the mail.
+      description: Verify the mail by the code.
+      parameters:
+        - name: mail
+          in: path
+          required: true
+          schema:
+            type: string
+            format: email
+            description: User's mail.
+        - name: code
+          in: path
+          required: true
+          schema:
+            type: string
+            description: The verification code with the mail.
+      responses:
+        '200':
+          description: Successful operation.
+        '400':
+          description: Invalid status value. RequestBody is not match request.
+
+  /api/predict/ASR:
+    post:
+      tags:
+        - AI_predict
+      security:
+        - BearerAuth: [ ]
+      summary: Asr mission.
+      description: Upload audio file and do asr mission that is to get content of audio and then summarize the content store in file.
+      parameters:
+        - in: header
+          name: X-CSRF-TOKEN
+          required: false
+          schema:
+            type: string
+          description: CSRF token
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RequestAsr'
+      responses:
+        '200':
+          description: Successful operation.
+        '400':
+          description: Invalid status value. RequestBody is not match request.
+        '401':
+          description: Unauthorized with information. User have not registered.
+        '422':
+          description: JwtToken is invalid. Jwt is expired or is not issued by the service.
+
+  /api/predict/OCR:
+    post:
+      tags:
+        - AI_predict
+      security:
+        - BearerAuth: [ ]
+      parameters:
+        - in: header
+          name: X-CSRF-TOKEN
+          required: false
+          schema:
+            type: string
+          description: CSRF token
+      summary: Ocr mission.
+      description: Upload graph file and do ocr mission that is to get content of graph and then summarize the content store in file.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RequestOcr'
+      responses:
+        '200':
+          description: Successful operation.
+        '400':
+          description: Invalid status value. RequestBody is not match request.
+        '401':
+          description: Unauthorized with information. User have not registered.
+        '422':
+          description: JwtToken is invalid. Jwt is expired or is not issued by the service.
+
+  /api/predict/OCR/text:
+    post:
+      tags:
+        - AI_predict
+      security:
+        - BearerAuth: [ ]
+      parameters:
+        - in: header
+          name: X-CSRF-TOKEN
+          required: false
+          schema:
+            type: string
+          description: CSRF token
+      summary: OcrText mission.
+      description: Use prompt and content do the nlp-task to set the file content.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestOcrText'
+      responses:
+        '200':
+          description: Successful operation.
+        '400':
+          description: Invalid status value. RequestBody is not match request.
+        '401':
+          description: Unauthorized with information. User have not registered.
+        '422':
+          description: JwtToken is invalid. Jwt is expired or is not issued by the service.
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    RequestLoginApp:
+      type: object
+      properties:
+        mail:
+          type: string
+          format: email
+          description: User's mail as account to login service.
+        password:
+          type: string
+          minLength: 8
+          description: User's password (should not contain spaces and be at least 8 characters long).
+          pattern: '^(?!.*\s).{8,}$'
+      example:
+        mail: "Example@example.com"
+        password: "ExamplePassword"
+    ResponseLoginApp:
+      type: object
+      properties:
+        token:
+          type: string
+          description: Return user's JwtToken use to validate user in other request in headers.
+      example:
+        token: "ExampleJwtToken:"
+
+    RequestLoginWeb:
+      type: object
+      properties:
+        mail:
+          type: string
+          format: email
+          description: User's mail as account to login service.
+        password:
+          type: string
+          minLength: 8
+          description: User's password (should not contain spaces and be at least 8 characters long).
+          pattern: '^(?!.*\s).{8,}$'
+      example:
+        mail: "Example@example.com"
+        password: "ExamplePassword"
+
+    RequestSignUp:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 50
+          pattern: '^\S{1,50}$'
+          description: User's name. It's length can't more than 50 and can't have space.
+        gender:
+          type: string
+          enum:
+            - "male"
+            - "female"
+            - "other"
+          description: User's gender. It can only accept "male", "female" and "other".
+          default: "other"
+        mail:
+          type: string
+          format: email
+          description: User will be register by email.
+        password:
+          type: string
+          minLength: 8
+          description: User's password (should not contain spaces and be at least 8 characters long).
+          pattern: '^(?!.*\s).{8,}$'
+      example:
+        name: "ExampleUser"
+        gender: "other"
+        mail: "Example@example.com"
+        password: "ExamplePassword"
+
+    ResponseInformation:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 50
+          pattern: '^\S{1,50}$'
+          description: User's name. It's length can't more than 50 and can't have space.
+        mail:
+          type: string
+          format: email
+          description: User's mail as the account in service.
+        gender:
+          type: string
+          enum:
+            - "male"
+            - "female"
+            - "other"
+          description: User's gender. It would only include "male", "female" and "other".
+
+
+    RequestInformationEdit:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 50
+          pattern: '^\S{1,50}$'
+          description: User's name. It's length can't more than 50 and can't have space.
+        gender:
+          type: string
+          enum:
+            - "male"
+            - "female"
+            - "other"
+          description: User's gender. It can only accept "male", "female" and "other".
+      example:
+        name: "ExampleUser"
+        gender: "male"
+
+    ResponseFiles:
+      type: object
+      properties:
+        total_pages:
+          type: integer
+          description: The total number of pages.
+        current_page:
+          type: integer
+          description: The current page.
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              file_time:
+                type: string
+                description: The time file build.
+              file_id:
+                type: string
+                format: uuid
+                description: The file ID.
+              status:
+                type: string
+                enum:
+                  - "SUCCESS"
+                  - "PENDING"
+                  - "FAILURE"
+                description: The file's current status. It only include "SUCCESS", "PENDING", "FAILURE".
+              file_type:
+                type: string
+                enum:
+                  - "OCR"
+                  - "ASR"
+                description: The file type. It only include "OCR" and "ASR".
+    ResponseSpecificFile:
+      type: object
+      properties:
+        prompt:
+          type: string
+          description: The prompt in the file and using for NLP-task.
+        content:
+          type: string
+          description: The content in the file.
+        summarize:
+          type: string
+          description: The file's summary and it's summarized by chat-gpt.
+        details:
+          type: array
+          items:
+            type: string
+            description: The summarization of each segment.
+
+    RequestNlpEdit:
+      type: object
+      properties:
+        prompt:
+          type: string
+          description: The prompt use to nlp-task.
+        content:
+          type: string
+          description: The content use to nlp-task.
+      example:
+        content: "ExampleContent"
+        prompt: "ExamplePrompt"
+
+    RequestAccessToken:
+      type: object
+      properties:
+        access_token:
+          type: string
+          description: The AccessToken in chat-gpt to use chat-gpt.
+        AES_key:
+          type: string
+          description: The AesKey to encrypt AccessToken. And encrypted by RSA(public key).
+      example:
+        access_token: "ExampleAccessToken"
+        AES_key: "ExampleAesKey"
+    RequestApiKey:
+      type: object
+      properties:
+        api_key:
+          type: string
+          description: The ApiKey in openai to use chat-gpt.
+        AES_key:
+          type: string
+          description: The AesKey to encrypt ApiKey. And encrypted by RSA(public key).
+      example:
+        api_key: "ExampleApiKey"
+        AES_key: "ExampleAesKey"
+
+    RequestVerification:
+      type: object
+      properties:
+        mail:
+          type: string
+          format: email
+          description: User's mail as account.
+      example:
+        mail: "Example@example.com"
+
+    RequestAsr:
+      type: object
+      properties:
+        prompt:
+          type: string
+          description: The prompt for nlp-task.
+        file:
+          type: string
+          format: binary
+          description: The audio file. Only accept file type of "mp3", "m4a", "wav".
+    RequestOcr:
+      type: object
+      properties:
+        prompt:
+          type: string
+          description: The prompt for nlp-task.
+        file:
+          type: string
+          format: binary
+          description: The graph file. Only accept file type of "jpg", "jpeg", "png".
+
+    RequestOcrText:
+      type: object
+      properties:
+        prompt:
+          type: string
+          description: The prompt use to nlp-task.
+        content:
+          type: string
+          description: The content use to nlp-task.
+      example:
+        content: "ExampleContent"
+        prompt: "ExamplePrompt"
