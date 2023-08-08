@@ -1,2 +1,2 @@
-GET {{BASE_URL}}/api/files/ASR
+GET {{BASE_URL}}/api/Files/ASR
 Authorization: Bearer {{EXAMPLE_JWT}}

@@ -1,2 +1,2 @@
-GET {{BASE_URL}}/api/files
+GET {{BASE_URL}}/api/Files
 Authorization: Bearer {{EXAMPLE_JWT}}

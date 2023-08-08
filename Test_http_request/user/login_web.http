@@ -1,5 +1,5 @@
 ### Login Web
-POST {{BASE_URL}}/api/login/web
+POST {{BASE_URL}}/api/User/login/web
 Content-Type: application/json
 
 {

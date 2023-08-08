@@ -1,4 +1,4 @@
-POST {{BASE_URL}}/api/predict/ASR
+POST {{BASE_URL}}/api/Predict/ASR
 Authorization: Bearer {{EXAMPLE_JWT}}
 Content-Type: multipart/form-data;boundary=BOUNDARY
 

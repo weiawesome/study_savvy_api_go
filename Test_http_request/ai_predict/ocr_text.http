@@ -1,4 +1,4 @@
-POST {{BASE_URL}}/api/predict/OCR/txet
+POST {{BASE_URL}}/api/Predict/OCR/txet
 Authorization: Bearer {{EXAMPLE_JWT}}
 Content-Type: application/json
 

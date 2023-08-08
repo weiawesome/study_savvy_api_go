@@ -1,5 +1,5 @@
 ### Information Edit
-PUT {{BASE_URL}}/api/information
+PUT {{BASE_URL}}/api/Information
 Authorization: Bearer {{EXAMPLE_JWT}}
 Content-Type: application/json
 
