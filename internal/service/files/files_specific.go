@@ -18,8 +18,9 @@ func (m *ServiceFilesSpecific) GetFile(data string, id string) (files.SpecificFi
 	if err := m.Repository.ReadFile(&File); errors.As(err, &StatusUtils.ExistSource{}) {
 		if File.UserMail != data {
 			return response, StatusUtils.NotExistSource{}
+		} else {
+			return File.TranslateToResponseSpecificFile()
 		}
-		return File.Result, nil
 	} else if errors.As(err, &StatusUtils.NotExistSource{}) {
 		return response, err
 	} else {

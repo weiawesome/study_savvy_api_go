@@ -1,2 +1,2 @@
-GET {{BASE_URL}}/api/Files/6bb64f72-a99b-44e0-9ece-0e659ed7e2f7
+GET {{BASE_URL}}/api/Files/79f5d083-4f89-473a-adac-960a3702beca
 Authorization: Bearer {{EXAMPLE_JWT}}
