@@ -14,6 +14,8 @@ func validatePasswordEdit(data information.EditPassword) error {
 		return errors.New("password can't be empty")
 	} else if len(data.CurrentPassword) < 8 || len(data.EditPassword) < 8 {
 		return errors.New("length of password can't shorten than 8 chars")
+	} else if len(data.CurrentPassword) > 30 || len(data.EditPassword) > 30 {
+		return errors.New("length of password can't larger than 30 chars")
 	} else if strings.ContainsAny(data.CurrentPassword, " ") || strings.ContainsAny(data.EditPassword, " ") {
 		return errors.New("password can't contain space")
 	}

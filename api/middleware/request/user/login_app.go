@@ -17,6 +17,8 @@ func validateLoginApp(data user.LoginApp) error {
 		return errors.New("password can't be empty")
 	} else if len(data.Password) < 8 {
 		return errors.New("length of password can't shorten than 8 chars")
+	} else if len(data.Password) > 30 {
+		return errors.New("length of password can't larger than 30 chars")
 	} else if strings.ContainsAny(data.Password, " ") {
 		return errors.New("password can't contain space")
 	} else if _, err := mail.ParseAddress(data.Mail); err != nil {
