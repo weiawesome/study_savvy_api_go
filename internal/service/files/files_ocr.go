@@ -22,6 +22,9 @@ func (m *ServiceFilesOcr) GetFilesOcr(data string, page int) (files.OcrFiles, er
 		for _, file := range result {
 			Files = append(Files, file.TranslateToResponseFile())
 		}
+		if Files == nil {
+			Files = []files.File{}
+		}
 		return files.OcrFiles{Data: Files, CurrentPage: page, TotalPages: totalPages}, nil
 	} else {
 		return response, err

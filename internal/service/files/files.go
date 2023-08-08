@@ -22,6 +22,9 @@ func (m *ServiceFiles) GetFiles(data string, page int) (files.Files, error) {
 		for _, file := range result {
 			Files = append(Files, file.TranslateToResponseFile())
 		}
+		if Files == nil {
+			Files = []files.File{}
+		}
 		return files.Files{Data: Files, CurrentPage: page, TotalPages: totalPages}, nil
 	} else {
 		return response, err
