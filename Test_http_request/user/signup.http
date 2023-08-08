@@ -1,5 +1,5 @@
 ### Signup
-POST {{BASE_URL}}/api/signup
+POST {{BASE_URL}}/api/User/signup
 Content-Type: application/json
 
 {

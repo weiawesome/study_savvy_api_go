@@ -303,7 +303,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/File_File_Response'
+                $ref: '#/components/schemas/Files_Files_Response'
         '400':
           description: Invalid status value. RequestBody is not match request.
         '401':
@@ -340,7 +340,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/File_File_Response'
+                $ref: '#/components/schemas/Files_Files_Response'
         '400':
           description: Invalid status value. RequestBody is not match request.
         '401':
@@ -377,7 +377,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/File_File_Response'
+                $ref: '#/components/schemas/Files_Files_Response'
         '400':
           description: Invalid status value. RequestBody is not match request.
         '401':
@@ -413,7 +413,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/File_FileSpecific_Response'
+                $ref: '#/components/schemas/Files_FilesSpecific_Response'
         '400':
           description: Invalid status value. RequestBody is not match request.
         '401':
@@ -958,7 +958,7 @@ components:
         current_password: "ExampleCurrentPassword"
         edit_password: "ExampleEditPassword"
 
-    File_File_Response:
+    Files_Files_Response:
       type: object
       properties:
         total_pages:
@@ -992,7 +992,7 @@ components:
                   - "OCR"
                   - "ASR"
                 description: The file type. It only include "OCR" and "ASR".
-    File_FileSpecific_Response:
+    Files_FilesSpecific_Response:
       type: object
       properties:
         prompt:

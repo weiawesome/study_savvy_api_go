@@ -6,10 +6,10 @@ import (
 )
 
 type ApiKey struct {
-	Id       string `gorm:"primaryKey;type:char(36)"`
-	UserMail string `gorm:"size:254;foreignKey:Mail"`
-	Key      string
-	AesKey   string
+	Id       string `gorm:"primaryKey;type:char(36);not null"`
+	UserMail string `gorm:"size:254;foreignKey:Mail;not null"`
+	Key      string `gorm:"type:text;default:null"`
+	AesKey   string `gorm:"type:text;default:null"`
 }
 
 func ApiKeyRelate() string {

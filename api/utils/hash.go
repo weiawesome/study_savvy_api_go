@@ -7,7 +7,7 @@ import (
 )
 
 func GenerateSalt() ([]byte, error) {
-	salt := make([]byte, 32)
+	salt := make([]byte, 16)
 	_, err := rand.Read(salt)
 	if err != nil {
 		return nil, err
