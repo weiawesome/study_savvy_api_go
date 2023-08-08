@@ -58,7 +58,7 @@ func EnvJwtExpireDays() string {
 func EnvRedisPassword() string {
 	var password string
 	if password = os.Getenv("REDIS_PASSWORD"); len(password) == 0 {
-		password = ""
+		password = "DefaultPassword"
 	}
 	return password
 }

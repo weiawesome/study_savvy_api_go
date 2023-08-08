@@ -1,9 +1,12 @@
 package model
 
-import "gorm.io/gorm"
+import (
+	"github.com/google/uuid"
+	"gorm.io/gorm"
+)
 
 type ApiKey struct {
-	gorm.Model
+	Id       string `gorm:"primaryKey;type:char(36)"`
 	UserMail string `gorm:"size:254;foreignKey:Mail"`
 	Key      string
 	AesKey   string
@@ -11,4 +14,8 @@ type ApiKey struct {
 
 func ApiKeyRelate() string {
 	return "ApiKey"
+}
+func (a *ApiKey) BeforeCreate(tx *gorm.DB) (err error) {
+	a.Id = uuid.New().String()
+	return
 }

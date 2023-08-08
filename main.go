@@ -1,7 +1,6 @@
 package main
 
 import (
-	"github.com/gin-gonic/gin"
 	"log"
 	"study_savvy_api_go/api/routes"
 	"study_savvy_api_go/api/utils"
@@ -16,7 +15,7 @@ func main() {
 		log.Fatalf("Failed to connect to the redis: %v", err)
 		return
 	}
-	gin.SetMode(gin.ReleaseMode)
+	//gin.SetMode(gin.ReleaseMode)
 	r := routes.InitRoutes()
 
 	err := r.Run()
