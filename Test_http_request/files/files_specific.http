@@ -1,0 +1,2 @@
+GET {{BASE_URL}}/api/Files/{{EXAMPLE_UUID}}
+Authorization: Bearer {{EXAMPLE_JWT}}
