@@ -22,6 +22,9 @@ func (m *ServiceFilesAsr) GetFilesAsr(data string, page int) (files.AsrFiles, er
 		for _, file := range result {
 			Files = append(Files, file.TranslateToResponseFile())
 		}
+		if Files == nil {
+			Files = []files.File{}
+		}
 		return files.AsrFiles{Data: Files, CurrentPage: page, TotalPages: totalPages}, nil
 	} else {
 		return response, err
