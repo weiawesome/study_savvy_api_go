@@ -23,6 +23,9 @@ services:
       REDIS_DB: 0
 
       CELERY_TASK: tasks
+
+      DIRECTORY_AUDIO: /audio
+      DIRECTORY_GRAPH: /graph
     depends_on:
       - redis
       - mysql
