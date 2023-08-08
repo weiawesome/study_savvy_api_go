@@ -24,14 +24,14 @@ tags:
     description: Operation about mail. Including sent verification mail and verify mail.
   - name: Files
     description: Operation about file. Including observe files, filter by type, observe the specific file, delete the specific file and gain resource for file.
-  - name: AI_predict
-    description: Operation about AI-Predict. Including OCR mission, ASR mission, OCR_text mission.
+  - name: Predict
+    description: Operation about Predict with AI. Including OCR mission, ASR mission, OCR_Text mission.
   - name: Oauth
     description: Operation about oauth. Including Google login.
   - name: Information
     description: Operation about information. Including gain personal information, edit personal information and edit password.
 paths:
-  /api/signup:
+  /api/User/signup:
     post:
       tags:
         - User
@@ -42,7 +42,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RequestSignUp'
+              $ref: '#/components/schemas/User_SignUp_Request'
       responses:
         '200':
           description: Successful operation.
@@ -51,7 +51,7 @@ paths:
         '401':
           description: Unauthorized with information. User have been signup for the service.
 
-  /api/login/web:
+  /api/User/login/web:
     post:
       tags:
         - User
@@ -62,7 +62,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RequestLoginWeb'
+              $ref: '#/components/schemas/User_LoginWeb_Request'
       responses:
         '200':
           description: Successful operation.
@@ -79,7 +79,7 @@ paths:
         '401':
           description: Unauthorized with information. User have not registered or with incorrect password.
 
-  /api/login/app:
+  /api/User/login/app:
     post:
       tags:
         - User
@@ -90,20 +90,20 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RequestLoginApp'
+              $ref: '#/components/schemas/User_LoginApp_Request'
       responses:
         '200':
           description: Successful operation.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ResponseLoginApp'
+                $ref: '#/components/schemas/User_LoginApp_Response'
         '400':
           description: Invalid status value. RequestBody is not match request.
         '401':
           description: Unauthorized with information. User have not registered or with incorrect password.
 
-  /api/logout:
+  /api/User/logout:
     delete:
       tags:
         - User
@@ -128,7 +128,7 @@ paths:
         '422':
           description: JwtToken is invalid. Jwt is expired or is not issued by the service.
 
-  /api/oauth/web/google:
+  /api/Oauth/web/google:
     get:
       tags:
         - Oauth
@@ -140,7 +140,7 @@ paths:
         '400':
           description: Invalid status value
 
-  /api/oauth/app/google:
+  /api/Oauth/app/google:
     get:
       tags:
         - Oauth
@@ -161,7 +161,7 @@ paths:
         '400':
           description: Invalid status value
 
-  /api/oauth/authorize/google/:
+  /api/Oauth/authorize/google/:
     get:
       tags:
         - Oauth
@@ -179,7 +179,7 @@ paths:
         '400':
           description: Invalid status value
 
-  /api/information:
+  /api/Information:
     get:
       tags:
         - Information
@@ -200,7 +200,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ResponseInformation'
+                $ref: '#/components/schemas/Information_Information_Response'
         '400':
           description: Invalid status value. RequestBody is not match request.
         '401':
@@ -228,7 +228,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RequestInformationEdit'
+              $ref: '#/components/schemas/Information_InformationEdit_Request'
       responses:
         '200':
           description: Successful operation.
@@ -241,7 +241,40 @@ paths:
         '404':
           description: Not found.
 
-  /api/files:
+  /api/Information/password_edit:
+    put:
+      tags:
+        - Information
+      security:
+        - BearerAuth: [ ]
+      summary: Update personal information.
+      description: Update personal information. The backend server will according to request to modify the personal information.
+      parameters:
+        - in: header
+          name: X-CSRF-TOKEN
+          required: false
+          schema:
+            type: string
+          description: CSRF token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Information_InformationPasswordEdit_Request'
+      responses:
+        '200':
+          description: Successful operation.
+        '400':
+          description: Invalid status value. RequestBody is not match request.
+        '401':
+          description: Unauthorized with information. CurrentPassword is not match in database.
+        '422':
+          description: JwtToken is invalid. Jwt is expired or is not issued by the service.
+        '404':
+          description: Not found.
+
+  /api/Files:
     get:
       tags:
         - Files
@@ -270,7 +303,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ResponseFiles'
+                $ref: '#/components/schemas/File_File_Response'
         '400':
           description: Invalid status value. RequestBody is not match request.
         '401':
@@ -278,7 +311,7 @@ paths:
         '422':
           description: JwtToken is invalid. Jwt is expired or is not issued by the service.
 
-  /api/files/ASR:
+  /api/Files/ASR:
     get:
       tags:
         - Files
@@ -307,7 +340,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ResponseFiles'
+                $ref: '#/components/schemas/File_File_Response'
         '400':
           description: Invalid status value. RequestBody is not match request.
         '401':
@@ -315,7 +348,7 @@ paths:
         '422':
           description: JwtToken is invalid. Jwt is expired or is not issued by the service.
 
-  /api/files/OCR:
+  /api/Files/OCR:
     get:
       tags:
         - Files
@@ -344,7 +377,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ResponseFiles'
+                $ref: '#/components/schemas/File_File_Response'
         '400':
           description: Invalid status value. RequestBody is not match request.
         '401':
@@ -352,7 +385,7 @@ paths:
         '422':
           description: JwtToken is invalid. Jwt is expired or is not issued by the service.
 
-  /api/files/{file_id}:
+  /api/Files/{file_id}:
     get:
       tags:
         - Files
@@ -380,7 +413,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ResponseSpecificFile'
+                $ref: '#/components/schemas/File_FileSpecific_Response'
         '400':
           description: Invalid status value. RequestBody is not match request.
         '401':
@@ -426,7 +459,7 @@ paths:
         '422':
           description: JwtToken is invalid. Jwt is expired or is not issued by the service.
 
-  /api/files/resources/audio/{file_id}:
+  /api/Files/resources/audio/{file_id}:
     get:
       tags:
         - Files
@@ -467,7 +500,7 @@ paths:
         '422':
           description: JWT is invalid.
 
-  /api/files/resources/graph/{file_id}:
+  /api/Files/resources/graph/{file_id}:
     get:
       tags:
         - Files
@@ -537,7 +570,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RequestNlpEdit'
+              $ref: '#/components/schemas/NlpEdit_NlpEdit_Request'
       responses:
         '200':
           description: Successful operation.
@@ -579,7 +612,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RequestNlpEdit'
+              $ref: '#/components/schemas/NlpEdit_NlpEdit_Request'
       responses:
         '200':
           description: Successful operation.
@@ -614,7 +647,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RequestAccessToken'
+              $ref: '#/components/schemas/AccessMethod_AccessToken_Request'
       responses:
         '200':
           description: Successful operation.
@@ -645,7 +678,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RequestApiKey'
+              $ref: '#/components/schemas/AccessMethod_ApiKey_Request'
       responses:
         '200':
           description: Successful operation.
@@ -656,7 +689,7 @@ paths:
         '422':
           description: JwtToken is invalid. Jwt is expired or is not issued by the service.
 
-  /api/verification:
+  /api/Mail/verification:
     post:
       tags:
         - Mail
@@ -667,14 +700,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RequestVerification'
+              $ref: '#/components/schemas/Mail_Verification_Request'
       responses:
         '200':
           description: Successful operation.
         '400':
           description: Invalid status value. RequestBody is not match request.
 
-  /api/verification/{mail}/{code}:
+  /api/Mail/verification/{mail}/{code}:
     get:
       tags:
         - Mail
@@ -700,10 +733,10 @@ paths:
         '400':
           description: Invalid status value. RequestBody is not match request.
 
-  /api/predict/ASR:
+  /api/Predict/ASR:
     post:
       tags:
-        - AI_predict
+        - Predict
       security:
         - BearerAuth: [ ]
       summary: Asr mission.
@@ -720,7 +753,7 @@ paths:
         content:
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/RequestAsr'
+              $ref: '#/components/schemas/AiPredict_Asr_Request'
       responses:
         '200':
           description: Successful operation.
@@ -731,10 +764,10 @@ paths:
         '422':
           description: JwtToken is invalid. Jwt is expired or is not issued by the service.
 
-  /api/predict/OCR:
+  /api/Predict/OCR:
     post:
       tags:
-        - AI_predict
+        - Predict
       security:
         - BearerAuth: [ ]
       parameters:
@@ -751,7 +784,7 @@ paths:
         content:
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/RequestOcr'
+              $ref: '#/components/schemas/AiPredict_Ocr_Request'
       responses:
         '200':
           description: Successful operation.
@@ -762,10 +795,10 @@ paths:
         '422':
           description: JwtToken is invalid. Jwt is expired or is not issued by the service.
 
-  /api/predict/OCR/text:
+  /api/Predict/OCR_Text:
     post:
       tags:
-        - AI_predict
+        - Predict
       security:
         - BearerAuth: [ ]
       parameters:
@@ -782,7 +815,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RequestOcrText'
+              $ref: '#/components/schemas/AiPredict_OcrText_Request'
       responses:
         '200':
           description: Successful operation.
@@ -800,7 +833,7 @@ components:
       scheme: bearer
       bearerFormat: JWT
   schemas:
-    RequestLoginApp:
+    User_LoginApp_Request:
       type: object
       properties:
         mail:
@@ -815,7 +848,7 @@ components:
       example:
         mail: "Example@example.com"
         password: "ExamplePassword"
-    ResponseLoginApp:
+    User_LoginApp_Response:
       type: object
       properties:
         token:
@@ -824,7 +857,7 @@ components:
       example:
         token: "ExampleJwtToken:"
 
-    RequestLoginWeb:
+    User_LoginWeb_Request:
       type: object
       properties:
         mail:
@@ -840,7 +873,7 @@ components:
         mail: "Example@example.com"
         password: "ExamplePassword"
 
-    RequestSignUp:
+    User_SignUp_Request:
       type: object
       properties:
         name:
@@ -871,7 +904,7 @@ components:
         mail: "Example@example.com"
         password: "ExamplePassword"
 
-    ResponseInformation:
+    Information_Information_Response:
       type: object
       properties:
         name:
@@ -890,9 +923,7 @@ components:
             - "female"
             - "other"
           description: User's gender. It would only include "male", "female" and "other".
-
-
-    RequestInformationEdit:
+    Information_InformationEdit_Request:
       type: object
       properties:
         name:
@@ -910,8 +941,24 @@ components:
       example:
         name: "ExampleUser"
         gender: "male"
+    Information_InformationPasswordEdit_Request:
+      type: object
+      properties:
+        current_password:
+          type: string
+          minLength: 8
+          description: User's original password (should not contain spaces and be at least 8 characters long).
+          pattern: '^(?!.*\s).{8,}$'
+        edit_password:
+          type: string
+          minLength: 8
+          description: User's new password (should not contain spaces and be at least 8 characters long).
+          pattern: '^(?!.*\s).{8,}$'
+      example:
+        current_password: "ExampleCurrentPassword"
+        edit_password: "ExampleEditPassword"
 
-    ResponseFiles:
+    File_File_Response:
       type: object
       properties:
         total_pages:
@@ -945,7 +992,7 @@ components:
                   - "OCR"
                   - "ASR"
                 description: The file type. It only include "OCR" and "ASR".
-    ResponseSpecificFile:
+    File_FileSpecific_Response:
       type: object
       properties:
         prompt:
@@ -963,7 +1010,7 @@ components:
             type: string
             description: The summarization of each segment.
 
-    RequestNlpEdit:
+    NlpEdit_NlpEdit_Request:
       type: object
       properties:
         prompt:
@@ -976,32 +1023,32 @@ components:
         content: "ExampleContent"
         prompt: "ExamplePrompt"
 
-    RequestAccessToken:
+    AccessMethod_AccessToken_Request:
       type: object
       properties:
         access_token:
           type: string
           description: The AccessToken in chat-gpt to use chat-gpt.
-        AES_key:
+        aes_key:
           type: string
           description: The AesKey to encrypt AccessToken. And encrypted by RSA(public key).
       example:
         access_token: "ExampleAccessToken"
-        AES_key: "ExampleAesKey"
-    RequestApiKey:
+        aes_key: "ExampleAesKey"
+    AccessMethod_ApiKey_Request:
       type: object
       properties:
         api_key:
           type: string
           description: The ApiKey in openai to use chat-gpt.
-        AES_key:
+        aes_key:
           type: string
           description: The AesKey to encrypt ApiKey. And encrypted by RSA(public key).
       example:
         api_key: "ExampleApiKey"
-        AES_key: "ExampleAesKey"
+        aes_key: "ExampleAesKey"
 
-    RequestVerification:
+    Mail_Verification_Request:
       type: object
       properties:
         mail:
@@ -1011,7 +1058,7 @@ components:
       example:
         mail: "Example@example.com"
 
-    RequestAsr:
+    AiPredict_Asr_Request:
       type: object
       properties:
         prompt:
@@ -1021,7 +1068,7 @@ components:
           type: string
           format: binary
           description: The audio file. Only accept file type of "mp3", "m4a", "wav".
-    RequestOcr:
+    AiPredict_Ocr_Request:
       type: object
       properties:
         prompt:
@@ -1032,7 +1079,7 @@ components:
           format: binary
           description: The graph file. Only accept file type of "jpg", "jpeg", "png".
 
-    RequestOcrText:
+    AiPredict_OcrText_Request:
       type: object
       properties:
         prompt:

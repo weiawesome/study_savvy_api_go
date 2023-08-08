@@ -8,7 +8,7 @@ import (
 
 func InitRoutes() *gin.Engine {
 	r := gin.Default()
-	
+
 	err := r.SetTrustedProxies(nil)
 	if err != nil {
 		return nil
@@ -16,14 +16,14 @@ func InitRoutes() *gin.Engine {
 
 	basicRouter := r.Group("/api")
 
-	userRouter := basicRouter.Group("")
+	userRouter := basicRouter.Group("/User")
 	nlpEditRouter := basicRouter.Group("/NLP_edit")
 	accessMethodRouter := basicRouter.Group("/Access_method")
-	mailRouter := basicRouter.Group("/verification")
-	filesRouter := basicRouter.Group("/files")
-	aiPredictRouter := basicRouter.Group("/predict")
-	oauthRouter := basicRouter.Group("/oauth")
-	informationRouter := basicRouter.Group("/information")
+	mailRouter := basicRouter.Group("/Mail")
+	filesRouter := basicRouter.Group("/Files")
+	aiPredictRouter := basicRouter.Group("/Predict")
+	oauthRouter := basicRouter.Group("/Oauth")
+	informationRouter := basicRouter.Group("/Information")
 
 	sqlRepository := sql.NewRepository()
 	redisRepository := redis.NewRepository()

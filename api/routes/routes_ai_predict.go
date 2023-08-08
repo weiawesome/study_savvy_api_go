@@ -14,5 +14,5 @@ func InitAiPredictRoutes(r *gin.RouterGroup, sqlRepository *sql.Repository, redi
 	middlewareJwt := jwt.MiddlewareJwt{Repository: redisRepository}
 	r.POST("/ASR", middlewareJwt.JwtSecure(), middlewareJwt.JwtInformation(), requestAiPredict.MiddlewareAiPredictAsrContent(), (&handlerAiPredict.HandlerAiPredictAsr{Service: ai_predict.ServiceAiPredictAsr{SqlRepository: *sqlRepository, RedisRepository: *redisRepository}}).Handle)
 	r.POST("/OCR", middlewareJwt.JwtSecure(), middlewareJwt.JwtInformation(), requestAiPredict.MiddlewareAiPredictOcrContent(), (&handlerAiPredict.HandlerAiPredictOcr{Service: ai_predict.ServiceAiPredictOcr{SqlRepository: *sqlRepository, RedisRepository: *redisRepository}}).Handle)
-	r.POST("/OCR/text", middlewareJwt.JwtSecure(), middlewareJwt.JwtInformation(), requestAiPredict.MiddlewareAiPredictOcrTextContent(), (&handlerAiPredict.HandlerAiPredictOcrText{Service: ai_predict.ServiceAiPredictOcrText{SqlRepository: *sqlRepository, RedisRepository: *redisRepository}}).Handle)
+	r.POST("/OCR_Text", middlewareJwt.JwtSecure(), middlewareJwt.JwtInformation(), requestAiPredict.MiddlewareAiPredictOcrTextContent(), (&handlerAiPredict.HandlerAiPredictOcrText{Service: ai_predict.ServiceAiPredictOcrText{SqlRepository: *sqlRepository, RedisRepository: *redisRepository}}).Handle)
 }

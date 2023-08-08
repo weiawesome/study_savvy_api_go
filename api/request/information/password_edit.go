@@ -1,6 +1,6 @@
 package information
 
 type EditPassword struct {
-	NewPwd      string `json:"new_pwd"`
-	OriginalPwd string `json:"original_pwd"`
+	EditPassword    string `json:"edit_password"`
+	CurrentPassword string `json:"current_password"`
 }
