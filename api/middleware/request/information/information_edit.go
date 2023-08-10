@@ -11,6 +11,8 @@ import (
 func validateInformationEdit(data information.EditInformation) error {
 	if data.Name == "" {
 		return errors.New("name can't be empty")
+	} else if len(data.Name) > 30 {
+		return errors.New("length of name can't large than 30 chars")
 	} else if !(data.Gender == "male" || data.Gender == "female" || data.Gender == "other") {
 		return errors.New("gender error type")
 	}

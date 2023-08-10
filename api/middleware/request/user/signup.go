@@ -25,6 +25,10 @@ func validateSignup(data user.SignUp) error {
 		return errors.New("mail can't parse")
 	} else if !(data.Gender == "male" || data.Gender == "female" || data.Gender == "other") {
 		return errors.New("gender error type")
+	} else if data.Name == "" {
+		return errors.New("name can't be empty")
+	} else if len(data.Name) > 30 {
+		return errors.New("length of name can't large than 30 chars")
 	}
 	return nil
 }
