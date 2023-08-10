@@ -1,6 +1,7 @@
 package jwt
 
 import (
+	"errors"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strings"
@@ -10,7 +11,11 @@ import (
 )
 
 func validateBlackList(jwtToken string, repository *redis.Repository) error {
-	jti := utils.InformationJwt(jwtToken).ID
+	jwt := utils.InformationJwt(jwtToken)
+	if jwt != nil {
+		return errors.New("JwtToken error")
+	}
+	jti := jwt.ID
 	return repository.ValidateInBlacklist(jti)
 }
 func validateContent(jwtToken string) error {
@@ -21,25 +26,25 @@ func validateCookie(jwtToken string, csrfToken string) error {
 }
 func (m *MiddlewareJwt) JwtSecure() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		statusCookie := true
+		statusContent := true
+
 		jwtTokenCookie, err := c.Cookie("access_token_cookie")
 		csrfToken := c.GetHeader("X-CSRF-TOKEN")
 
 		jwtTokenContent := c.GetHeader("Authorization")
 		if strings.HasPrefix(jwtTokenContent, "Bearer ") {
 			jwtTokenContent, _ = strings.CutPrefix(jwtTokenContent, "Bearer ")
+			statusContent = statusContent && (validateBlackList(jwtTokenContent, m.Repository) == nil) && (validateContent(jwtTokenContent) == nil)
 		} else {
-			jwtTokenContent = ""
+			statusContent = false
 		}
 
-		statusCookie := true
-		statusContent := true
-
-		if err != nil {
-			statusCookie = false
-		} else {
+		if err == nil {
 			statusCookie = statusCookie && (validateBlackList(jwtTokenCookie, m.Repository) == nil) && (validateCookie(jwtTokenCookie, csrfToken) == nil)
+		} else {
+			statusCookie = false
 		}
-		statusContent = statusContent && (validateBlackList(jwtTokenContent, m.Repository) == nil) && (validateContent(jwtTokenContent) == nil)
 
 		if statusCookie {
 			c.Set("jwt", jwtTokenCookie)
