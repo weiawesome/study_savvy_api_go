@@ -29,12 +29,6 @@ func validateLoginWeb(data user.LoginWeb) error {
 
 func MiddleWareLoginWebContent() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		if c.Request.Header.Get("Content-Type") != "application/json" {
-			e := utils.Error{Error: "Content-Type must be application/json"}
-			c.JSON(http.StatusUnsupportedMediaType, e)
-			c.Abort()
-			return
-		}
 
 		var data user.LoginWeb
 

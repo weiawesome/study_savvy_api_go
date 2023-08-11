@@ -14,10 +14,6 @@ import (
 
 func MiddlewareAiPredictAsrContent() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		if c.Request.Method != "POST" || c.ContentType() != "multipart/form-data" {
-			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": "Only multipart/form-data POST requests are allowed"})
-			return
-		}
 
 		file, handler, err := c.Request.FormFile("file")
 
