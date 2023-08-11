@@ -12,7 +12,7 @@ import (
 
 func validateBlackList(jwtToken string, repository *redis.Repository) error {
 	jwt := utils.InformationJwt(jwtToken)
-	if jwt != nil {
+	if jwt == nil {
 		return errors.New("JwtToken error")
 	}
 	jti := jwt.ID
@@ -30,7 +30,7 @@ func (m *MiddlewareJwt) JwtSecure() gin.HandlerFunc {
 		statusContent := true
 
 		jwtTokenCookie, err := c.Cookie("access_token_cookie")
-		csrfToken := c.GetHeader("X-CSRF-TOKEN")
+		csrfToken := c.GetHeader("X-CSRF-Token")
 
 		jwtTokenContent := c.GetHeader("Authorization")
 		if strings.HasPrefix(jwtTokenContent, "Bearer ") {
