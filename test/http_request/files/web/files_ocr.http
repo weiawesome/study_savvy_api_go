@@ -1,0 +1,2 @@
+GET {{BASE_URL}}/api/Files/OCR
+Authorization: Bearer {{EXAMPLE_JWT}}

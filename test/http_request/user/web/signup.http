@@ -1,0 +1,10 @@
+### Signup
+POST {{BASE_URL}}/api/User/signup
+Content-Type: application/json
+
+{
+  "gender": "{{EXAMPLE_GENDER}}",
+  "mail": "{{EXAMPLE_MAIL}}",
+  "password": "{{EXAMPLE_PASSWORD}}",
+  "name": "{{EXAMPLE_NAME}}"
+}

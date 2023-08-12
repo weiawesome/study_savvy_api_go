@@ -22,10 +22,6 @@ func GetJwt(mail string) (string, string, error) {
 	expiredDays, _ := strconv.Atoi(EnvJwtExpireDays())
 	issuer := EnvJwtIssuer()
 
-	if expiredDays == 0 {
-		expiredDays = 1
-	}
-
 	claims := &JwtClaim{
 		"access",
 		false,
@@ -60,13 +56,19 @@ func ValidateJwt(jwtToken string) error {
 }
 
 func ValidateJwtCsrf(jwtToken string, csrfToken string) error {
-	token, err := jwt.ParseWithClaims(jwtToken, &JwtClaim{}, func(token *jwt.Token) (interface{}, error) {
-		return []byte(EnvJwtSecret()), nil
-	})
-	if claims, ok := token.Claims.(*JwtClaim); ok && token.Valid && claims.Issuer == EnvJwtIssuer() && claims.Csrf == csrfToken {
+	token, err := jwt.ParseWithClaims(jwtToken, &JwtClaim{}, func(token *jwt.Token) (interface{}, error) { return []byte(EnvJwtSecret()), nil })
+	if err != nil {
 		return err
 	}
-	return err
+	if claims, ok := token.Claims.(*JwtClaim); ok {
+		if token.Valid && claims.Issuer == EnvJwtIssuer() && claims.Csrf == csrfToken {
+			return nil
+		} else {
+			return errors.New("jwt content error")
+		}
+	} else {
+		return errors.New("jwt can't parse")
+	}
 }
 
 func InformationJwt(jwtToken string) *JwtClaim {

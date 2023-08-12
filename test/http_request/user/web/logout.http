@@ -1,0 +1,3 @@
+### Logout
+DELETE {{BASE_URL}}/api/User/logout
+X-CSRF-Token:{{EXAMPLE_CSRF_TOKEN}}

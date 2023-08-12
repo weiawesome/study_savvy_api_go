@@ -1,7 +1,6 @@
 package access_method
 
 import (
-	"fmt"
 	"study_savvy_api_go/api/model"
 	"study_savvy_api_go/api/request/access_method"
 	responseAccessMethod "study_savvy_api_go/api/response/access_method"
@@ -20,7 +19,6 @@ func (m *ServiceAccessMethodApiKey) EditApiKey(data access_method.ApiKey, user s
 		ApiKey.AesKey = data.AesKey
 		return response, m.Repository.UpdateApiKey(ApiKey)
 	} else {
-		fmt.Println(err)
 		return response, err
 	}
 }

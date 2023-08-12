@@ -1,0 +1,9 @@
+### ApiKey Set
+PUT {{BASE_URL}}/api/Access_method/api_key
+Content-Type: application/json
+X-CSRF-Token: {{EXAMPLE_CSRF_TOKEN}}
+
+{
+  "api_key": "{{EXAMPLE_AES_KEY}}",
+  "aes_key": "{{EXAMPLE_API_KEY}}"
+}
