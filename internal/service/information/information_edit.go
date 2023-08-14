@@ -1,9 +1,9 @@
 package information
 
 import (
-	"study_savvy_api_go/api/model"
 	"study_savvy_api_go/api/request/information"
 	responseInformation "study_savvy_api_go/api/response/information"
+	"study_savvy_api_go/internal/repository/model"
 	"study_savvy_api_go/internal/repository/sql"
 )
 

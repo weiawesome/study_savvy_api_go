@@ -3,7 +3,7 @@ package utils
 import (
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	"study_savvy_api_go/api/model"
+	"study_savvy_api_go/internal/repository/model"
 )
 
 var db *gorm.DB

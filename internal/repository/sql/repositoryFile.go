@@ -4,7 +4,7 @@ import (
 	"errors"
 	"gorm.io/gorm"
 	"math"
-	"study_savvy_api_go/api/model"
+	"study_savvy_api_go/internal/repository/model"
 	StatusUtils "study_savvy_api_go/internal/repository/utils"
 )
 
