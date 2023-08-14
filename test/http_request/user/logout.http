@@ -1,3 +1,0 @@
-### Logout
-DELETE {{BASE_URL}}/api/User/logout
-X-Csrf-Token: c6f3790c-ee6b-4564-9f23-293b76cefeb5

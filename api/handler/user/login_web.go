@@ -2,7 +2,6 @@ package user
 
 import (
 	"errors"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"os"
@@ -57,7 +56,6 @@ func (h *HandlerLoginWeb) Handle(c *gin.Context) {
 		}
 	} else {
 		e := utils.Error{Error: "Internal error"}
-		fmt.Println("AAA")
 		c.JSON(http.StatusInternalServerError, e)
 	}
 }

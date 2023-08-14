@@ -1,0 +1,9 @@
+### Information Edit
+PUT {{BASE_URL}}/api/Information
+Authorization: Bearer {{EXAMPLE_JWT}}
+Content-Type: application/json
+
+{
+  "gender": "{{EXAMPLE_GENDER}}",
+  "name": "{{EXAMPLE_NAME}}"
+}
