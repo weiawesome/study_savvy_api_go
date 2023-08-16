@@ -1,7 +1,26 @@
 # Server for study-savvy Go version
 
+## Description the service
+
+> This is the back-end service for [Study-Savvy](#Study-Savvy).
+> 
+> The back-end server can get client's request and reply it.
+> 
+> Furthermore, it can cooperate with celery in python which gain tasks from redis set by the server.
+> 
+> In the project will set My-SQL and Redis and Go-server, and it should combine with other project to have whole service.
+
+ 
+
+## Study-Savvy
+> Supply main two service
+> * Audio content summarize and assistant especially in education zone.
+> * Article (from graph or text) content improver by giving some advice especially in high-school student writing.
+> 
+> Supply two application with App in mobile and Website.
+
 ## How to start
-```
+```bash
 docker-compose up -d
 ```
 
