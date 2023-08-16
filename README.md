@@ -1,4 +1,4 @@
-# Server for study-savvy in go-lang version 
+# Server for study-savvy Go version
 
 ## How to start
 ```
@@ -23,10 +23,12 @@ docker-compose up -d
 ├── go.mod
 ├── go.sum
 │
-├── test
-│
 ├── main.go
 ```
+### There Layered Architecture
+- #### [Presentation Layer](#Presentation-Layer)
+- #### [Business Logic Layer](#Business-Logic-Layer)
+- #### [Data Access Layer](#Data-Access-Layer)
 
 > ### [Presentation Layer](./api)
 > [The api directory](./api) encompasses the presentation layer, responsible for handling user interactions and requests.
@@ -54,7 +56,7 @@ docker-compose up -d
 > This seamless interaction ensures that the core business rules are effectively implemented and maintained.
 
 > ### [Data Access Layer](./internal/repository)
-> [The internal/repository directory](./internal/repository)` corresponds to the Data Access Layer, responsible for interacting with various data sources.
+> [The internal/repository directory](./internal/repository) corresponds to the Data Access Layer, responsible for interacting with various data sources.
 > > model
 > > > The model subdirectory contains the definitions of all data models used in the SQL Database. These models define the structure and relationships of the data.
 > 
