@@ -40,7 +40,7 @@ func (h InfluxDBHook) Run(e *zerolog.Event, level zerolog.Level, message string)
 
 	err := writeAPI.WritePoint(context.Background(), point)
 	if err != nil {
-		logData := LogData{Event: "Can't upload to influxdb", Content: err.Error(), User: "system"}
+		logData := LogData{Event: "Can't upload to influxdb", Details: err.Error(), User: "system"}
 		LogError(logData)
 		return
 	}

@@ -115,6 +115,8 @@ func EnvInfluxDbAddress() string {
 	var port string
 	if host = os.Getenv("INFLUXDB_HOST"); len(host) == 0 {
 		host = "http://localhost"
+	} else {
+		host = "http://" + host
 	}
 	if port = os.Getenv("INFLUXDB_PORT"); len(port) == 0 {
 		port = "8086"

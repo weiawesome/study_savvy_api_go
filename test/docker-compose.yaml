@@ -1,0 +1,39 @@
+version: '1'
+services:
+  redis:
+    image: redis:latest
+    command: redis-server --requirepass DefaultPassword
+
+  mysql:
+    image: mysql:latest
+    environment:
+      - MYSQL_ROOT_PASSWORD=DefaultPassword
+      - MYSQL_USER=DefaultUser
+      - MYSQL_PASSWORD=DefaultPassword
+      - MYSQL_DATABASE=DefaultDb
+
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "127.0.0.1:3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=DefaultUser
+      - GF_SECURITY_ADMIN_PASSWORD=DefaultPassword
+    volumes:
+      - grafana-storage:/var/lib/grafana
+
+  influxdb:
+    image: influxdb:latest
+    environment:
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_USERNAME=DefaultUser
+      - DOCKER_INFLUXDB_INIT_PASSWORD=DefaultPassword
+      - DOCKER_INFLUXDB_INIT_ORG=DefaultOrg
+      - DOCKER_INFLUXDB_INIT_BUCKET=DefaultBucket
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=DefaultToken
+    volumes:
+      - influxdb-storage:/var/lib/influxdb
+
+volumes:
+  grafana-storage:
+  influxdb-storage:

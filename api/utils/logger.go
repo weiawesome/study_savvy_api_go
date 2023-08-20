@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"context"
 	"encoding/json"
-	"fmt"
 	"github.com/influxdata/influxdb-client-go/v2"
 	"github.com/rs/zerolog"
 	"gopkg.in/natefinch/lumberjack.v2"
@@ -39,7 +38,6 @@ func InitLogger() {
 			default:
 				if influxClient := NewInfluxDBClient(); influxClient.Client != nil {
 					if !isUsingInfluxDB {
-						fmt.Println("Success")
 						logger = influxdbLogger
 						logger = logger.Hook(InfluxDBHook{Client: influxClient})
 						isUsingInfluxDB = true
@@ -50,7 +48,8 @@ func InitLogger() {
 						logger = localLogger
 						isUsingInfluxDB = false
 					}
-					logger.Info().Msg("InfluxDB connection failed, using local logs")
+					logData := LogData{Event: "InfluxDB connection failed, using local logs", User: "system"}
+					LogError(logData)
 				}
 				time.Sleep(time.Minute)
 			}
