@@ -1,0 +1,2 @@
+{"level":"info","time":"2023-08-18T14:29:23+08:00","message":"{\"event\":\"Success request\",\"method\":\"POST\",\"path\":\"/api/User/login/app\",\"header\":\"\",\"content\":\"\",\"user\":\"ExampleMail@gmail.com\"}"}
+{"level":"info","time":"2023-08-18T14:29:30+08:00","message":"{\"event\":\"Success request\",\"method\":\"POST\",\"path\":\"/api/User/login/app\",\"header\":\"\",\"content\":\"\",\"user\":\"ExampleMail@gmail.com\"}"}
