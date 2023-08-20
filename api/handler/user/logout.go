@@ -3,7 +3,8 @@ package user
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"study_savvy_api_go/api/response/utils"
+	responseUtils "study_savvy_api_go/api/response/utils"
+	"study_savvy_api_go/api/utils"
 	"study_savvy_api_go/internal/service/user"
 	"time"
 )
@@ -15,10 +16,12 @@ type HandlerLogout struct {
 func (h *HandlerLogout) Handle(c *gin.Context) {
 	jti, ok := c.Get("jti")
 	if !ok {
-		e := utils.Error{Error: "Data not found in context"}
+		go utils.LogError(utils.LogData{Event: "Failure request", Method: c.Request.Method, Path: c.FullPath(), Header: c.Request.Header, Details: "Data not found in context"})
+		e := responseUtils.Error{Error: "Data not found in context"}
 		c.JSON(http.StatusInternalServerError, e)
 		return
 	}
+
 	if stringData, ok := jti.(string); ok {
 		result, err := h.Service.Logout(stringData)
 		if err == nil {
@@ -30,7 +33,6 @@ func (h *HandlerLogout) Handle(c *gin.Context) {
 				Secure:   true,
 				HttpOnly: true,
 			}
-
 			cookieCsrf := &http.Cookie{
 				Name:    "csrf_access_token",
 				Value:   "",
@@ -38,15 +40,21 @@ func (h *HandlerLogout) Handle(c *gin.Context) {
 				Expires: time.Now(),
 				Secure:  true,
 			}
+
 			c.SetCookie(cookieJwt.Name, cookieJwt.Value, cookieJwt.MaxAge, cookieJwt.Path, cookieJwt.Domain, cookieJwt.Secure, cookieJwt.HttpOnly)
 			c.SetCookie(cookieCsrf.Name, cookieCsrf.Value, cookieCsrf.MaxAge, cookieCsrf.Path, cookieCsrf.Domain, cookieCsrf.Secure, cookieCsrf.HttpOnly)
+
+			go utils.LogInfo(utils.LogData{Event: "Success request", Method: c.Request.Method, Path: c.FullPath(), Header: c.Request.Header})
+
 			c.JSON(http.StatusCreated, result)
 		} else {
-			e := utils.Error{Error: err.Error()}
+			go utils.LogError(utils.LogData{Event: "Failure request", Method: c.Request.Method, Path: c.FullPath(), Header: c.Request.Header, Details: err.Error()})
+			e := responseUtils.Error{Error: err.Error()}
 			c.JSON(http.StatusInternalServerError, e)
 		}
 	} else {
-		e := utils.Error{Error: "Internal error"}
+		go utils.LogError(utils.LogData{Event: "Failure request", Method: c.Request.Method, Path: c.FullPath(), Header: c.Request.Header, Details: "Type Assertion error"})
+		e := responseUtils.Error{Error: "Internal error"}
 		c.JSON(http.StatusInternalServerError, e)
 	}
 

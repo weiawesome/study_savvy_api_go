@@ -1,5 +1,5 @@
 PUT {{BASE_URL}}/api/NLP_edit/OCR
-Authorization: Bearer {{EXAMPLE_JWT}}
+X-CSRF-Token: {{EXAMPLE_CSRF_TOKEN}}
 Content-Type: application/json
 
 {

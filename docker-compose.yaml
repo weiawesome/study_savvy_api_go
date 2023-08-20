@@ -1,6 +1,6 @@
 version: '1'
 services:
-  go-server:
+  go:
     build: .
     ports:
       - "8080:8080"
@@ -24,11 +24,18 @@ services:
 
       CELERY_TASK: tasks
 
+      INFLUXDB_HOST: influxdb
+      INFLUXDB_PORT: 8086
+      INFLUXDB_TOKEN: Wei891013
+      INFLUXDB_ORG: Study-Savvy
+      INFLUXDB_BUCKET: LogsBucket
+
       DIRECTORY_AUDIO: /audio
       DIRECTORY_GRAPH: /graph
     depends_on:
       - redis
       - mysql
+      - influxdb
 
   redis:
     image: redis:latest
@@ -39,3 +46,29 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=Wei891013
       - MYSQL_DATABASE=gorm_test
+
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "127.0.0.1:3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=wei
+      - GF_SECURITY_ADMIN_PASSWORD=Wei891013
+    volumes:
+      - grafana-storage:/var/lib/grafana
+
+  influxdb:
+    image: influxdb:latest
+    environment:
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_USERNAME=wei
+      - DOCKER_INFLUXDB_INIT_PASSWORD=Wei891013
+      - DOCKER_INFLUXDB_INIT_ORG=Study-Savvy
+      - DOCKER_INFLUXDB_INIT_BUCKET=LogsBucket
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=Wei891013
+    volumes:
+      - influxdb-storage:/var/lib/influxdb
+
+volumes:
+  grafana-storage:
+  influxdb-storage:

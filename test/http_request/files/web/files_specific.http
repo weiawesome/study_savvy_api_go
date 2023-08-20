@@ -1,2 +1,2 @@
-GET {{BASE_URL}}/api/Files/79f5d083-4f89-473a-adac-960a3702beca
-Authorization: Bearer {{EXAMPLE_JWT}}
+GET {{BASE_URL}}/api/Files/{{EXAMPLE_UUID}}
+X-CSRF-Token: {{EXAMPLE_CSRF_TOKEN}}

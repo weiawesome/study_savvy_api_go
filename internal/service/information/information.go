@@ -2,9 +2,9 @@ package information
 
 import (
 	"errors"
-	"study_savvy_api_go/api/model"
 	"study_savvy_api_go/api/response/information"
 	responseUtils "study_savvy_api_go/api/response/utils"
+	"study_savvy_api_go/internal/repository/model"
 	"study_savvy_api_go/internal/repository/sql"
 	StatusUtils "study_savvy_api_go/internal/repository/utils"
 )

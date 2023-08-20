@@ -53,6 +53,7 @@ func (m *MiddlewareJwt) JwtSecure() gin.HandlerFunc {
 			c.Set("jwt", jwtTokenContent)
 			c.Next()
 		} else {
+			go utils.LogWarn(utils.LogData{Event: "Failure request", Method: c.Request.Method, Path: c.FullPath(), Header: c.Request.Header, Details: "Jwt validation fail"})
 			e := responseUtils.Error{Error: "Invalidate jwtToken"}
 			c.JSON(http.StatusUnprocessableEntity, e)
 			c.Abort()

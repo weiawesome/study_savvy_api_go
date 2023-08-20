@@ -109,3 +109,40 @@ func EnvGraphDirectory() string {
 	}
 	return directory
 }
+
+func EnvInfluxDbAddress() string {
+	var host string
+	var port string
+	if host = os.Getenv("INFLUXDB_HOST"); len(host) == 0 {
+		host = "http://localhost"
+	} else {
+		host = "http://" + host
+	}
+	if port = os.Getenv("INFLUXDB_PORT"); len(port) == 0 {
+		port = "8086"
+	}
+
+	return host + ":" + port
+}
+func EnvInfluxDbToken() string {
+	var token string
+	if token = os.Getenv("INFLUXDB_TOKEN"); len(token) == 0 {
+		token = "DefaultToken"
+	}
+	return token
+}
+
+func EnvInfluxDbOrg() string {
+	var org string
+	if org = os.Getenv("INFLUXDB_ORG"); len(org) == 0 {
+		org = "DefaultOrg"
+	}
+	return org
+}
+func EnvInfluxDbBucket() string {
+	var bucket string
+	if bucket = os.Getenv("INFLUXDB_BUCKET"); len(bucket) == 0 {
+		bucket = "DefaultBucket"
+	}
+	return bucket
+}

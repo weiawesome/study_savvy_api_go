@@ -3,8 +3,8 @@ package redis
 import (
 	"context"
 	"github.com/google/uuid"
-	"study_savvy_api_go/api/model"
 	"study_savvy_api_go/api/utils"
+	"study_savvy_api_go/internal/repository/model"
 )
 
 func (r *Repository) OcrMission(id string, file string, prompt string, key model.ApiKey, token model.AccessToken) error {

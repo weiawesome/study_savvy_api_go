@@ -1,9 +1,9 @@
 package access_method
 
 import (
-	"study_savvy_api_go/api/model"
 	"study_savvy_api_go/api/request/access_method"
 	responseAccessMethod "study_savvy_api_go/api/response/access_method"
+	"study_savvy_api_go/internal/repository/model"
 	"study_savvy_api_go/internal/repository/sql"
 )
 

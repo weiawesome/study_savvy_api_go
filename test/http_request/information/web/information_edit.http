@@ -1,6 +1,6 @@
 ### Information Edit
 PUT {{BASE_URL}}/api/Information
-Authorization: Bearer {{EXAMPLE_JWT}}
+X-CSRF-Token: {{EXAMPLE_CSRF_TOKEN}}
 Content-Type: application/json
 
 {

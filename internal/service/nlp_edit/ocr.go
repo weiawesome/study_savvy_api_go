@@ -2,10 +2,10 @@ package nlp_edit
 
 import (
 	"errors"
-	"study_savvy_api_go/api/model"
 	"study_savvy_api_go/api/request/nlp_edit"
 	responseNlpEdit "study_savvy_api_go/api/response/nlp_edit"
 	"study_savvy_api_go/api/response/utils"
+	"study_savvy_api_go/internal/repository/model"
 	"study_savvy_api_go/internal/repository/redis"
 	"study_savvy_api_go/internal/repository/sql"
 	StatusUtils "study_savvy_api_go/internal/repository/utils"
@@ -30,7 +30,7 @@ func (m *ServiceNlpEditOcr) ExecuteOcr(data nlp_edit.Ocr, user string, id string
 				} else {
 					return response, err
 				}
-			} else if errors.As(err, &StatusUtils.ExistSource{}) {
+			} else if errors.As(err, &StatusUtils.NotExistSource{}) {
 				return response, utils.RegistrationError{Message: "Have not register"}
 			} else {
 				return response, err

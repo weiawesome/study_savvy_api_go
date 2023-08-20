@@ -5,7 +5,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	userRequest "study_savvy_api_go/api/request/user"
-	"study_savvy_api_go/api/response/utils"
+	responseUtils "study_savvy_api_go/api/response/utils"
+	"study_savvy_api_go/api/utils"
 	"study_savvy_api_go/internal/service/user"
 )
 
@@ -16,7 +17,8 @@ type HandlerSignup struct {
 func (h *HandlerSignup) Handle(c *gin.Context) {
 	data, ok := c.Get("data")
 	if !ok {
-		e := utils.Error{Error: "Data not found in context"}
+		go utils.LogError(utils.LogData{Event: "Failure request", Method: c.Request.Method, Path: c.FullPath(), Header: c.Request.Header, Details: "Data not found in context"})
+		e := responseUtils.Error{Error: "Data not found in context"}
 		c.JSON(http.StatusInternalServerError, e)
 		return
 	}
@@ -24,16 +26,20 @@ func (h *HandlerSignup) Handle(c *gin.Context) {
 	if jsonData, ok := data.(userRequest.SignUp); ok {
 		result, err := h.Service.Signup(jsonData)
 		if err == nil {
+			go utils.LogInfo(utils.LogData{Event: "Success request", Method: c.Request.Method, Path: c.FullPath(), User: jsonData.Mail, Header: c.Request.Header, Content: jsonData})
 			c.JSON(http.StatusOK, result)
-		} else if errors.As(err, &utils.RegistrationError{}) {
-			e := utils.Error{Error: err.Error()}
+		} else if errors.As(err, &responseUtils.RegistrationError{}) {
+			go utils.LogWarn(utils.LogData{Event: "Failure request", Method: c.Request.Method, Path: c.FullPath(), User: jsonData.Mail, Header: c.Request.Header, Content: jsonData, Details: err.Error()})
+			e := responseUtils.Error{Error: err.Error()}
 			c.JSON(http.StatusUnauthorized, e)
 		} else {
-			e := utils.Error{Error: "Data type mismatch"}
+			go utils.LogError(utils.LogData{Event: "Failure request", Method: c.Request.Method, Path: c.FullPath(), User: jsonData.Mail, Header: c.Request.Header, Content: jsonData, Details: err.Error()})
+			e := responseUtils.Error{Error: "Data type mismatch"}
 			c.JSON(http.StatusInternalServerError, e)
 		}
 	} else {
-		e := utils.Error{Error: "Internal error"}
+		go utils.LogError(utils.LogData{Event: "Failure request", Method: c.Request.Method, Path: c.FullPath(), User: jsonData.Mail, Header: c.Request.Header, Content: jsonData, Details: "Type Assertion error"})
+		e := responseUtils.Error{Error: "Internal error"}
 		c.JSON(http.StatusInternalServerError, e)
 	}
 }

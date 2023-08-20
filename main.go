@@ -8,6 +8,7 @@ import (
 )
 
 func main() {
+	utils.InitLogger()
 	if err := utils.InitDB(); err != nil {
 		log.Fatalf("Failed to connect to the database: %v", err)
 		return
@@ -16,9 +17,9 @@ func main() {
 		log.Fatalf("Failed to connect to the redis: %v", err)
 		return
 	}
+
 	gin.SetMode(gin.ReleaseMode)
 	r := routes.InitRoutes()
-
 	err := r.Run()
 
 	if err != nil {

@@ -3,7 +3,7 @@ package sql
 import (
 	"errors"
 	"gorm.io/gorm"
-	"study_savvy_api_go/api/model"
+	"study_savvy_api_go/internal/repository/model"
 	StatusUtils "study_savvy_api_go/internal/repository/utils"
 )
 

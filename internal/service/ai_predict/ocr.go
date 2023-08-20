@@ -3,10 +3,10 @@ package ai_predict
 import (
 	"errors"
 	"github.com/google/uuid"
-	"study_savvy_api_go/api/model"
 	"study_savvy_api_go/api/request/ai_predict"
 	responseAiPredict "study_savvy_api_go/api/response/ai_predict"
 	"study_savvy_api_go/api/response/utils"
+	"study_savvy_api_go/internal/repository/model"
 	"study_savvy_api_go/internal/repository/redis"
 	"study_savvy_api_go/internal/repository/sql"
 	StatusUtils "study_savvy_api_go/internal/repository/utils"
@@ -31,7 +31,7 @@ func (m *ServiceAiPredictOcr) ExecuteOcr(data ai_predict.Ocr, user string) (resp
 		} else {
 			return response, err
 		}
-	} else if errors.As(err, &StatusUtils.ExistSource{}) {
+	} else if errors.As(err, &StatusUtils.NotExistSource{}) {
 		return response, utils.RegistrationError{Message: "Have not register"}
 	} else {
 		return response, err

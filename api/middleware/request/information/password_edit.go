@@ -6,7 +6,8 @@ import (
 	"net/http"
 	"strings"
 	"study_savvy_api_go/api/request/information"
-	"study_savvy_api_go/api/response/utils"
+	responseUtils "study_savvy_api_go/api/response/utils"
+	"study_savvy_api_go/api/utils"
 )
 
 func validatePasswordEdit(data information.EditPassword) error {
@@ -28,7 +29,8 @@ func MiddleWarePasswordEditContent() gin.HandlerFunc {
 		var data information.EditPassword
 
 		if err := c.ShouldBindJSON(&data); err != nil {
-			e := utils.Error{Error: "Invalid JSON data"}
+			go utils.LogWarn(utils.LogData{Event: "Failure request", Method: c.Request.Method, Path: c.FullPath(), Header: c.Request.Header, Details: err.Error()})
+			e := responseUtils.Error{Error: "Invalid JSON data"}
 			c.JSON(http.StatusBadRequest, e)
 			c.Abort()
 			return
@@ -36,7 +38,8 @@ func MiddleWarePasswordEditContent() gin.HandlerFunc {
 		err := validatePasswordEdit(data)
 
 		if err != nil {
-			e := utils.Error{Error: err.Error()}
+			go utils.LogWarn(utils.LogData{Event: "Failure request", Method: c.Request.Method, Path: c.FullPath(), Header: c.Request.Header, Details: err.Error()})
+			e := responseUtils.Error{Error: err.Error()}
 			c.JSON(http.StatusBadRequest, e)
 			c.Abort()
 			return
