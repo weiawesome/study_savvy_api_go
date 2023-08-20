@@ -5,7 +5,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"study_savvy_api_go/api/request/access_method"
-	"study_savvy_api_go/api/response/utils"
+	responseUtils "study_savvy_api_go/api/response/utils"
+	"study_savvy_api_go/api/utils"
 )
 
 func validateAccessTokenEdit(data access_method.AccessToken) error {
@@ -23,7 +24,8 @@ func MiddleWareAccessTokenEditContent() gin.HandlerFunc {
 		var data access_method.AccessToken
 
 		if err := c.ShouldBindJSON(&data); err != nil {
-			e := utils.Error{Error: "Invalid JSON data"}
+			go utils.LogWarn(utils.LogData{Event: "Failure request", Method: c.Request.Method, Path: c.FullPath(), Header: c.Request.Header, Details: err.Error()})
+			e := responseUtils.Error{Error: "Invalid JSON data"}
 			c.JSON(http.StatusBadRequest, e)
 			c.Abort()
 			return
@@ -31,7 +33,8 @@ func MiddleWareAccessTokenEditContent() gin.HandlerFunc {
 		err := validateAccessTokenEdit(data)
 
 		if err != nil {
-			e := utils.Error{Error: err.Error()}
+			go utils.LogWarn(utils.LogData{Event: "Failure request", Method: c.Request.Method, Path: c.FullPath(), Header: c.Request.Header, Details: err.Error()})
+			e := responseUtils.Error{Error: err.Error()}
 			c.JSON(http.StatusBadRequest, e)
 			c.Abort()
 			return

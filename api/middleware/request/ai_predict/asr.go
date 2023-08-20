@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"study_savvy_api_go/api/request/ai_predict"
+	responseUtils "study_savvy_api_go/api/response/utils"
 	"study_savvy_api_go/api/utils"
 )
 
@@ -18,13 +19,19 @@ func MiddlewareAiPredictAsrContent() gin.HandlerFunc {
 		file, handler, err := c.Request.FormFile("file")
 
 		if err != nil {
-			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": "Failed to get file from form"})
+			go utils.LogWarn(utils.LogData{Event: "Failure request", Method: c.Request.Method, Path: c.FullPath(), Header: c.Request.Header, Details: err.Error()})
+			e := responseUtils.Error{Error: "Failed to get file from form"}
+			c.JSON(http.StatusBadRequest, e)
+			c.Abort()
 			return
 		}
 		defer func(file multipart.File) {
 			err := file.Close()
 			if err != nil {
-				c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": "Failed to close file"})
+				go utils.LogWarn(utils.LogData{Event: "Failure request", Method: c.Request.Method, Path: c.FullPath(), Header: c.Request.Header, Details: err.Error()})
+				e := responseUtils.Error{Error: "Failed to close file"}
+				c.JSON(http.StatusBadRequest, e)
+				c.Abort()
 			}
 		}(file)
 		prompt := c.PostForm("prompt")
@@ -33,6 +40,7 @@ func MiddlewareAiPredictAsrContent() gin.HandlerFunc {
 		if _, err := os.Stat(uploadDir); os.IsNotExist(err) {
 			err := os.Mkdir(uploadDir, os.ModePerm)
 			if err != nil {
+				go utils.LogError(utils.LogData{Event: "Failure request", Method: c.Request.Method, Path: c.FullPath(), Header: c.Request.Header, Details: err.Error()})
 				return
 			}
 		}
@@ -40,7 +48,10 @@ func MiddlewareAiPredictAsrContent() gin.HandlerFunc {
 		data := ai_predict.Asr{File: handler, Prompt: prompt}
 		fileType, err := data.Validate()
 		if err != nil {
-			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+			go utils.LogWarn(utils.LogData{Event: "Failure request", Method: c.Request.Method, Path: c.FullPath(), Header: c.Request.Header, Details: err.Error()})
+			e := responseUtils.Error{Error: err.Error()}
+			c.JSON(http.StatusBadRequest, e)
+			c.Abort()
 			return
 		}
 
@@ -48,26 +59,38 @@ func MiddlewareAiPredictAsrContent() gin.HandlerFunc {
 		filePath := fmt.Sprintf("%s/%s", uploadDir, id+fileType)
 		outFile, err := os.Create(filePath)
 		if err != nil {
-			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"message": "Failed to create file on server"})
+			go utils.LogError(utils.LogData{Event: "Failure request", Method: c.Request.Method, Path: c.FullPath(), Header: c.Request.Header, Details: err.Error()})
+			e := responseUtils.Error{Error: "Failed to create file on server"}
+			c.JSON(http.StatusInternalServerError, e)
+			c.Abort()
 			return
 		}
 		defer func(outFile *os.File) {
 			err := outFile.Close()
 			if err != nil {
-				c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": "Failed to create file"})
+				go utils.LogWarn(utils.LogData{Event: "Failure request", Method: c.Request.Method, Path: c.FullPath(), Header: c.Request.Header, Details: err.Error()})
+				e := responseUtils.Error{Error: "Failed to create file"}
+				c.JSON(http.StatusBadRequest, e)
+				c.Abort()
 				return
 			}
 		}(outFile)
 
 		_, err = file.Seek(0, 0)
 		if err != nil {
-			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"message": "Failed to rewind file"})
+			go utils.LogError(utils.LogData{Event: "Failure request", Method: c.Request.Method, Path: c.FullPath(), Header: c.Request.Header, Details: err.Error()})
+			e := responseUtils.Error{Error: "Failed to rewind file"}
+			c.JSON(http.StatusInternalServerError, e)
+			c.Abort()
 			return
 		}
 
 		_, err = io.Copy(outFile, file)
 		if err != nil {
-			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"message": "Failed to write file on server"})
+			go utils.LogError(utils.LogData{Event: "Failure request", Method: c.Request.Method, Path: c.FullPath(), Header: c.Request.Header, Details: err.Error()})
+			e := responseUtils.Error{Error: "Failed to write file on server"}
+			c.JSON(http.StatusInternalServerError, e)
+			c.Abort()
 			return
 		}
 

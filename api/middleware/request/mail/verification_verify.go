@@ -5,7 +5,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	mailVerification "net/mail"
-	"study_savvy_api_go/api/response/utils"
+	responseUtils "study_savvy_api_go/api/response/utils"
+	"study_savvy_api_go/api/utils"
 )
 
 func validateMailVerify(mail string, code string) error {
@@ -25,7 +26,8 @@ func MiddleWareMailVerifyContent() gin.HandlerFunc {
 
 		err := validateMailVerify(Mail, Code)
 		if err != nil {
-			e := utils.Error{Error: err.Error()}
+			go utils.LogWarn(utils.LogData{Event: "Failure request", Method: c.Request.Method, Path: c.FullPath(), Header: c.Request.Header, Details: err.Error()})
+			e := responseUtils.Error{Error: err.Error()}
 			c.JSON(http.StatusBadRequest, e)
 			c.Abort()
 			return

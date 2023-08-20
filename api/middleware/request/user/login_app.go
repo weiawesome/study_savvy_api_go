@@ -7,7 +7,8 @@ import (
 	"net/mail"
 	"strings"
 	"study_savvy_api_go/api/request/user"
-	"study_savvy_api_go/api/response/utils"
+	responseUtils "study_savvy_api_go/api/response/utils"
+	"study_savvy_api_go/api/utils"
 )
 
 func validateLoginApp(data user.LoginApp) error {
@@ -33,7 +34,8 @@ func MiddleWareLoginAppContent() gin.HandlerFunc {
 		var data user.LoginApp
 
 		if err := c.ShouldBindJSON(&data); err != nil {
-			e := utils.Error{Error: "Invalid JSON data"}
+			go utils.LogWarn(utils.LogData{Event: "Failure request", Method: c.Request.Method, Path: c.FullPath(), Header: c.Request.Header, Details: err.Error()})
+			e := responseUtils.Error{Error: "Invalid JSON data"}
 			c.JSON(http.StatusBadRequest, e)
 			c.Abort()
 			return
@@ -41,7 +43,8 @@ func MiddleWareLoginAppContent() gin.HandlerFunc {
 		err := validateLoginApp(data)
 
 		if err != nil {
-			e := utils.Error{Error: err.Error()}
+			go utils.LogWarn(utils.LogData{Event: "Failure request", Method: c.Request.Method, Path: c.FullPath(), Header: c.Request.Header, Details: err.Error()})
+			e := responseUtils.Error{Error: err.Error()}
 			c.JSON(http.StatusBadRequest, e)
 			c.Abort()
 			return

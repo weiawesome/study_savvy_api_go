@@ -113,14 +113,7 @@ type LogData struct {
 	Header  interface{} `json:"header"`
 	Content interface{} `json:"content"`
 	User    string      `json:"user"`
-}
-
-func (d *LogData) toJson() string {
-	jsonData, err := json.Marshal(d)
-	if err == nil {
-		logger.Warn().Msg("\"event\":\"Error to convert to json in log\",\"user\":\"system\"")
-	}
-	return string(jsonData)
+	Details string      `json:"details"`
 }
 
 func LogDebug(obj LogData) {
@@ -128,7 +121,7 @@ func LogDebug(obj LogData) {
 	if err == nil {
 		logger.Debug().Msg(string(jsonData))
 	} else {
-		logger.Error().Msg("\"event\":\"error in debug log\",\"content\":\"" + err.Error() + "\",\"user\":\"system\"")
+		logger.Error().Msg("\"event\":\"error in debug log\",\"details\":\"" + err.Error() + "\",\"user\":\"system\"")
 	}
 }
 
@@ -137,7 +130,7 @@ func LogInfo(obj LogData) {
 	if err == nil {
 		logger.Info().Msg(string(jsonData))
 	} else {
-		logger.Error().Msg("\"event\":\"error in info log\",\"content\":\"" + err.Error() + "\",\"user\":\"system\"")
+		logger.Error().Msg("\"event\":\"error in info log\",\"details\":\"" + err.Error() + "\",\"user\":\"system\"")
 	}
 }
 
@@ -146,7 +139,7 @@ func LogWarn(obj LogData) {
 	if err == nil {
 		logger.Warn().Msg(string(jsonData))
 	} else {
-		logger.Error().Msg("\"event\":\"error in warn log\",\"content\":\"" + err.Error() + "\",\"user\":\"system\"")
+		logger.Error().Msg("\"event\":\"error in warn log\",\"details\":\"" + err.Error() + "\",\"user\":\"system\"")
 	}
 }
 
@@ -155,7 +148,7 @@ func LogError(obj LogData) {
 	if err == nil {
 		logger.Error().Msg(string(jsonData))
 	} else {
-		logger.Error().Msg("\"event\":\"error in error log\",\"content\":\"" + err.Error() + "\",\"user\":\"system\"")
+		logger.Error().Msg("\"event\":\"error in error log\",\"details\":\"" + err.Error() + "\",\"user\":\"system\"")
 	}
 }
 
@@ -164,7 +157,7 @@ func LogFatal(obj LogData) {
 	if err == nil {
 		logger.Fatal().Msg(string(jsonData))
 	} else {
-		logger.Error().Msg("\"event\":\"error in fatal log\",\"content\":\"" + err.Error() + "\",\"user\":\"system\"")
+		logger.Error().Msg("\"event\":\"error in fatal log\",\"details\":\"" + err.Error() + "\",\"user\":\"system\"")
 	}
 }
 
@@ -173,6 +166,6 @@ func LogPanic(obj LogData) {
 	if err == nil {
 		logger.Panic().Msg(string(jsonData))
 	} else {
-		logger.Error().Msg("\"event\":\"error in panic log\",\"content\":\"" + err.Error() + "\",\"user\":\"system\"")
+		logger.Error().Msg("\"event\":\"error in panic log\",\"details\":\"" + err.Error() + "\",\"user\":\"system\"")
 	}
 }

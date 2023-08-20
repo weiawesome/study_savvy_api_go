@@ -4,7 +4,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
-	"study_savvy_api_go/api/response/utils"
+	responseUtils "study_savvy_api_go/api/response/utils"
+	"study_savvy_api_go/api/utils"
 )
 
 func MiddleWareFilesOcrContent() gin.HandlerFunc {
@@ -13,7 +14,8 @@ func MiddleWareFilesOcrContent() gin.HandlerFunc {
 		pageInt, err := strconv.Atoi(page)
 
 		if err != nil {
-			e := utils.Error{Error: "Parameter error"}
+			go utils.LogWarn(utils.LogData{Event: "Failure request", Method: c.Request.Method, Path: c.FullPath(), Header: c.Request.Header, Details: err.Error()})
+			e := responseUtils.Error{Error: "Parameter error"}
 			c.JSON(http.StatusBadRequest, e)
 			c.Abort()
 			return

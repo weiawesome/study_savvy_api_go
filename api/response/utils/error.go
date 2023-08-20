@@ -18,3 +18,11 @@ type AuthError struct {
 func (err AuthError) Error() string {
 	return err.Message
 }
+
+type ExistError struct {
+	Message string
+}
+
+func (err ExistError) Error() string {
+	return err.Message
+}

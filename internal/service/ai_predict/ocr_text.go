@@ -32,7 +32,7 @@ func (m *ServiceAiPredictOcrText) ExecuteOcrText(data ai_predict.OcrText, user s
 		} else {
 			return response, err
 		}
-	} else if errors.As(err, &StatusUtils.ExistSource{}) {
+	} else if errors.As(err, &StatusUtils.NotExistSource{}) {
 		return response, utils.RegistrationError{Message: "Have not register"}
 	} else {
 		return response, err

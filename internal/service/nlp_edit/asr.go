@@ -30,7 +30,7 @@ func (m *ServiceNlpEditAsr) ExecuteAsr(data nlp_edit.Asr, user string, id string
 				} else {
 					return response, err
 				}
-			} else if errors.As(err, &StatusUtils.ExistSource{}) {
+			} else if errors.As(err, &StatusUtils.NotExistSource{}) {
 				return response, utils.RegistrationError{Message: "Have not register"}
 			} else {
 				return response, err
@@ -38,8 +38,8 @@ func (m *ServiceNlpEditAsr) ExecuteAsr(data nlp_edit.Asr, user string, id string
 		} else {
 			return response, utils.AuthError{Message: "Auth error"}
 		}
-	} else if errors.As(err, &StatusUtils.ExistSource{}) {
-		return response, utils.RegistrationError{Message: "No such file with id"}
+	} else if errors.As(err, &StatusUtils.NotExistSource{}) {
+		return response, utils.ExistError{Message: "No such file with id"}
 	} else {
 		return response, err
 	}

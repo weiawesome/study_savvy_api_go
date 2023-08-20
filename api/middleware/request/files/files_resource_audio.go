@@ -4,7 +4,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"net/http"
-	"study_savvy_api_go/api/response/utils"
+	responseUtils "study_savvy_api_go/api/response/utils"
+	"study_savvy_api_go/api/utils"
 )
 
 func MiddleWareFilesResourceAudioContent() gin.HandlerFunc {
@@ -13,7 +14,8 @@ func MiddleWareFilesResourceAudioContent() gin.HandlerFunc {
 		IdUuid, err := uuid.Parse(Id)
 
 		if err != nil {
-			e := utils.Error{Error: "Parameter error not uuid"}
+			go utils.LogWarn(utils.LogData{Event: "Failure request", Method: c.Request.Method, Path: c.FullPath(), Header: c.Request.Header, Details: err.Error()})
+			e := responseUtils.Error{Error: "Parameter error not uuid"}
 			c.JSON(http.StatusBadRequest, e)
 			c.Abort()
 			return

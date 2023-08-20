@@ -4,7 +4,8 @@ import (
 	"errors"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"study_savvy_api_go/api/response/utils"
+	responseUtils "study_savvy_api_go/api/response/utils"
+	"study_savvy_api_go/api/utils"
 	StatusUtils "study_savvy_api_go/internal/repository/utils"
 	"study_savvy_api_go/internal/service/files"
 )
@@ -16,13 +17,15 @@ type HandlerFilesSpecific struct {
 func (h *HandlerFilesSpecific) Handle(c *gin.Context) {
 	user, ok := c.Get("user")
 	if !ok {
-		e := utils.Error{Error: "Data not found in context"}
+		go utils.LogError(utils.LogData{Event: "Failure request", Method: c.Request.Method, Path: c.FullPath(), Header: c.Request.Header, Details: "Data not found in context"})
+		e := responseUtils.Error{Error: "Data not found in context"}
 		c.JSON(http.StatusInternalServerError, e)
 		return
 	}
 	id, ok := c.Get("id")
 	if !ok {
-		e := utils.Error{Error: "Data not found in context"}
+		go utils.LogError(utils.LogData{Event: "Failure request", Method: c.Request.Method, Path: c.FullPath(), Header: c.Request.Header, Details: "Data not found in context"})
+		e := responseUtils.Error{Error: "Data not found in context"}
 		c.JSON(http.StatusInternalServerError, e)
 		return
 	}
@@ -31,20 +34,25 @@ func (h *HandlerFilesSpecific) Handle(c *gin.Context) {
 		if stringDataId, ok := id.(string); ok {
 			result, err := h.Service.GetFile(stringData, stringDataId)
 			if err == nil {
+				go utils.LogInfo(utils.LogData{Event: "Success request", Method: c.Request.Method, Path: c.FullPath(), User: stringData, Header: c.Request.Header})
 				c.JSON(http.StatusOK, result)
 			} else if errors.As(err, &StatusUtils.NotExistSource{}) {
-				e := utils.Error{Error: err.Error()}
+				go utils.LogWarn(utils.LogData{Event: "Failure request", Method: c.Request.Method, Path: c.FullPath(), User: stringData, Header: c.Request.Header, Details: err.Error()})
+				e := responseUtils.Error{Error: err.Error()}
 				c.JSON(http.StatusNotFound, e)
 			} else {
-				e := utils.Error{Error: err.Error()}
+				go utils.LogError(utils.LogData{Event: "Failure request", Method: c.Request.Method, Path: c.FullPath(), User: stringData, Header: c.Request.Header, Details: err.Error()})
+				e := responseUtils.Error{Error: err.Error()}
 				c.JSON(http.StatusInternalServerError, e)
 			}
 		} else {
-			e := utils.Error{Error: "Internal error"}
+			go utils.LogError(utils.LogData{Event: "Failure request", Method: c.Request.Method, Path: c.FullPath(), User: stringData, Header: c.Request.Header, Details: "Type Assertion error"})
+			e := responseUtils.Error{Error: "Internal error"}
 			c.JSON(http.StatusInternalServerError, e)
 		}
 	} else {
-		e := utils.Error{Error: "Internal error"}
+		go utils.LogError(utils.LogData{Event: "Failure request", Method: c.Request.Method, Path: c.FullPath(), User: stringData, Header: c.Request.Header, Details: "Type Assertion error"})
+		e := responseUtils.Error{Error: "Internal error"}
 		c.JSON(http.StatusInternalServerError, e)
 	}
 }
