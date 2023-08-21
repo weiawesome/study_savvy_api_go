@@ -5,12 +5,14 @@ import (
 	"net/http"
 	responseUtils "study_savvy_api_go/api/response/utils"
 	"study_savvy_api_go/api/utils"
+	"study_savvy_api_go/internal/service/logger"
 	"study_savvy_api_go/internal/service/user"
 	"time"
 )
 
 type HandlerLogout struct {
-	Service user.ServiceLogout
+	Service    user.ServiceLogout
+	LogService logger.ServiceLogger
 }
 
 func (h *HandlerLogout) Handle(c *gin.Context) {
@@ -44,16 +46,16 @@ func (h *HandlerLogout) Handle(c *gin.Context) {
 			c.SetCookie(cookieJwt.Name, cookieJwt.Value, cookieJwt.MaxAge, cookieJwt.Path, cookieJwt.Domain, cookieJwt.Secure, cookieJwt.HttpOnly)
 			c.SetCookie(cookieCsrf.Name, cookieCsrf.Value, cookieCsrf.MaxAge, cookieCsrf.Path, cookieCsrf.Domain, cookieCsrf.Secure, cookieCsrf.HttpOnly)
 
-			go utils.LogInfo(utils.LogData{Event: "Success request", Method: c.Request.Method, Path: c.FullPath(), Header: c.Request.Header})
+			go h.LogService.Info(utils.LogData{Event: "Success request", Method: c.Request.Method, Path: c.FullPath(), Header: c.Request.Header})
 
 			c.JSON(http.StatusCreated, result)
 		} else {
-			go utils.LogError(utils.LogData{Event: "Failure request", Method: c.Request.Method, Path: c.FullPath(), Header: c.Request.Header, Details: err.Error()})
+			go h.LogService.Error(utils.LogData{Event: "Failure request", Method: c.Request.Method, Path: c.FullPath(), Header: c.Request.Header, Details: err.Error()})
 			e := responseUtils.Error{Error: err.Error()}
 			c.JSON(http.StatusInternalServerError, e)
 		}
 	} else {
-		go utils.LogError(utils.LogData{Event: "Failure request", Method: c.Request.Method, Path: c.FullPath(), Header: c.Request.Header, Details: "Type Assertion error"})
+		go h.LogService.Error(utils.LogData{Event: "Failure request", Method: c.Request.Method, Path: c.FullPath(), Header: c.Request.Header, Details: "Type Assertion error"})
 		e := responseUtils.Error{Error: "Internal error"}
 		c.JSON(http.StatusInternalServerError, e)
 	}

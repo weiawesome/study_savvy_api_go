@@ -9,7 +9,6 @@ import (
 	"gopkg.in/natefinch/lumberjack.v2"
 	"os"
 	"path/filepath"
-	"study_savvy_api_go/internal/repository/redis"
 	"time"
 )
 
@@ -116,91 +115,56 @@ type LogData struct {
 }
 
 func LogDebug(obj LogData) {
-	redisClient := GetRedisClient()
-	if hashUser, err := redis.GetHashValue(obj.User, redisClient); err != nil {
-		logger.Error().Msg("\"event\":\"error to get hash-value in debug log\",\"details\":\"" + err.Error() + "\",\"user\":\"system\"")
+	jsonData, err := json.Marshal(obj)
+	if err == nil {
+		logger.Debug().Msg(string(jsonData))
 	} else {
-		obj.User = hashUser
-		jsonData, err := json.Marshal(obj)
-		if err == nil {
-			logger.Debug().Msg(string(jsonData))
-		} else {
-			logger.Error().Msg("\"event\":\"error in debug log\",\"details\":\"" + err.Error() + "\",\"user\":\"system\"")
-		}
+		logger.Error().Msg("\"event\":\"error in debug log\",\"details\":\"" + err.Error() + "\",\"user\":\"system\"")
 	}
 }
 
 func LogInfo(obj LogData) {
-	redisClient := GetRedisClient()
-	if hashUser, err := redis.GetHashValue(obj.User, redisClient); err != nil {
-		logger.Error().Msg("\"event\":\"error to get hash-value in info log\",\"details\":\"" + err.Error() + "\",\"user\":\"system\"")
+	jsonData, err := json.Marshal(obj)
+	if err == nil {
+		logger.Info().Msg(string(jsonData))
 	} else {
-		obj.User = hashUser
-		jsonData, err := json.Marshal(obj)
-		if err == nil {
-			logger.Info().Msg(string(jsonData))
-		} else {
-			logger.Error().Msg("\"event\":\"error in info log\",\"details\":\"" + err.Error() + "\",\"user\":\"system\"")
-		}
+		logger.Error().Msg("\"event\":\"error in info log\",\"details\":\"" + err.Error() + "\",\"user\":\"system\"")
 	}
 }
 
 func LogWarn(obj LogData) {
-	redisClient := GetRedisClient()
-	if hashUser, err := redis.GetHashValue(obj.User, redisClient); err != nil {
-		logger.Error().Msg("\"event\":\"error to get hash-value in warn log\",\"details\":\"" + err.Error() + "\",\"user\":\"system\"")
+
+	jsonData, err := json.Marshal(obj)
+	if err == nil {
+		logger.Warn().Msg(string(jsonData))
 	} else {
-		obj.User = hashUser
-		jsonData, err := json.Marshal(obj)
-		if err == nil {
-			logger.Warn().Msg(string(jsonData))
-		} else {
-			logger.Error().Msg("\"event\":\"error in warn log\",\"details\":\"" + err.Error() + "\",\"user\":\"system\"")
-		}
+		logger.Error().Msg("\"event\":\"error in warn log\",\"details\":\"" + err.Error() + "\",\"user\":\"system\"")
 	}
 }
 
 func LogError(obj LogData) {
-	redisClient := GetRedisClient()
-	if hashUser, err := redis.GetHashValue(obj.User, redisClient); err != nil {
-		logger.Error().Msg("\"event\":\"error to get hash-value in error log\",\"details\":\"" + err.Error() + "\",\"user\":\"system\"")
+	jsonData, err := json.Marshal(obj)
+	if err == nil {
+		logger.Error().Msg(string(jsonData))
 	} else {
-		obj.User = hashUser
-		jsonData, err := json.Marshal(obj)
-		if err == nil {
-			logger.Error().Msg(string(jsonData))
-		} else {
-			logger.Error().Msg("\"event\":\"error in error log\",\"details\":\"" + err.Error() + "\",\"user\":\"system\"")
-		}
+		logger.Error().Msg("\"event\":\"error in error log\",\"details\":\"" + err.Error() + "\",\"user\":\"system\"")
 	}
 }
 
 func LogFatal(obj LogData) {
-	redisClient := GetRedisClient()
-	if hashUser, err := redis.GetHashValue(obj.User, redisClient); err != nil {
-		logger.Error().Msg("\"event\":\"error to get hash-value in fatal log\",\"details\":\"" + err.Error() + "\",\"user\":\"system\"")
+	jsonData, err := json.Marshal(obj)
+	if err == nil {
+		logger.Fatal().Msg(string(jsonData))
 	} else {
-		obj.User = hashUser
-		jsonData, err := json.Marshal(obj)
-		if err == nil {
-			logger.Fatal().Msg(string(jsonData))
-		} else {
-			logger.Error().Msg("\"event\":\"error in fatal log\",\"details\":\"" + err.Error() + "\",\"user\":\"system\"")
-		}
+		logger.Error().Msg("\"event\":\"error in fatal log\",\"details\":\"" + err.Error() + "\",\"user\":\"system\"")
 	}
 }
 
 func LogPanic(obj LogData) {
-	redisClient := GetRedisClient()
-	if hashUser, err := redis.GetHashValue(obj.User, redisClient); err != nil {
-		logger.Error().Msg("\"event\":\"error to get hash-value in panic log\",\"details\":\"" + err.Error() + "\",\"user\":\"system\"")
+	jsonData, err := json.Marshal(obj)
+	if err == nil {
+		logger.Panic().Msg(string(jsonData))
 	} else {
-		obj.User = hashUser
-		jsonData, err := json.Marshal(obj)
-		if err == nil {
-			logger.Panic().Msg(string(jsonData))
-		} else {
-			logger.Error().Msg("\"event\":\"error in panic log\",\"details\":\"" + err.Error() + "\",\"user\":\"system\"")
-		}
+		logger.Error().Msg("\"event\":\"error in panic log\",\"details\":\"" + err.Error() + "\",\"user\":\"system\"")
 	}
 }
