@@ -21,3 +21,15 @@ func InitRedis() error {
 func GetRedisClient() *redis.Client {
 	return redisClient
 }
+func CloseRedis() error {
+	if redisClient == nil {
+		return nil
+	}
+
+	err := redisClient.Close()
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

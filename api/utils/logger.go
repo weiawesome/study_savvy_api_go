@@ -9,6 +9,7 @@ import (
 	"gopkg.in/natefinch/lumberjack.v2"
 	"os"
 	"path/filepath"
+	"study_savvy_api_go/internal/repository/redis"
 	"time"
 )
 
@@ -16,7 +17,7 @@ var logger zerolog.Logger
 
 func InitLogger() {
 	logFile := &lumberjack.Logger{
-		Filename:   "study-savvy-go-server.log",
+		Filename:   "server.log",
 		MaxSize:    10,
 		MaxBackups: 3,
 		MaxAge:     30,
@@ -67,14 +68,14 @@ func uploadRotatedLogsToInfluxDB(influxClient influxdb2.Client) {
 
 	files, err := filepath.Glob("app.log*")
 	if err != nil {
-		data := LogData{User: "system", Event: "Fail to find log file", Content: "error: " + err.Error()}
+		data := LogData{User: "system", Event: "Fail to find log file", Details: "error: " + err.Error()}
 		LogError(data)
 	}
 
 	for _, filename := range files {
 		file, err := os.Open(filename)
 		if err != nil {
-			data := LogData{User: "system", Event: "Fail to open log file", Content: "File name: " + filename + " error: " + err.Error()}
+			data := LogData{User: "system", Event: "Fail to open log file", Details: "File name: " + filename + " error: " + err.Error()}
 			LogError(data)
 			continue
 		}
@@ -87,19 +88,19 @@ func uploadRotatedLogsToInfluxDB(influxClient influxdb2.Client) {
 
 			err := writeAPI.WritePoint(context.Background(), point)
 			if err != nil {
-				data := LogData{User: "system", Event: "Fail to upload log file", Content: "File name: " + filename + " error: " + err.Error()}
+				data := LogData{User: "system", Event: "Fail to upload log file", Details: "File name: " + filename + " error: " + err.Error()}
 				LogError(data)
 			}
 		}
 		err = file.Close()
 		if err != nil {
-			data := LogData{User: "system", Event: "Fail to close log file", Content: "File name: " + filename + " error: " + err.Error()}
+			data := LogData{User: "system", Event: "Fail to close log file", Details: "File name: " + filename + " error: " + err.Error()}
 			LogError(data)
 			continue
 		}
 		err = os.Remove(filename)
 		if err != nil {
-			data := LogData{User: "system", Event: "Fail to delete log file", Content: "File name: " + filename + " error: " + err.Error()}
+			data := LogData{User: "system", Event: "Fail to delete log file", Details: "File name: " + filename + " error: " + err.Error()}
 			LogError(data)
 		}
 	}
@@ -110,61 +111,96 @@ type LogData struct {
 	Method  string      `json:"method"`
 	Path    string      `json:"path"`
 	Header  interface{} `json:"header"`
-	Content interface{} `json:"content"`
 	User    string      `json:"user"`
 	Details string      `json:"details"`
 }
 
 func LogDebug(obj LogData) {
-	jsonData, err := json.Marshal(obj)
-	if err == nil {
-		logger.Debug().Msg(string(jsonData))
+	redisClient := GetRedisClient()
+	if hashUser, err := redis.GetHashValue(obj.User, redisClient); err != nil {
+		logger.Error().Msg("\"event\":\"error to get hash-value in debug log\",\"details\":\"" + err.Error() + "\",\"user\":\"system\"")
 	} else {
-		logger.Error().Msg("\"event\":\"error in debug log\",\"details\":\"" + err.Error() + "\",\"user\":\"system\"")
+		obj.User = hashUser
+		jsonData, err := json.Marshal(obj)
+		if err == nil {
+			logger.Debug().Msg(string(jsonData))
+		} else {
+			logger.Error().Msg("\"event\":\"error in debug log\",\"details\":\"" + err.Error() + "\",\"user\":\"system\"")
+		}
 	}
 }
 
 func LogInfo(obj LogData) {
-	jsonData, err := json.Marshal(obj)
-	if err == nil {
-		logger.Info().Msg(string(jsonData))
+	redisClient := GetRedisClient()
+	if hashUser, err := redis.GetHashValue(obj.User, redisClient); err != nil {
+		logger.Error().Msg("\"event\":\"error to get hash-value in info log\",\"details\":\"" + err.Error() + "\",\"user\":\"system\"")
 	} else {
-		logger.Error().Msg("\"event\":\"error in info log\",\"details\":\"" + err.Error() + "\",\"user\":\"system\"")
+		obj.User = hashUser
+		jsonData, err := json.Marshal(obj)
+		if err == nil {
+			logger.Info().Msg(string(jsonData))
+		} else {
+			logger.Error().Msg("\"event\":\"error in info log\",\"details\":\"" + err.Error() + "\",\"user\":\"system\"")
+		}
 	}
 }
 
 func LogWarn(obj LogData) {
-	jsonData, err := json.Marshal(obj)
-	if err == nil {
-		logger.Warn().Msg(string(jsonData))
+	redisClient := GetRedisClient()
+	if hashUser, err := redis.GetHashValue(obj.User, redisClient); err != nil {
+		logger.Error().Msg("\"event\":\"error to get hash-value in warn log\",\"details\":\"" + err.Error() + "\",\"user\":\"system\"")
 	} else {
-		logger.Error().Msg("\"event\":\"error in warn log\",\"details\":\"" + err.Error() + "\",\"user\":\"system\"")
+		obj.User = hashUser
+		jsonData, err := json.Marshal(obj)
+		if err == nil {
+			logger.Warn().Msg(string(jsonData))
+		} else {
+			logger.Error().Msg("\"event\":\"error in warn log\",\"details\":\"" + err.Error() + "\",\"user\":\"system\"")
+		}
 	}
 }
 
 func LogError(obj LogData) {
-	jsonData, err := json.Marshal(obj)
-	if err == nil {
-		logger.Error().Msg(string(jsonData))
+	redisClient := GetRedisClient()
+	if hashUser, err := redis.GetHashValue(obj.User, redisClient); err != nil {
+		logger.Error().Msg("\"event\":\"error to get hash-value in error log\",\"details\":\"" + err.Error() + "\",\"user\":\"system\"")
 	} else {
-		logger.Error().Msg("\"event\":\"error in error log\",\"details\":\"" + err.Error() + "\",\"user\":\"system\"")
+		obj.User = hashUser
+		jsonData, err := json.Marshal(obj)
+		if err == nil {
+			logger.Error().Msg(string(jsonData))
+		} else {
+			logger.Error().Msg("\"event\":\"error in error log\",\"details\":\"" + err.Error() + "\",\"user\":\"system\"")
+		}
 	}
 }
 
 func LogFatal(obj LogData) {
-	jsonData, err := json.Marshal(obj)
-	if err == nil {
-		logger.Fatal().Msg(string(jsonData))
+	redisClient := GetRedisClient()
+	if hashUser, err := redis.GetHashValue(obj.User, redisClient); err != nil {
+		logger.Error().Msg("\"event\":\"error to get hash-value in fatal log\",\"details\":\"" + err.Error() + "\",\"user\":\"system\"")
 	} else {
-		logger.Error().Msg("\"event\":\"error in fatal log\",\"details\":\"" + err.Error() + "\",\"user\":\"system\"")
+		obj.User = hashUser
+		jsonData, err := json.Marshal(obj)
+		if err == nil {
+			logger.Fatal().Msg(string(jsonData))
+		} else {
+			logger.Error().Msg("\"event\":\"error in fatal log\",\"details\":\"" + err.Error() + "\",\"user\":\"system\"")
+		}
 	}
 }
 
 func LogPanic(obj LogData) {
-	jsonData, err := json.Marshal(obj)
-	if err == nil {
-		logger.Panic().Msg(string(jsonData))
+	redisClient := GetRedisClient()
+	if hashUser, err := redis.GetHashValue(obj.User, redisClient); err != nil {
+		logger.Error().Msg("\"event\":\"error to get hash-value in panic log\",\"details\":\"" + err.Error() + "\",\"user\":\"system\"")
 	} else {
-		logger.Error().Msg("\"event\":\"error in panic log\",\"details\":\"" + err.Error() + "\",\"user\":\"system\"")
+		obj.User = hashUser
+		jsonData, err := json.Marshal(obj)
+		if err == nil {
+			logger.Panic().Msg(string(jsonData))
+		} else {
+			logger.Error().Msg("\"event\":\"error in panic log\",\"details\":\"" + err.Error() + "\",\"user\":\"system\"")
+		}
 	}
 }

@@ -26,19 +26,19 @@ func (h *HandlerSignup) Handle(c *gin.Context) {
 	if jsonData, ok := data.(userRequest.SignUp); ok {
 		result, err := h.Service.Signup(jsonData)
 		if err == nil {
-			go utils.LogInfo(utils.LogData{Event: "Success request", Method: c.Request.Method, Path: c.FullPath(), User: jsonData.Mail, Header: c.Request.Header, Content: jsonData})
+			go utils.LogInfo(utils.LogData{Event: "Success request", Method: c.Request.Method, Path: c.FullPath(), User: jsonData.Mail, Header: c.Request.Header})
 			c.JSON(http.StatusOK, result)
 		} else if errors.As(err, &responseUtils.RegistrationError{}) {
-			go utils.LogWarn(utils.LogData{Event: "Failure request", Method: c.Request.Method, Path: c.FullPath(), User: jsonData.Mail, Header: c.Request.Header, Content: jsonData, Details: err.Error()})
+			go utils.LogWarn(utils.LogData{Event: "Failure request", Method: c.Request.Method, Path: c.FullPath(), User: jsonData.Mail, Header: c.Request.Header, Details: err.Error()})
 			e := responseUtils.Error{Error: err.Error()}
 			c.JSON(http.StatusUnauthorized, e)
 		} else {
-			go utils.LogError(utils.LogData{Event: "Failure request", Method: c.Request.Method, Path: c.FullPath(), User: jsonData.Mail, Header: c.Request.Header, Content: jsonData, Details: err.Error()})
+			go utils.LogError(utils.LogData{Event: "Failure request", Method: c.Request.Method, Path: c.FullPath(), User: jsonData.Mail, Header: c.Request.Header, Details: err.Error()})
 			e := responseUtils.Error{Error: "Data type mismatch"}
 			c.JSON(http.StatusInternalServerError, e)
 		}
 	} else {
-		go utils.LogError(utils.LogData{Event: "Failure request", Method: c.Request.Method, Path: c.FullPath(), User: jsonData.Mail, Header: c.Request.Header, Content: jsonData, Details: "Type Assertion error"})
+		go utils.LogError(utils.LogData{Event: "Failure request", Method: c.Request.Method, Path: c.FullPath(), User: jsonData.Mail, Header: c.Request.Header, Details: "Type Assertion error"})
 		e := responseUtils.Error{Error: "Internal error"}
 		c.JSON(http.StatusInternalServerError, e)
 	}

@@ -33,3 +33,21 @@ func InitDB() error {
 func GetDB() *gorm.DB {
 	return db
 }
+
+func CloseDB() error {
+	if db == nil {
+		return nil
+	}
+
+	sqlDB, err := db.DB()
+	if err != nil {
+		return err
+	}
+
+	err = sqlDB.Close()
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
