@@ -16,7 +16,7 @@ var logger zerolog.Logger
 
 func InitLogger() {
 	logFile := &lumberjack.Logger{
-		Filename:   "study-savvy-go-server.log",
+		Filename:   "server.log",
 		MaxSize:    10,
 		MaxBackups: 3,
 		MaxAge:     30,
@@ -67,14 +67,14 @@ func uploadRotatedLogsToInfluxDB(influxClient influxdb2.Client) {
 
 	files, err := filepath.Glob("app.log*")
 	if err != nil {
-		data := LogData{User: "system", Event: "Fail to find log file", Content: "error: " + err.Error()}
+		data := LogData{User: "system", Event: "Fail to find log file", Details: "error: " + err.Error()}
 		LogError(data)
 	}
 
 	for _, filename := range files {
 		file, err := os.Open(filename)
 		if err != nil {
-			data := LogData{User: "system", Event: "Fail to open log file", Content: "File name: " + filename + " error: " + err.Error()}
+			data := LogData{User: "system", Event: "Fail to open log file", Details: "File name: " + filename + " error: " + err.Error()}
 			LogError(data)
 			continue
 		}
@@ -87,19 +87,19 @@ func uploadRotatedLogsToInfluxDB(influxClient influxdb2.Client) {
 
 			err := writeAPI.WritePoint(context.Background(), point)
 			if err != nil {
-				data := LogData{User: "system", Event: "Fail to upload log file", Content: "File name: " + filename + " error: " + err.Error()}
+				data := LogData{User: "system", Event: "Fail to upload log file", Details: "File name: " + filename + " error: " + err.Error()}
 				LogError(data)
 			}
 		}
 		err = file.Close()
 		if err != nil {
-			data := LogData{User: "system", Event: "Fail to close log file", Content: "File name: " + filename + " error: " + err.Error()}
+			data := LogData{User: "system", Event: "Fail to close log file", Details: "File name: " + filename + " error: " + err.Error()}
 			LogError(data)
 			continue
 		}
 		err = os.Remove(filename)
 		if err != nil {
-			data := LogData{User: "system", Event: "Fail to delete log file", Content: "File name: " + filename + " error: " + err.Error()}
+			data := LogData{User: "system", Event: "Fail to delete log file", Details: "File name: " + filename + " error: " + err.Error()}
 			LogError(data)
 		}
 	}
@@ -110,7 +110,6 @@ type LogData struct {
 	Method  string      `json:"method"`
 	Path    string      `json:"path"`
 	Header  interface{} `json:"header"`
-	Content interface{} `json:"content"`
 	User    string      `json:"user"`
 	Details string      `json:"details"`
 }
@@ -134,6 +133,7 @@ func LogInfo(obj LogData) {
 }
 
 func LogWarn(obj LogData) {
+
 	jsonData, err := json.Marshal(obj)
 	if err == nil {
 		logger.Warn().Msg(string(jsonData))

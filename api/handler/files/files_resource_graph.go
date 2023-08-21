@@ -8,10 +8,12 @@ import (
 	"study_savvy_api_go/api/utils"
 	StatusUtils "study_savvy_api_go/internal/repository/utils"
 	"study_savvy_api_go/internal/service/files"
+	"study_savvy_api_go/internal/service/logger"
 )
 
 type HandlerFilesResourceGraph struct {
-	Service files.ServiceFilesResourceGraph
+	Service    files.ServiceFilesResourceGraph
+	LogService logger.ServiceLogger
 }
 
 func (h *HandlerFilesResourceGraph) Handle(c *gin.Context) {
@@ -35,37 +37,37 @@ func (h *HandlerFilesResourceGraph) Handle(c *gin.Context) {
 			result, err := h.Service.GetGraph(stringDataUser, stringDataId)
 			if err == nil {
 				if ok := result.IsPureText(); ok {
-					go utils.LogInfo(utils.LogData{Event: "Success request", Method: c.Request.Method, Path: c.FullPath(), User: stringDataUser, Header: c.Request.Header})
+					go h.LogService.Info(utils.LogData{Event: "Success request", Method: c.Request.Method, Path: c.FullPath(), User: stringDataUser, Header: c.Request.Header})
 					c.JSON(http.StatusNonAuthoritativeInfo, gin.H{"error": "Pure Text"})
 					return
 				}
 				if err := result.Exist(); err != nil {
-					go utils.LogWarn(utils.LogData{Event: "Failure request", Method: c.Request.Method, Path: c.FullPath(), User: stringDataUser, Header: c.Request.Header, Details: err.Error()})
+					go h.LogService.Warn(utils.LogData{Event: "Failure request", Method: c.Request.Method, Path: c.FullPath(), User: stringDataUser, Header: c.Request.Header, Details: err.Error()})
 					c.JSON(http.StatusNotFound, gin.H{"error": "File not found"})
 					return
 				}
 				err := result.CanOpenAndSent(c)
 				if err != nil {
-					go utils.LogError(utils.LogData{Event: "Failure request", Method: c.Request.Method, Path: c.FullPath(), User: stringDataUser, Header: c.Request.Header, Details: err.Error()})
+					go h.LogService.Error(utils.LogData{Event: "Failure request", Method: c.Request.Method, Path: c.FullPath(), User: stringDataUser, Header: c.Request.Header, Details: err.Error()})
 					c.JSON(http.StatusInternalServerError, err.Error())
 				}
-				go utils.LogInfo(utils.LogData{Event: "Success request", Method: c.Request.Method, Path: c.FullPath(), User: stringDataUser, Header: c.Request.Header})
+				go h.LogService.Info(utils.LogData{Event: "Success request", Method: c.Request.Method, Path: c.FullPath(), User: stringDataUser, Header: c.Request.Header})
 			} else if errors.As(err, &StatusUtils.NotExistSource{}) {
-				go utils.LogWarn(utils.LogData{Event: "Failure request", Method: c.Request.Method, Path: c.FullPath(), User: stringDataUser, Header: c.Request.Header, Details: err.Error()})
+				go h.LogService.Warn(utils.LogData{Event: "Failure request", Method: c.Request.Method, Path: c.FullPath(), User: stringDataUser, Header: c.Request.Header, Details: err.Error()})
 				e := responseUtils.Error{Error: err.Error()}
 				c.JSON(http.StatusNotFound, e)
 			} else {
-				go utils.LogError(utils.LogData{Event: "Failure request", Method: c.Request.Method, Path: c.FullPath(), User: stringDataUser, Header: c.Request.Header, Details: err.Error()})
+				go h.LogService.Error(utils.LogData{Event: "Failure request", Method: c.Request.Method, Path: c.FullPath(), User: stringDataUser, Header: c.Request.Header, Details: err.Error()})
 				e := responseUtils.Error{Error: err.Error()}
 				c.JSON(http.StatusInternalServerError, e)
 			}
 		} else {
-			go utils.LogError(utils.LogData{Event: "Failure request", Method: c.Request.Method, Path: c.FullPath(), User: stringDataUser, Header: c.Request.Header, Details: "Type Assertion error"})
+			go h.LogService.Error(utils.LogData{Event: "Failure request", Method: c.Request.Method, Path: c.FullPath(), User: stringDataUser, Header: c.Request.Header, Details: "Type Assertion error"})
 			e := responseUtils.Error{Error: "Internal error"}
 			c.JSON(http.StatusInternalServerError, e)
 		}
 	} else {
-		go utils.LogError(utils.LogData{Event: "Failure request", Method: c.Request.Method, Path: c.FullPath(), User: stringDataUser, Header: c.Request.Header, Details: "Type Assertion error"})
+		go h.LogService.Error(utils.LogData{Event: "Failure request", Method: c.Request.Method, Path: c.FullPath(), User: stringDataUser, Header: c.Request.Header, Details: "Type Assertion error"})
 		e := responseUtils.Error{Error: "Internal error"}
 		c.JSON(http.StatusInternalServerError, e)
 	}

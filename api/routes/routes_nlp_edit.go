@@ -8,11 +8,12 @@ import (
 	requestNlpEdit "study_savvy_api_go/api/middleware/request/nlp_edit"
 	"study_savvy_api_go/internal/repository/redis"
 	"study_savvy_api_go/internal/repository/sql"
+	"study_savvy_api_go/internal/service/logger"
 	"study_savvy_api_go/internal/service/nlp_edit"
 )
 
 func InitNlpEditRoutes(r *gin.RouterGroup, sqlRepository *sql.Repository, redisRepository *redis.Repository) {
 	middlewareJwt := jwt.MiddlewareJwt{Repository: redisRepository}
-	r.PUT("/ASR/:file_id", middlewareJwt.JwtSecure(), middlewareJwt.JwtInformation(), content_type.MiddleWareApplicationJson(), requestNlpEdit.MiddlewareNlpEditAsrContent(), (&handlerNlpEdit.HandlerNlpEditAsr{Service: nlp_edit.ServiceNlpEditAsr{SqlRepository: *sqlRepository, RedisRepository: *redisRepository}}).Handle)
-	r.PUT("/OCR/:file_id", middlewareJwt.JwtSecure(), middlewareJwt.JwtInformation(), content_type.MiddleWareApplicationJson(), requestNlpEdit.MiddlewareNlpEditOcrContent(), (&handlerNlpEdit.HandlerNlpEditOcr{Service: nlp_edit.ServiceNlpEditOcr{SqlRepository: *sqlRepository, RedisRepository: *redisRepository}}).Handle)
+	r.PUT("/ASR/:file_id", middlewareJwt.JwtSecure(), middlewareJwt.JwtInformation(), content_type.MiddleWareApplicationJson(), requestNlpEdit.MiddlewareNlpEditAsrContent(), (&handlerNlpEdit.HandlerNlpEditAsr{Service: nlp_edit.ServiceNlpEditAsr{SqlRepository: *sqlRepository, RedisRepository: *redisRepository}, LogService: logger.ServiceLogger{Repository: *redisRepository}}).Handle)
+	r.PUT("/OCR/:file_id", middlewareJwt.JwtSecure(), middlewareJwt.JwtInformation(), content_type.MiddleWareApplicationJson(), requestNlpEdit.MiddlewareNlpEditOcrContent(), (&handlerNlpEdit.HandlerNlpEditOcr{Service: nlp_edit.ServiceNlpEditOcr{SqlRepository: *sqlRepository, RedisRepository: *redisRepository}, LogService: logger.ServiceLogger{Repository: *redisRepository}}).Handle)
 }

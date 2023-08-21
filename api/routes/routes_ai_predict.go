@@ -9,11 +9,12 @@ import (
 	"study_savvy_api_go/internal/repository/redis"
 	"study_savvy_api_go/internal/repository/sql"
 	"study_savvy_api_go/internal/service/ai_predict"
+	"study_savvy_api_go/internal/service/logger"
 )
 
 func InitAiPredictRoutes(r *gin.RouterGroup, sqlRepository *sql.Repository, redisRepository *redis.Repository) {
 	middlewareJwt := jwt.MiddlewareJwt{Repository: redisRepository}
-	r.POST("/ASR", middlewareJwt.JwtSecure(), middlewareJwt.JwtInformation(), content_type.MiddleWareMultipartFormData(), requestAiPredict.MiddlewareAiPredictAsrContent(), (&handlerAiPredict.HandlerAiPredictAsr{Service: ai_predict.ServiceAiPredictAsr{SqlRepository: *sqlRepository, RedisRepository: *redisRepository}}).Handle)
-	r.POST("/OCR", middlewareJwt.JwtSecure(), middlewareJwt.JwtInformation(), content_type.MiddleWareMultipartFormData(), requestAiPredict.MiddlewareAiPredictOcrContent(), (&handlerAiPredict.HandlerAiPredictOcr{Service: ai_predict.ServiceAiPredictOcr{SqlRepository: *sqlRepository, RedisRepository: *redisRepository}}).Handle)
-	r.POST("/OCR_Text", middlewareJwt.JwtSecure(), middlewareJwt.JwtInformation(), content_type.MiddleWareApplicationJson(), requestAiPredict.MiddlewareAiPredictOcrTextContent(), (&handlerAiPredict.HandlerAiPredictOcrText{Service: ai_predict.ServiceAiPredictOcrText{SqlRepository: *sqlRepository, RedisRepository: *redisRepository}}).Handle)
+	r.POST("/ASR", middlewareJwt.JwtSecure(), middlewareJwt.JwtInformation(), content_type.MiddleWareMultipartFormData(), requestAiPredict.MiddlewareAiPredictAsrContent(), (&handlerAiPredict.HandlerAiPredictAsr{Service: ai_predict.ServiceAiPredictAsr{SqlRepository: *sqlRepository, RedisRepository: *redisRepository}, LogService: logger.ServiceLogger{Repository: *redisRepository}}).Handle)
+	r.POST("/OCR", middlewareJwt.JwtSecure(), middlewareJwt.JwtInformation(), content_type.MiddleWareMultipartFormData(), requestAiPredict.MiddlewareAiPredictOcrContent(), (&handlerAiPredict.HandlerAiPredictOcr{Service: ai_predict.ServiceAiPredictOcr{SqlRepository: *sqlRepository, RedisRepository: *redisRepository}, LogService: logger.ServiceLogger{Repository: *redisRepository}}).Handle)
+	r.POST("/OCR_Text", middlewareJwt.JwtSecure(), middlewareJwt.JwtInformation(), content_type.MiddleWareApplicationJson(), requestAiPredict.MiddlewareAiPredictOcrTextContent(), (&handlerAiPredict.HandlerAiPredictOcrText{Service: ai_predict.ServiceAiPredictOcrText{SqlRepository: *sqlRepository, RedisRepository: *redisRepository}, LogService: logger.ServiceLogger{Repository: *redisRepository}}).Handle)
 }

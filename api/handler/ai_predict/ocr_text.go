@@ -8,10 +8,12 @@ import (
 	responseUtils "study_savvy_api_go/api/response/utils"
 	"study_savvy_api_go/api/utils"
 	"study_savvy_api_go/internal/service/ai_predict"
+	"study_savvy_api_go/internal/service/logger"
 )
 
 type HandlerAiPredictOcrText struct {
-	Service ai_predict.ServiceAiPredictOcrText
+	Service    ai_predict.ServiceAiPredictOcrText
+	LogService logger.ServiceLogger
 }
 
 func (h *HandlerAiPredictOcrText) Handle(c *gin.Context) {
@@ -33,24 +35,24 @@ func (h *HandlerAiPredictOcrText) Handle(c *gin.Context) {
 		if jsonData, ok := data.(requsetAiPredict.OcrText); ok {
 			result, err := h.Service.ExecuteOcrText(jsonData, stringData)
 			if err == nil {
-				go utils.LogInfo(utils.LogData{Event: "Success request", Method: c.Request.Method, Path: c.FullPath(), User: stringData, Header: c.Request.Header, Content: jsonData})
+				go h.LogService.Info(utils.LogData{Event: "Success request", Method: c.Request.Method, Path: c.FullPath(), User: stringData, Header: c.Request.Header})
 				c.JSON(http.StatusOK, result)
 			} else if errors.As(err, &responseUtils.RegistrationError{}) {
-				go utils.LogWarn(utils.LogData{Event: "Failure request", Method: c.Request.Method, Path: c.FullPath(), User: stringData, Header: c.Request.Header, Content: jsonData, Details: err.Error()})
+				go h.LogService.Warn(utils.LogData{Event: "Failure request", Method: c.Request.Method, Path: c.FullPath(), User: stringData, Header: c.Request.Header, Details: err.Error()})
 				e := responseUtils.Error{Error: err.Error()}
 				c.JSON(http.StatusUnauthorized, e)
 			} else {
-				go utils.LogError(utils.LogData{Event: "Failure request", Method: c.Request.Method, Path: c.FullPath(), User: stringData, Header: c.Request.Header, Content: jsonData, Details: err.Error()})
+				go h.LogService.Error(utils.LogData{Event: "Failure request", Method: c.Request.Method, Path: c.FullPath(), User: stringData, Header: c.Request.Header, Details: err.Error()})
 				e := responseUtils.Error{Error: err.Error()}
 				c.JSON(http.StatusInternalServerError, e)
 			}
 		} else {
-			go utils.LogError(utils.LogData{Event: "Failure request", Method: c.Request.Method, Path: c.FullPath(), User: stringData, Header: c.Request.Header, Content: jsonData, Details: "Type Assertion error"})
+			go h.LogService.Error(utils.LogData{Event: "Failure request", Method: c.Request.Method, Path: c.FullPath(), User: stringData, Header: c.Request.Header, Details: "Type Assertion error"})
 			e := responseUtils.Error{Error: "Internal error"}
 			c.JSON(http.StatusInternalServerError, e)
 		}
 	} else {
-		go utils.LogError(utils.LogData{Event: "Failure request", Method: c.Request.Method, Path: c.FullPath(), User: stringData, Header: c.Request.Header, Details: "Type Assertion error"})
+		go h.LogService.Error(utils.LogData{Event: "Failure request", Method: c.Request.Method, Path: c.FullPath(), User: stringData, Header: c.Request.Header, Details: "Type Assertion error"})
 		e := responseUtils.Error{Error: "Internal error"}
 		c.JSON(http.StatusInternalServerError, e)
 	}
