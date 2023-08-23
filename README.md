@@ -9,6 +9,8 @@
 > Furthermore, it can cooperate with celery in python which gain tasks from redis set by the server.
 > 
 > In the project will set My-SQL and Redis and Go-server, and it should combine with other project to have whole service.
+> 
+> Furthermore, the logs will send into influxdb and display on the grafana. 
 
  
 
@@ -20,11 +22,33 @@
 > Two application
 > * App made by Flutter
 > * Website made by Next.js
+> > ### APP
+> > ![img.png](images/app.png)
+> 
+> > ### [Website](https://study-savvy.com)
+> > ![img.png](images/website.png)
+> 
+> > ### [API document](https://study-savvy.com/api/docs/)
+> > ![img.png](images/apidocs.png)
+> >(僅為部分) 詳細檔案請見 [docs/openapi.yaml](./docs/openapi.yaml)
 
+## How to install
+```bash
+git clone https://github.com/weiawesome/study_savvy_api_go.git
+```
 ## How to start
 ```bash
 docker-compose up -d
 ```
+## How to set the environment
+```bash
+# Move to test directory
+cd ./test
+
+# Set all environment
+docker-compose up -d
+```
+
 
 ## Project Structure - Layered Architecture
 ### [There Layered Architecture](https://en.wikipedia.org/wiki/Multitier_architecture#Three-tier_architecture)
