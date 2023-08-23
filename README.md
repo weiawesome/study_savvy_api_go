@@ -22,15 +22,23 @@
 > Two application
 > * App made by Flutter
 > * Website made by Next.js
-> > ### APP
-> > ![img.png](images/app.png)
 > 
 > > ### [Website](https://study-savvy.com)
 > > ![img.png](images/website.png)
+> >
+> > #### URL : https://study-savvy.com
+>
+> > ### APP
+> > ![img.png](images/app.png)
 > 
 > > ### [API document](https://study-savvy.com/api/docs/)
 > > ![img.png](images/apidocs.png)
-> >(僅為部分) 詳細檔案請見 [docs/openapi.yaml](./docs/openapi.yaml)
+> >
+> > (照片僅為部分文檔內容) 
+> > 
+> > 詳細檔案請見 [docs/openapi.yaml](./docs/openapi.yaml)
+> >
+> > 或是觀看 API-Document URL : https://study-savvy.com/api/docs/
 
 ## How to install
 ```bash
