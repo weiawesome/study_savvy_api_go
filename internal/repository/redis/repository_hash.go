@@ -20,10 +20,7 @@ func (r *Repository) GetHashValue(mail string) (string, error) {
 
 	if exists == 1 {
 		value, err := r.client.HGet(ctx, hashMapName, mail).Result()
-		if err != nil {
-			return "", err
-		}
-		if value != "" {
+		if value != "" && err == nil {
 			return value, nil
 		} else {
 			id := uuid.New().String()
