@@ -8,10 +8,10 @@ import (
 )
 
 func (r *Repository) CreateUser(obj model.User) error {
-	return r.db.Create(obj).Error
+	return r.dbMaster.Create(obj).Error
 }
 func (r *Repository) ReadUser(obj *model.User) error {
-	if result := r.db.First(&obj); result.Error == nil {
+	if result := r.dbSlave.First(&obj); result.Error == nil {
 		return StatusUtils.ExistSource{Message: "Resource is exist"}
 	} else if errors.As(result.Error, &gorm.ErrRecordNotFound) {
 		return StatusUtils.NotExistSource{Message: "Resource is not exist"}
@@ -20,7 +20,7 @@ func (r *Repository) ReadUser(obj *model.User) error {
 	}
 }
 func (r *Repository) PreLoadReadUser(obj *model.User, preLoads []string) error {
-	tx := r.db
+	tx := r.dbSlave
 	for _, p := range preLoads {
 		tx = tx.Preload(p)
 	}
@@ -33,8 +33,8 @@ func (r *Repository) PreLoadReadUser(obj *model.User, preLoads []string) error {
 	}
 }
 func (r *Repository) UpdateUser(obj model.User) error {
-	return r.db.Model(&obj).Updates(obj).Error
+	return r.dbMaster.Model(&obj).Updates(obj).Error
 }
 func (r *Repository) DeleteUser(obj model.User) error {
-	return r.db.Delete(&obj).Error
+	return r.dbMaster.Delete(&obj).Error
 }

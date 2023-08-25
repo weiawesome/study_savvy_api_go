@@ -9,13 +9,24 @@ func EnvMySqlDb() string {
 	}
 	return dbName
 }
-func EnvMySqlAddress() string {
+func EnvMySqlMasterAddress() string {
 	var ip string
 	var port string
-	if ip = os.Getenv("MYSQL_HOST"); len(ip) == 0 {
+	if ip = os.Getenv("MYSQL_MASTER_HOST"); len(ip) == 0 {
 		ip = "localhost"
 	}
-	if port = os.Getenv("MYSQL_PORT"); len(port) == 0 {
+	if port = os.Getenv("MYSQL_MASTER_PORT"); len(port) == 0 {
+		port = "3306"
+	}
+	return ip + ":" + port
+}
+func EnvMySqlSlaveAddress() string {
+	var ip string
+	var port string
+	if ip = os.Getenv("MYSQL_SLAVE_HOST"); len(ip) == 0 {
+		ip = "localhost"
+	}
+	if port = os.Getenv("MYSQL_SLAVE_PORT"); len(port) == 0 {
 		port = "3306"
 	}
 	return ip + ":" + port

@@ -9,10 +9,10 @@ import (
 )
 
 func (r *Repository) CreateFile(obj model.File) error {
-	return r.db.Create(obj).Error
+	return r.dbMaster.Create(obj).Error
 }
 func (r *Repository) ReadFile(obj *model.File) error {
-	if result := r.db.First(&obj); result.Error == nil {
+	if result := r.dbSlave.First(&obj); result.Error == nil {
 		return StatusUtils.ExistSource{Message: "Resource is exist"}
 	} else if errors.As(result.Error, &gorm.ErrRecordNotFound) {
 		return StatusUtils.NotExistSource{Message: "Resource is not exist"}
@@ -21,7 +21,7 @@ func (r *Repository) ReadFile(obj *model.File) error {
 	}
 }
 func (r *Repository) PreLoadReadFile(obj *model.File, preLoad string) error {
-	if result := r.db.Preload(preLoad).Find(&obj); result.Error == nil {
+	if result := r.dbSlave.Preload(preLoad).Find(&obj); result.Error == nil {
 		return StatusUtils.ExistSource{Message: "Resource is exist"}
 	} else if errors.As(result.Error, &gorm.ErrRecordNotFound) {
 		return StatusUtils.NotExistSource{Message: "Resource is not exist"}
@@ -30,17 +30,17 @@ func (r *Repository) PreLoadReadFile(obj *model.File, preLoad string) error {
 	}
 }
 func (r *Repository) UpdateFile(obj model.File) error {
-	return r.db.Model(&obj).Updates(obj).Error
+	return r.dbMaster.Model(&obj).Updates(obj).Error
 }
 func (r *Repository) DeleteFile(obj model.File) error {
-	return r.db.Delete(&obj).Error
+	return r.dbMaster.Delete(&obj).Error
 }
 
 func (r *Repository) ReadFileByPage(mail string, page int, pageSize int) ([]model.File, int, error) {
 	var files []model.File
 	var totalRecords int64
 
-	if err := r.db.Scopes(FileByMail(mail, &totalRecords), OrderByCreatedAt(), Paginate(page, pageSize)).Count(&totalRecords).Find(&files).Error; err != nil {
+	if err := r.dbSlave.Scopes(FileByMail(mail, &totalRecords), OrderByCreatedAt(), Paginate(page, pageSize)).Count(&totalRecords).Find(&files).Error; err != nil {
 		return nil, 0, err
 	}
 
@@ -52,7 +52,7 @@ func (r *Repository) ReadFileByPageAsr(mail string, page int, pageSize int) ([]m
 	var files []model.File
 	var totalRecords int64
 
-	if err := r.db.Scopes(FileByMail(mail, &totalRecords), FileByType("ASR"), OrderByCreatedAt(), Paginate(page, pageSize)).Count(&totalRecords).Find(&files).Error; err != nil {
+	if err := r.dbSlave.Scopes(FileByMail(mail, &totalRecords), FileByType("ASR"), OrderByCreatedAt(), Paginate(page, pageSize)).Count(&totalRecords).Find(&files).Error; err != nil {
 		return nil, 0, err
 	}
 
@@ -64,7 +64,7 @@ func (r *Repository) ReadFileByPageOcr(mail string, page int, pageSize int) ([]m
 	var files []model.File
 	var totalRecords int64
 
-	if err := r.db.Scopes(FileByMail(mail, &totalRecords), FileByType("OCR"), OrderByCreatedAt(), Paginate(page, pageSize)).Count(&totalRecords).Find(&files).Error; err != nil {
+	if err := r.dbSlave.Scopes(FileByMail(mail, &totalRecords), FileByType("OCR"), OrderByCreatedAt(), Paginate(page, pageSize)).Count(&totalRecords).Find(&files).Error; err != nil {
 		return nil, 0, err
 	}
 

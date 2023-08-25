@@ -6,9 +6,10 @@ import (
 )
 
 type Repository struct {
-	db *gorm.DB
+	dbMaster *gorm.DB
+	dbSlave  *gorm.DB
 }
 
 func NewRepository() *Repository {
-	return &Repository{db: utils.GetDB()}
+	return &Repository{dbMaster: utils.GetDBMaster(), dbSlave: utils.GetDBSalve()}
 }
