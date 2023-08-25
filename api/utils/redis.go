@@ -11,9 +11,9 @@ func InitRedis() error {
 	Address := EnvRedisAddress()
 	Master := EnvRedisMaster()
 	redisClient = redis.NewFailoverClient(&redis.FailoverOptions{
-		MasterName:    Master,
-		SentinelAddrs: []string{Address},
-		Password:      Password,
+		MasterName:       Master,
+		SentinelAddrs:    []string{Address},
+		SentinelPassword: Password,
 	})
 
 	return nil
