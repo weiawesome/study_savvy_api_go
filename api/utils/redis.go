@@ -13,6 +13,7 @@ func InitRedis() error {
 	redisClient = redis.NewFailoverClient(&redis.FailoverOptions{
 		MasterName:       Master,
 		SentinelAddrs:    []string{Address},
+		Password:         Password,
 		SentinelPassword: Password,
 	})
 
