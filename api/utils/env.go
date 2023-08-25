@@ -84,6 +84,15 @@ func EnvRedisAddress() string {
 	}
 	return ip + ":" + port
 }
+func EnvRedisMaster() string {
+	var master string
+
+	if master = os.Getenv("REDIS_MASTER"); len(master) == 0 {
+		master = "DefaultMaster"
+	}
+
+	return master
+}
 func EnvRedisDb() string {
 	var db string
 	if db = os.Getenv("REDIS_DB"); len(db) == 0 {
