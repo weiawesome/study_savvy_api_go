@@ -10,7 +10,7 @@ services:
       JWT_SECRET: Wei891013
 
       MYSQL_DB: gorm_test
-      MYSQL_IP: mysql
+      MYSQL_HOST: mysql
       MYSQL_PASSWORD: Wei891013
       MYSQL_PORT: 3306
       MYSQL_USER: root
