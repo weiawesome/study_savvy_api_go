@@ -65,7 +65,7 @@ func EnvRedisPassword() string {
 func EnvRedisAddress() string {
 	var ip string
 	var port string
-	if ip = os.Getenv("REDIS_IP"); len(ip) == 0 {
+	if ip = os.Getenv("REDIS_HOST"); len(ip) == 0 {
 		ip = "localhost"
 	}
 	if port = os.Getenv("REDIS_PORT"); len(port) == 0 {
