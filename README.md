@@ -10,7 +10,10 @@
 > 
 > In the project will set My-SQL and Redis and Go-server, and it should combine with other project to have whole service.
 > 
-> Furthermore, the logs will send into influxdb and display on the grafana. 
+> Furthermore, the logs will send into InfluxDB and display on the Grafana.
+> > Logs stored in InfluxDB and display by Grafana
+> 
+> ![img.png](resource/logs.png)
 
  
 
@@ -24,21 +27,23 @@
 > * Website made by Next.js
 > 
 > > ### [Website](https://study-savvy.com)
-> > ![img.png](images/website.png)
+> > ![img.png](resource/website.png)
 > >
 > > #### URL : https://study-savvy.com
 >
 > > ### APP
-> > ![img.png](images/app.png)
+> > ![img.png](resource/app.png)
 > 
 > > ### [API document](https://study-savvy.com/api/docs/)
-> > ![img.png](images/apidocs.png)
+> > ![img.png](resource/apidocs.png)
 > >
-> > (照片僅為部分文檔內容) 
+> > (Image just part of document) 
 > > 
-> > 詳細檔案請見 [docs/openapi.yaml](./docs/openapi.yaml)
+> > Details in document can see the [docs/openapi.yaml](./docs/openapi.yaml)
 > >
-> > 或是觀看 API-Document URL : https://study-savvy.com/api/docs/
+> > or visit the API-Document 
+> > 
+> > URL : https://study-savvy.com/api/docs/
 
 ## How to install
 ```bash
