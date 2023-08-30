@@ -36,6 +36,8 @@ services:
       - redis
       - mysql
       - influxdb
+    volumes:
+      - logs_directory:/logs
 
   redis:
     image: redis:latest
@@ -72,3 +74,4 @@ services:
 volumes:
   grafana-storage:
   influxdb-storage:
+  logs_directory:

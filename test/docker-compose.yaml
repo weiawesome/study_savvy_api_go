@@ -2,10 +2,14 @@ version: '1'
 services:
   redis:
     image: redis:latest
+    ports:
+      - "6379:6379"
     command: redis-server --requirepass DefaultPassword
 
   mysql:
     image: mysql:latest
+    ports:
+      - "3306:3306"
     environment:
       - MYSQL_ROOT_PASSWORD=DefaultPassword
       - MYSQL_USER=DefaultUser
@@ -24,6 +28,8 @@ services:
 
   influxdb:
     image: influxdb:latest
+    ports:
+      - "8086:8086"
     environment:
       - DOCKER_INFLUXDB_INIT_MODE=setup
       - DOCKER_INFLUXDB_INIT_USERNAME=DefaultUser
