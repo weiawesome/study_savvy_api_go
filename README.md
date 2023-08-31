@@ -24,15 +24,15 @@
 > * Website made by Next.js
 > 
 > > ### [Website](https://study-savvy.com)
-> > ![img.png](images/website.png)
+> > ![img.png](resource/website.png)
 > >
 > > #### URL : https://study-savvy.com
 >
 > > ### APP
-> > ![img.png](images/app.png)
+> > ![img.png](resource/app.png)
 > 
 > > ### [API document](https://study-savvy.com/api/docs/)
-> > ![img.png](images/apidocs.png)
+> > ![img.png](resource/apidocs.png)
 > >
 > > (照片僅為部分文檔內容) 
 > > 
