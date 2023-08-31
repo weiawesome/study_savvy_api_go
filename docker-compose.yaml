@@ -10,14 +10,14 @@ services:
       JWT_SECRET: Wei891013
 
       MYSQL_DB: gorm_test
-      MYSQL_IP: mysql
+      MYSQL_HOST: mysql
       MYSQL_PASSWORD: Wei891013
       MYSQL_PORT: 3306
       MYSQL_USER: root
 
       PAGE_SIZE: 10
 
-      REDIS_IP: redis
+      REDIS_HOST: redis
       REDIS_PASSWORD: Wei891013
       REDIS_PORT: 6379
       REDIS_DB: 0
@@ -36,6 +36,8 @@ services:
       - redis
       - mysql
       - influxdb
+    volumes:
+      - logs_directory:/logs
 
   redis:
     image: redis:latest
@@ -72,3 +74,4 @@ services:
 volumes:
   grafana-storage:
   influxdb-storage:
+  logs_directory:

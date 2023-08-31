@@ -2,15 +2,19 @@
 
 ## Description the service
 
-> This is the back-end service for [Study-Savvy](#Study-Savvy).
+> This is the back-end service for [Study-Savvy](#study-savvy).
 > 
 > The back-end server can get client's request and reply it.
 > 
-> Furthermore, it can cooperate with celery in python which gain tasks from redis set by the server.
+> Furthermore, it can cooperate with Celery in Python which gain tasks-queue from Redis set by the server.
+> </br> The corresponding celery repository can see in [Study-Savvy-AsyncWork-Celery](https://github.com/weiawesome/study_savvy_asyncwork_celery/tree/master)
 > 
 > In the project will set My-SQL and Redis and Go-server, and it should combine with other project to have whole service.
 > 
-> Furthermore, the logs will send into influxdb and display on the grafana. 
+> Furthermore, the logs will send into InfluxDB and display on the Grafana.
+> > Logs stored in InfluxDB and display by Grafana
+> 
+> ![img.png](resource/logs.png)
 
  
 
@@ -24,21 +28,23 @@
 > * Website made by Next.js
 > 
 > > ### [Website](https://study-savvy.com)
-> > ![img.png](images/website.png)
+> > ![img.png](resource/website.png)
 > >
 > > #### URL : https://study-savvy.com
 >
 > > ### APP
-> > ![img.png](images/app.png)
+> > ![img.png](resource/app.png)
 > 
 > > ### [API document](https://study-savvy.com/api/docs/)
-> > ![img.png](images/apidocs.png)
+> > ![img.png](resource/apidocs.png)
 > >
-> > (照片僅為部分文檔內容) 
+> > (Image just part of document) 
 > > 
-> > 詳細檔案請見 [docs/openapi.yaml](./docs/openapi.yaml)
+> > Details in document can see the [docs/openapi.yaml](./docs/openapi.yaml)
 > >
-> > 或是觀看 API-Document URL : https://study-savvy.com/api/docs/
+> > or visit the API-Document 
+> > 
+> > URL : https://study-savvy.com/api/docs/
 
 ## How to install
 ```bash
