@@ -6,19 +6,19 @@ services:
       - "8080:8080"
     environment:
       JWT_EXPIRE_DAYS: 14
-      JWT_ISSUER: Study-Savvy
-      JWT_SECRET: Wei891013
+      JWT_ISSUER: DefaultIssuer
+      JWT_SECRET: DefaultJwtSecret
 
-      MYSQL_DB: gorm_test
+      MYSQL_DB: DefaultDb
       MYSQL_HOST: mysql
-      MYSQL_PASSWORD: Wei891013
+      MYSQL_PASSWORD: DefaultPassword
       MYSQL_PORT: 3306
       MYSQL_USER: root
 
       PAGE_SIZE: 10
 
       REDIS_HOST: redis
-      REDIS_PASSWORD: Wei891013
+      REDIS_PASSWORD: DefaultPassword
       REDIS_PORT: 6379
       REDIS_DB: 0
 
@@ -26,9 +26,9 @@ services:
 
       INFLUXDB_HOST: influxdb
       INFLUXDB_PORT: 8086
-      INFLUXDB_TOKEN: Wei891013
-      INFLUXDB_ORG: Study-Savvy
-      INFLUXDB_BUCKET: LogsBucket
+      INFLUXDB_TOKEN: DefaultPassword
+      INFLUXDB_ORG: DefaultOrg
+      INFLUXDB_BUCKET: DefaultBucket
 
       DIRECTORY_AUDIO: /audio
       DIRECTORY_GRAPH: /graph
@@ -41,21 +41,21 @@ services:
 
   redis:
     image: redis:latest
-    command: redis-server --requirepass Wei891013
+    command: redis-server --requirepass DefaultPassword
 
   mysql:
     image: mysql:latest
     environment:
-      - MYSQL_ROOT_PASSWORD=Wei891013
-      - MYSQL_DATABASE=gorm_test
+      - MYSQL_ROOT_PASSWORD=DefaultPassword
+      - MYSQL_DATABASE=DefaultDb
 
   grafana:
     image: grafana/grafana
     ports:
       - "127.0.0.1:3000:3000"
     environment:
-      - GF_SECURITY_ADMIN_USER=wei
-      - GF_SECURITY_ADMIN_PASSWORD=Wei891013
+      - GF_SECURITY_ADMIN_USER=DefaultUser
+      - GF_SECURITY_ADMIN_PASSWORD=DefaultPassword
     volumes:
       - grafana-storage:/var/lib/grafana
 
@@ -63,11 +63,11 @@ services:
     image: influxdb:latest
     environment:
       - DOCKER_INFLUXDB_INIT_MODE=setup
-      - DOCKER_INFLUXDB_INIT_USERNAME=wei
-      - DOCKER_INFLUXDB_INIT_PASSWORD=Wei891013
-      - DOCKER_INFLUXDB_INIT_ORG=Study-Savvy
-      - DOCKER_INFLUXDB_INIT_BUCKET=LogsBucket
-      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=Wei891013
+      - DOCKER_INFLUXDB_INIT_USERNAME=DefaultUser
+      - DOCKER_INFLUXDB_INIT_PASSWORD=DefaultPassword
+      - DOCKER_INFLUXDB_INIT_ORG=DefaultOrg
+      - DOCKER_INFLUXDB_INIT_BUCKET=DefaultBucket
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=DefaultPassword
     volumes:
       - influxdb-storage:/var/lib/influxdb
 
