@@ -2,11 +2,12 @@
 
 ## Description the service
 
-> This is the back-end service for [Study-Savvy](#Study-Savvy).
+> This is the back-end service for [Study-Savvy](#study-savvy).
 > 
 > The back-end server can get client's request and reply it.
 > 
-> Furthermore, it can cooperate with celery in python which gain tasks from redis set by the server.
+> Furthermore, it can cooperate with Celery in Python which gain tasks-queue from Redis set by the server.
+> </br> The corresponding celery repository can see in [Study-Savvy-AsyncWork-Celery](https://github.com/weiawesome/study_savvy_asyncwork_celery/tree/master)
 > 
 > In the project will set My-SQL and Redis and Go-server, and it should combine with other project to have whole service.
 > 
