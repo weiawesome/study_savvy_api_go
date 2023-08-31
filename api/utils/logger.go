@@ -9,6 +9,7 @@ import (
 	"gopkg.in/natefinch/lumberjack.v2"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 )
 
@@ -16,7 +17,7 @@ var logger zerolog.Logger
 
 func InitLogger() {
 	logFile := &lumberjack.Logger{
-		Filename:   "server.log",
+		Filename:   "logs/server.log",
 		MaxSize:    10,
 		MaxBackups: 3,
 		MaxAge:     30,
@@ -36,19 +37,20 @@ func InitLogger() {
 			case <-ctx.Done():
 				return
 			default:
-				if influxClient := NewInfluxDBClient(); influxClient.Client != nil {
+				influxClient := NewInfluxDBClient()
+				if result, err := influxDBClient.Client.Ping(ctx); result == true {
 					if !isUsingInfluxDB {
 						logger = influxdbLogger
 						logger = logger.Hook(InfluxDBHook{Client: influxClient})
 						isUsingInfluxDB = true
+						uploadRotatedLogsToInfluxDB(influxClient.Client)
 					}
-					//uploadRotatedLogsToInfluxDB(influxClient.Client)
 				} else {
 					if isUsingInfluxDB {
 						logger = localLogger
 						isUsingInfluxDB = false
 					}
-					logData := LogData{Event: "InfluxDB connection failed, using local logs", User: "system"}
+					logData := LogData{Event: "InfluxDB connection failed, using local logs", User: "system", Details: err.Error()}
 					LogError(logData)
 				}
 				time.Sleep(time.Minute)
@@ -65,7 +67,7 @@ func uploadRotatedLogsToInfluxDB(influxClient influxdb2.Client) {
 
 	writeAPI := influxClient.WriteAPIBlocking(org, bucket)
 
-	files, err := filepath.Glob("app.log*")
+	files, err := filepath.Glob("logs/server.log*")
 	if err != nil {
 		data := LogData{User: "system", Event: "Fail to find log file", Details: "error: " + err.Error()}
 		LogError(data)
@@ -79,11 +81,16 @@ func uploadRotatedLogsToInfluxDB(influxClient influxdb2.Client) {
 			continue
 		}
 		scanner := bufio.NewScanner(file)
+
 		for scanner.Scan() {
 			line := scanner.Text()
+			level := getField(line, "level")
+			logTime := getField(line, "time")
+			logMessage := getField(line, "message")
 			point := influxdb2.NewPointWithMeasurement("logs").
-				SetTime(time.Now()).
-				AddField("message", line)
+				AddTag("level", level).
+				AddField("message", logMessage).
+				SetTime(parseTime(logTime))
 
 			err := writeAPI.WritePoint(context.Background(), point)
 			if err != nil {
@@ -103,6 +110,23 @@ func uploadRotatedLogsToInfluxDB(influxClient influxdb2.Client) {
 			LogError(data)
 		}
 	}
+}
+
+func getField(line, field string) string {
+	start := strings.Index(line, `"`+field+`":"`) + len(field) + 4
+	if field == "message" {
+		return line[start : len(line)-2]
+	}
+	end := strings.Index(line[start:], `","`)
+	return line[start : start+end]
+}
+
+func parseTime(logTime string) time.Time {
+	parsedTime, err := time.Parse(time.RFC3339, logTime)
+	if err != nil {
+		return time.Now()
+	}
+	return parsedTime
 }
 
 type LogData struct {
