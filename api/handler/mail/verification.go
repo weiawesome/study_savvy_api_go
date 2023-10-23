@@ -1,6 +1,7 @@
 package mail
 
 import (
+	"errors"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	requsetMail "study_savvy_api_go/api/request/mail"
@@ -28,6 +29,10 @@ func (h *HandlerMailVerification) Handle(c *gin.Context) {
 		if err == nil {
 			go h.LogService.Info(utils.LogData{Event: "Success request", Method: c.Request.Method, Path: c.FullPath(), User: jsonData.Mail, Header: c.Request.Header})
 			c.JSON(http.StatusOK, result)
+		} else if errors.As(err, &responseUtils.RegistrationError{}) {
+			go h.LogService.Warn(utils.LogData{Event: "Failure request", Method: c.Request.Method, Path: c.FullPath(), User: jsonData.Mail, Header: c.Request.Header, Details: err.Error()})
+			e := responseUtils.Error{Error: err.Error()}
+			c.JSON(http.StatusUnauthorized, e)
 		} else {
 			go h.LogService.Error(utils.LogData{Event: "Failure request", Method: c.Request.Method, Path: c.FullPath(), User: jsonData.Mail, Header: c.Request.Header, Details: err.Error()})
 			e := responseUtils.Error{Error: err.Error()}
