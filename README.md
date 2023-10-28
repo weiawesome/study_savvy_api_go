@@ -15,7 +15,6 @@
 > > Logs stored in InfluxDB and display by Grafana
 > 
 > ![img.png](resource/logs.png)
-
  
 
 ## Study-Savvy
@@ -45,6 +44,9 @@
 > > or visit the API-Document 
 > > 
 > > URL : https://study-savvy.com/api/docs/
+### System Architecture in Study-Savvy
+![](resource/system_architecture.png)
+* This project is the "Back-end Subsystem" in Study-Savvy
 
 ## How to install
 ```bash
